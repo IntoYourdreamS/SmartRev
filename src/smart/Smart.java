@@ -17,6 +17,7 @@ public class Smart {
         // TODO code application logic here
         System.out.println("Hehehhe");
         System.out.println("Hehehhe");
+        System.out.println("teytry");
         
     }
     
