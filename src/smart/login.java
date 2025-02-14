@@ -77,7 +77,8 @@ public class login extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(this, "Data!");
+      dashboard restockMenu = new dashboard(); 
+        restockMenu.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
