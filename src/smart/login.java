@@ -43,7 +43,6 @@ public class login extends javax.swing.JFrame {
         jTextField1.setBorder(null);
         jTextField1.setCaretColor(new java.awt.Color(255, 255, 255));
         jTextField1.setDisabledTextColor(new java.awt.Color(255, 255, 255));
-        jTextField1.setOpaque(true);
         jTextField1.setSelectionColor(new java.awt.Color(255, 255, 255));
         getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 430, 320, 30));
 
@@ -52,7 +51,6 @@ public class login extends javax.swing.JFrame {
         jTextField2.setBorder(null);
         jTextField2.setCaretColor(new java.awt.Color(255, 255, 255));
         jTextField2.setDisabledTextColor(new java.awt.Color(255, 255, 255));
-        jTextField2.setOpaque(true);
         jTextField2.setSelectionColor(new java.awt.Color(255, 255, 255));
         getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 345, 360, 30));
 
@@ -64,13 +62,23 @@ public class login extends javax.swing.JFrame {
         jButton1.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Group 47.png"))); // NOI18N
         jButton1.setSelected(true);
         jButton1.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Group 47.png"))); // NOI18N
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 540, 360, -1));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 540, 320, 50));
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Group 52.png"))); // NOI18N
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -50, 1714, 869));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(this, "Data!");
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
