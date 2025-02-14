@@ -4,7 +4,10 @@
  */
 package smart;
 
+import java.awt.Color;
 import javax.swing.JOptionPane;
+
+
 
 
 /**
@@ -18,6 +21,10 @@ public class login extends javax.swing.JFrame {
      */
     public login() {
         initComponents();
+        Password.setOpaque(false);
+        Password.setBackground(new Color(0, 0, 0, 0));
+        FieldUsername.setOpaque(false);
+        FieldUsername.setBackground(new Color(0, 0, 0, 0));
     }
 
     /**
@@ -29,8 +36,8 @@ public class login extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        FieldUsername = new javax.swing.JTextField();
+        Password = new javax.swing.JPasswordField();
         jButton1 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
 
@@ -38,21 +45,21 @@ public class login extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(1366, 768));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jTextField1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jTextField1.setActionCommand("null");
-        jTextField1.setBorder(null);
-        jTextField1.setCaretColor(new java.awt.Color(255, 255, 255));
-        jTextField1.setDisabledTextColor(new java.awt.Color(255, 255, 255));
-        jTextField1.setSelectionColor(new java.awt.Color(255, 255, 255));
-        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 430, 320, 30));
+        FieldUsername.setBorder(null);
+        FieldUsername.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FieldUsernameActionPerformed(evt);
+            }
+        });
+        getContentPane().add(FieldUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 350, 200, 30));
 
-        jTextField2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jTextField2.setActionCommand("null");
-        jTextField2.setBorder(null);
-        jTextField2.setCaretColor(new java.awt.Color(255, 255, 255));
-        jTextField2.setDisabledTextColor(new java.awt.Color(255, 255, 255));
-        jTextField2.setSelectionColor(new java.awt.Color(255, 255, 255));
-        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 345, 360, 30));
+        Password.setBorder(null);
+        Password.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PasswordActionPerformed(evt);
+            }
+        });
+        getContentPane().add(Password, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 430, 200, 30));
 
         jButton1.setBackground(new java.awt.Color(255, 255, 255));
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Group 47.png"))); // NOI18N
@@ -80,6 +87,33 @@ public class login extends javax.swing.JFrame {
       dashboard restockMenu = new dashboard(); 
         restockMenu.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void FieldUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FieldUsernameActionPerformed
+        // TODO add your handling code here:
+     loginValidation();
+    }//GEN-LAST:event_FieldUsernameActionPerformed
+
+    private void PasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordActionPerformed
+        // TODO add your handling code here:
+        loginValidation();
+    }//GEN-LAST:event_PasswordActionPerformed
+        private void loginValidation() {
+    char[] passChars = Password.getPassword(); 
+    String password = new String(passChars); 
+    String username = FieldUsername.getText().trim(); 
+
+    if (username.equals("admin") && password.equals("admin123")) {
+        dashboard dashboardMenu = new dashboard();
+        dashboardMenu.setVisible(true);
+
+        this.setVisible(false);  
+        this.dispose();
+    } else {
+        JOptionPane.showMessageDialog(this, "Username atau Password Salah!", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    java.util.Arrays.fill(passChars, '0'); 
+    Password.setText("");
+}
 
     /**
      * @param args the command line arguments
@@ -117,9 +151,9 @@ public class login extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField FieldUsername;
+    private javax.swing.JPasswordField Password;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 }
