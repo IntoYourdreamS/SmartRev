@@ -25,6 +25,8 @@ public class login extends javax.swing.JFrame {
         Password.setBackground(new Color(0, 0, 0, 0));
         FieldUsername.setOpaque(false);
         FieldUsername.setBackground(new Color(0, 0, 0, 0));
+        
+        hide_pasword1.setVisible(false);
     }
 
     /**
@@ -36,6 +38,8 @@ public class login extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        show_pasword = new javax.swing.JLabel();
+        hide_pasword1 = new javax.swing.JLabel();
         FieldUsername = new javax.swing.JTextField();
         Password = new javax.swing.JPasswordField();
         jButton1 = new javax.swing.JButton();
@@ -44,6 +48,19 @@ public class login extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1366, 768));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        show_pasword.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        show_pasword.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/show.png"))); // NOI18N
+        show_pasword.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                show_paswordMouseClicked(evt);
+            }
+        });
+        getContentPane().add(show_pasword, new org.netbeans.lib.awtextra.AbsoluteConstraints(1140, 430, 50, 50));
+
+        hide_pasword1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        hide_pasword1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/hidden-12115 4.png"))); // NOI18N
+        getContentPane().add(hide_pasword1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1140, 430, 50, 50));
 
         FieldUsername.setBorder(null);
         FieldUsername.addActionListener(new java.awt.event.ActionListener() {
@@ -54,6 +71,11 @@ public class login extends javax.swing.JFrame {
         getContentPane().add(FieldUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 350, 200, 30));
 
         Password.setBorder(null);
+        Password.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                PasswordMouseClicked(evt);
+            }
+        });
         Password.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 PasswordActionPerformed(evt);
@@ -96,6 +118,24 @@ public class login extends javax.swing.JFrame {
         // TODO add your handling code here:
         loginValidation();
     }//GEN-LAST:event_PasswordActionPerformed
+
+    private void show_paswordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_show_paswordMouseClicked
+         show_pasword.setVisible(false);  // Sembunyikan tombol show
+    hide_pasword1.setVisible(true);  // Tampilkan tombol hide
+    Password.setEchoChar((char) 0);
+    
+    show_pasword.getParent().revalidate();
+    show_pasword.getParent().repaint();
+    }//GEN-LAST:event_show_paswordMouseClicked
+
+    private void PasswordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PasswordMouseClicked
+        show_pasword.setVisible(true);   // Tampilkan tombol show
+    hide_pasword1.setVisible(false); 
+        Password.setEchoChar('*');
+        
+        hide_pasword1.getParent().revalidate();
+    hide_pasword1.getParent().repaint();
+    }//GEN-LAST:event_PasswordMouseClicked
         private void loginValidation() {
     char[] passChars = Password.getPassword(); 
     String password = new String(passChars); 
@@ -152,7 +192,9 @@ public class login extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField FieldUsername;
     private javax.swing.JPasswordField Password;
+    private javax.swing.JLabel hide_pasword1;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel show_pasword;
     // End of variables declaration//GEN-END:variables
 }
