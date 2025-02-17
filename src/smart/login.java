@@ -39,7 +39,7 @@ public class login extends javax.swing.JFrame {
         FieldUsername = new javax.swing.JTextField();
         Password = new javax.swing.JPasswordField();
         jButton1 = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1366, 768));
@@ -51,7 +51,7 @@ public class login extends javax.swing.JFrame {
                 FieldUsernameActionPerformed(evt);
             }
         });
-        getContentPane().add(FieldUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 350, 200, 30));
+        getContentPane().add(FieldUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 350, 200, 30));
 
         Password.setBorder(null);
         Password.addActionListener(new java.awt.event.ActionListener() {
@@ -59,9 +59,8 @@ public class login extends javax.swing.JFrame {
                 PasswordActionPerformed(evt);
             }
         });
-        getContentPane().add(Password, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 430, 200, 30));
+        getContentPane().add(Password, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 440, 200, 30));
 
-        jButton1.setBackground(new java.awt.Color(255, 255, 255));
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Group 47.png"))); // NOI18N
         jButton1.setAutoscrolls(true);
         jButton1.setBorder(null);
@@ -74,10 +73,10 @@ public class login extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 540, 320, 50));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 520, 310, 40));
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Group 52.png"))); // NOI18N
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -50, 1714, 869));
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/login (1).png"))); // NOI18N
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -70, 1370, 870));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -154,6 +153,6 @@ public class login extends javax.swing.JFrame {
     private javax.swing.JTextField FieldUsername;
     private javax.swing.JPasswordField Password;
     private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }
