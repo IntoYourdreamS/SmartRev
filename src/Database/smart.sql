@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 17, 2025 at 08:05 AM
+-- Generation Time: Feb 17, 2025 at 03:59 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.4.24
 
@@ -28,13 +28,21 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `karyawan` (
-  `No` int(11) NOT NULL,
+  `id_karyawan` varchar(8) NOT NULL,
   `Nama_Karyawan` varchar(100) NOT NULL,
   `Alamat` text NOT NULL,
   `No_Hp` varchar(15) NOT NULL,
   `Posisi` varchar(50) NOT NULL,
-  `Password` varchar(255) NOT NULL
+  `Password` varchar(255) NOT NULL,
+  `RFID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `karyawan`
+--
+
+INSERT INTO `karyawan` (`id_karyawan`, `Nama_Karyawan`, `Alamat`, `No_Hp`, `Posisi`, `Password`, `RFID`) VALUES
+('KR001', 'Putra', 'Jember', '124215125', 'Karyawan', '123', 1424124125);
 
 -- --------------------------------------------------------
 
@@ -86,7 +94,7 @@ CREATE TABLE `tb_transaksi` (
 -- Indexes for table `karyawan`
 --
 ALTER TABLE `karyawan`
-  ADD PRIMARY KEY (`No`);
+  ADD PRIMARY KEY (`id_karyawan`);
 
 --
 -- Indexes for table `laporan`
@@ -109,12 +117,6 @@ ALTER TABLE `tb_transaksi`
 --
 -- AUTO_INCREMENT for dumped tables
 --
-
---
--- AUTO_INCREMENT for table `karyawan`
---
-ALTER TABLE `karyawan`
-  MODIFY `No` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `laporan`
