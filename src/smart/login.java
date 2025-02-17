@@ -27,6 +27,12 @@ public class login extends javax.swing.JFrame {
         FieldUsername.setBackground(new Color(0, 0, 0, 0));
         
         hide_pasword1.setVisible(false);
+        hide_pasword1.addMouseListener(new java.awt.event.MouseAdapter() {
+    public void mouseClicked(java.awt.event.MouseEvent evt) {
+        
+    }
+});
+
     }
 
     /**
@@ -60,6 +66,11 @@ public class login extends javax.swing.JFrame {
 
         hide_pasword1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         hide_pasword1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/hidden-12115 4.png"))); // NOI18N
+        hide_pasword1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                hide_pasword1MouseClicked(evt);
+            }
+        });
         getContentPane().add(hide_pasword1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1140, 430, 50, 50));
 
         FieldUsername.setBorder(null);
@@ -127,7 +138,7 @@ public class login extends javax.swing.JFrame {
     show_pasword.getParent().revalidate();
     show_pasword.getParent().repaint();
     }//GEN-LAST:event_show_paswordMouseClicked
-
+    
     private void PasswordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PasswordMouseClicked
         show_pasword.setVisible(true);   // Tampilkan tombol show
     hide_pasword1.setVisible(false); 
@@ -135,7 +146,18 @@ public class login extends javax.swing.JFrame {
         
         hide_pasword1.getParent().revalidate();
     hide_pasword1.getParent().repaint();
+    
     }//GEN-LAST:event_PasswordMouseClicked
+
+    private void hide_pasword1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_hide_pasword1MouseClicked
+   show_pasword.setVisible(true);  // Tampilkan tombol show
+    hide_pasword1.setVisible(false); // Sembunyikan tombol hide
+    Password.setEchoChar('*'); // Kembalikan karakter password ke bentuk tersembunyi (bintang)
+    
+    hide_pasword1.getParent().revalidate();
+    hide_pasword1.getParent().repaint();
+
+    }//GEN-LAST:event_hide_pasword1MouseClicked
         private void loginValidation() {
     char[] passChars = Password.getPassword(); 
     String password = new String(passChars); 
