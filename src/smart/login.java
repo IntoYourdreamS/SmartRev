@@ -52,8 +52,8 @@ public class login extends javax.swing.JFrame {
         hide_pasword1 = new javax.swing.JLabel();
         FieldUsername = new javax.swing.JTextField();
         Password = new javax.swing.JPasswordField();
-        Login = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        Login = new javax.swing.JButton();
         RFIDInput = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -104,6 +104,9 @@ public class login extends javax.swing.JFrame {
         });
         getContentPane().add(Password, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 440, 200, 30));
 
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Log In (1).png"))); // NOI18N
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -70, 1370, 870));
+
         Login.setForeground(new java.awt.Color(255, 255, 255));
         Login.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Group 63 (1).png"))); // NOI18N
         Login.setAutoscrolls(true);
@@ -118,9 +121,6 @@ public class login extends javax.swing.JFrame {
             }
         });
         getContentPane().add(Login, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 520, 310, 40));
-
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Log In (1).png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -70, 1370, 870));
 
         RFIDInput.setUI(null);
         getContentPane().add(RFIDInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 260, -1, -1));
