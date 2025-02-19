@@ -18,6 +18,16 @@ public class dashboard extends javax.swing.JFrame {
         jButton1.setOpaque(false); 
         jButton1.setContentAreaFilled(false); 
         jButton1.setBorderPainted(false);
+        bttnlaporan.setOpaque(false); 
+        bttnlaporan.setContentAreaFilled(false); 
+        bttnlaporan.setBorderPainted(false);
+        bttntransaksi.setOpaque(false); 
+        bttntransaksi.setContentAreaFilled(false); 
+        bttntransaksi.setBorderPainted(false);
+        bttnkaryawan.setOpaque(false); 
+        bttnkaryawan.setContentAreaFilled(false); 
+        bttnkaryawan.setBorderPainted(false);
+        
     }
 
     /**
@@ -30,6 +40,9 @@ public class dashboard extends javax.swing.JFrame {
     private void initComponents() {
 
         jButton1 = new javax.swing.JButton();
+        bttnkaryawan = new javax.swing.JButton();
+        bttntransaksi = new javax.swing.JButton();
+        bttnlaporan = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -44,6 +57,27 @@ public class dashboard extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, 150, 40));
+
+        bttnkaryawan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bttnkaryawanActionPerformed(evt);
+            }
+        });
+        getContentPane().add(bttnkaryawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 470, 150, 40));
+
+        bttntransaksi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bttntransaksiActionPerformed(evt);
+            }
+        });
+        getContentPane().add(bttntransaksi, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 240, 160, 40));
+
+        bttnlaporan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bttnlaporanActionPerformed(evt);
+            }
+        });
+        getContentPane().add(bttnlaporan, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 400, 150, 40));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Dashboard kasir (1).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -20, 1372, 768));
@@ -85,6 +119,33 @@ restockMenu.setVisible(true);
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void bttnlaporanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttnlaporanActionPerformed
+        // TODO add your handling code here:
+        this.dispose(); 
+
+// Membuka frame baru
+laporan restockMenu = new laporan(); 
+restockMenu.setVisible(true);
+    }//GEN-LAST:event_bttnlaporanActionPerformed
+
+    private void bttntransaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttntransaksiActionPerformed
+        // TODO add your handling code here:
+        this.dispose(); 
+
+// Membuka frame baru
+transaksi restockMenu = new transaksi(); 
+restockMenu.setVisible(true);
+    }//GEN-LAST:event_bttntransaksiActionPerformed
+
+    private void bttnkaryawanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttnkaryawanActionPerformed
+        // TODO add your handling code here:
+        this.dispose(); 
+
+// Membuka frame baru
+karyawan restockMenu = new karyawan(); 
+restockMenu.setVisible(true);
+    }//GEN-LAST:event_bttnkaryawanActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -124,6 +185,9 @@ restockMenu.setVisible(true);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bttnkaryawan;
+    private javax.swing.JButton bttnlaporan;
+    private javax.swing.JButton bttntransaksi;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
