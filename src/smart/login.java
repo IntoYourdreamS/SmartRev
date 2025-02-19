@@ -104,6 +104,7 @@ public class login extends javax.swing.JFrame {
         });
         getContentPane().add(Password, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 440, 200, 30));
 
+        Login.setForeground(new java.awt.Color(255, 255, 255));
         Login.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Group 47.png"))); // NOI18N
         Login.setAutoscrolls(true);
         Login.setBorder(null);
@@ -118,7 +119,7 @@ public class login extends javax.swing.JFrame {
         });
         getContentPane().add(Login, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 520, 310, 40));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/login (2).png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Log In (1).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -70, 1370, 870));
 
         RFIDInput.setUI(null);
