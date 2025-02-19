@@ -92,7 +92,7 @@ public class transaksi extends javax.swing.JFrame {
         getContentPane().add(Nama_barang, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 300, 140, 30));
         getContentPane().add(jDateChooser1, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 190, 280, 30));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Group 90 (1).png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Transaksi (2).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
