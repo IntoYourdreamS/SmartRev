@@ -61,7 +61,7 @@ public class login extends javax.swing.JFrame {
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         show_pasword.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        show_pasword.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/show.png"))); // NOI18N
+        show_pasword.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-eye-48 (1).png"))); // NOI18N
         show_pasword.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 show_paswordMouseClicked(evt);
@@ -70,7 +70,7 @@ public class login extends javax.swing.JFrame {
         getContentPane().add(show_pasword, new org.netbeans.lib.awtextra.AbsoluteConstraints(1140, 430, 50, 50));
 
         hide_pasword1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        hide_pasword1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/hidden-12115 4.png"))); // NOI18N
+        hide_pasword1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-eye-48 (2).png"))); // NOI18N
         hide_pasword1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 hide_pasword1MouseClicked(evt);
