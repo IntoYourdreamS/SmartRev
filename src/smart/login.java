@@ -78,6 +78,7 @@ public class login extends javax.swing.JFrame {
         });
         getContentPane().add(hide_pasword1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1140, 430, 50, 50));
 
+        FieldUsername.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         FieldUsername.setBorder(null);
         FieldUsername.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -89,8 +90,9 @@ public class login extends javax.swing.JFrame {
                 FieldUsernameKeyTyped(evt);
             }
         });
-        getContentPane().add(FieldUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 350, 200, 30));
+        getContentPane().add(FieldUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 350, 290, 30));
 
+        Password.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         Password.setBorder(null);
         Password.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -102,7 +104,7 @@ public class login extends javax.swing.JFrame {
                 PasswordActionPerformed(evt);
             }
         });
-        getContentPane().add(Password, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 440, 200, 30));
+        getContentPane().add(Password, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 430, 290, 40));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Log In (1).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -70, 1370, 870));
@@ -187,11 +189,6 @@ public class login extends javax.swing.JFrame {
         loginValidation();
     }//GEN-LAST:event_FieldUsernameActionPerformed
 
-    private void PasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordActionPerformed
-        // TODO add your handling code here:
-        loginValidation();
-    }//GEN-LAST:event_PasswordActionPerformed
-
     private void show_paswordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_show_paswordMouseClicked
         show_pasword.setVisible(false);  // Sembunyikan tombol show
         hide_pasword1.setVisible(true);  // Tampilkan tombol hide
@@ -200,16 +197,6 @@ public class login extends javax.swing.JFrame {
         show_pasword.getParent().revalidate();
         show_pasword.getParent().repaint();
     }//GEN-LAST:event_show_paswordMouseClicked
-
-    private void PasswordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PasswordMouseClicked
-        show_pasword.setVisible(true);   // Tampilkan tombol show
-        hide_pasword1.setVisible(false);
-        Password.setEchoChar('*');
-
-        hide_pasword1.getParent().revalidate();
-        hide_pasword1.getParent().repaint();
-
-    }//GEN-LAST:event_PasswordMouseClicked
 
     private void hide_pasword1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_hide_pasword1MouseClicked
         show_pasword.setVisible(true);  // Tampilkan tombol show
@@ -252,6 +239,20 @@ public class login extends javax.swing.JFrame {
             buffer = ""; // Reset buffer setelah Enter ditekan
         }
     }//GEN-LAST:event_FieldUsernameKeyTyped
+
+    private void PasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordActionPerformed
+        // TODO add your handling code here:
+        loginValidation();
+    }//GEN-LAST:event_PasswordActionPerformed
+
+    private void PasswordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PasswordMouseClicked
+        show_pasword.setVisible(true);   // Tampilkan tombol show
+        hide_pasword1.setVisible(false);
+        Password.setEchoChar('*');
+
+        hide_pasword1.getParent().revalidate();
+        hide_pasword1.getParent().repaint();
+    }//GEN-LAST:event_PasswordMouseClicked
     private void loginValidation() {
         char[] passChars = Password.getPassword();
         String password = new String(passChars);
