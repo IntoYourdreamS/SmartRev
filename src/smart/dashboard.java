@@ -3,6 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package smart;
+
+import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Component;
@@ -10,10 +12,12 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JTable;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
+
 /**
- * 
+ *
  *
  * @author acer
  */
@@ -24,93 +28,94 @@ public class dashboard extends javax.swing.JFrame {
      */
     public dashboard() {
         initComponents();
-        
+
+
+        customizeTable();
         makeButtonTransparent(jButton1);
         makeButtonTransparent(bttnlaporan);
         makeButtonTransparent(bttntransaksi);
         makeButtonTransparent(bttnkaryawan);
-        customizeTable();
-        // Set model tabel dengan data awal
-        setTableData();
-
-        // Tambahkan renderer ke tabel
-        jTable1.getColumnModel().getColumn(2).setCellRenderer(new CustomCellRenderer());
-
         
+        setTableData();
+     
+      
+
     }
-    
+
     private void makeButtonTransparent(JButton button) {
         button.setOpaque(false);
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
     }
-        
+
     private void setTableData() {
         DefaultTableModel model = new DefaultTableModel(
-            new Object[][] {
-                {"BRG001", "Teh Hijau", 10},
-                {"BRG002", "Teh Hitam", 5},
-                {"BRG003", "Teh Oolong", 2},  // Stok rendah (akan diberi warna merah)
-                {"BRG004", "Teh Herbal", 12}
-            },
-            new String[] {"Kode Barang", "Nama Barang", "Stok"}
+                new Object[][]{
+                    {"BRG001", "Teh Hijau", 10},
+                    {"BRG002", "Teh Hitam", 5},
+                    {"BRG003", "Teh Oolong", 2},
+                    {"BRG004", "Teh Herbal", 12}
+                     
+                },
+                new String[]{"Kode Barang", "Nama Barang", "Stok"}
         );
 
         jTable1.setModel(model);
     }
-    
+
     private void customizeTable() {
         // Mengubah warna header tabel
-          JTableHeader header = jTable1.getTableHeader();
-        header.setFont(new Font("Inter", Font.BOLD, 14));
-        header.setBackground(Color.BLACK); // Warna hitam modern
-        header.setForeground(Color.WHITE); // Teks putih
-        header.setOpaque(false); // Membuat tampilan lebih clean
+        JTableHeader header = jTable1.getTableHeader();
+        JTableHeader header2 = tbpenjualanterlaris.getTableHeader();
+        JTableHeader header3 = tbexpired.getTableHeader();
         
-        // **Mengubah tampilan isi tabel**
-        jTable1.setFont(new Font("Arial", Font.PLAIN, 13));
-        jTable1.setRowHeight(30); // Mengatur tinggi baris agar lebih lega
-        jTable1.setShowGrid(false); // Menghilangkan grid tabel untuk tampilan lebih clean
-        jTable1.setIntercellSpacing(new java.awt.Dimension(0, 0)); // Menghilangkan jarak antar sel
+        header.setFont(new Font("Inter", Font.BOLD, 11));
+        header2.setFont(new Font("Inter", Font.BOLD, 11));
+        header3.setFont(new Font("Inter", Font.BOLD, 11));
+
+        header.setForeground(Color.WHITE); 
+        header2.setForeground(Color.WHITE);
+        header3.setForeground(Color.WHITE);
+
+        header.setOpaque(false);
+        header2.setOpaque(false);
+        header3.setOpaque(false);
+
+        jTable1.setFont(new Font("Arial", Font.PLAIN, 10));
+        tbpenjualanterlaris.setFont(new Font("Arial", Font.PLAIN, 10));
+        tbexpired.setFont(new Font("Arial", Font.PLAIN, 10));
         
-        // **Mengatur border tabel agar tidak terlihat kasar**
+        jTable1.setRowHeight(30); 
+        tbpenjualanterlaris.setRowHeight(30);
+        tbexpired.setRowHeight(30);
+        
+        jTable1.setShowGrid(true); 
+        tbpenjualanterlaris.setShowGrid(true); 
+        tbexpired.setShowGrid(true); 
+        
+        jTable1.setIntercellSpacing(new java.awt.Dimension(0, 0));
+        tbpenjualanterlaris.setIntercellSpacing(new java.awt.Dimension(0, 0));
+        tbexpired.setIntercellSpacing(new java.awt.Dimension(0, 0));
+        
         jTable1.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        tbpenjualanterlaris.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        tbexpired.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        
+        tbpenjualanterlaris.setSelectionBackground(new Color(25, 25, 25)); 
+        tbpenjualanterlaris.setSelectionForeground(Color.WHITE); 
 
-        // **Mengubah warna baris selang-seling untuk efek zebra**
-        jTable1.setDefaultRenderer(Object.class, new CustomCellRenderer());
+      
     }
-
-    // Custom Renderer untuk memberi warna pada stok rendah
-    public class CustomCellRenderer extends DefaultTableCellRenderer {
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-            if (column == 2) { // Kolom stok
-                int stok = (int) value;
-                if (stok <= 3) { // Jika stok rendah, beri warna merah
-                    cell.setBackground(Color.RED);
-                    cell.setForeground(Color.WHITE);
-                } else {
-                    cell.setBackground(Color.WHITE);
-                    cell.setForeground(Color.BLACK);
-                }
-            }
-
-            return cell;
-        }
-   
-}
-
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
+    
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tbexpired = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tbpenjualanterlaris = new javax.swing.JTable();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
@@ -124,9 +129,15 @@ public class dashboard extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jTable1.setForeground(new java.awt.Color(0, 0, 0));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tbexpired.setForeground(new java.awt.Color(0, 0, 0));
+        tbexpired.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
                 {null, null, null},
                 {null, null, null},
                 {null, null, null},
@@ -136,9 +147,54 @@ public class dashboard extends javax.swing.JFrame {
                 "Kode barang", "Nama barang", "Stok"
             }
         ));
+        tbexpired.setSelectionBackground(new java.awt.Color(25, 25, 25));
+        jScrollPane3.setViewportView(tbexpired);
+
+        getContentPane().add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 490, 340, 170));
+
+        tbpenjualanterlaris.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Kode produk", "Nama produk", "No penjualan", "Kategori"
+            }
+        ));
+        jScrollPane2.setViewportView(tbpenjualanterlaris);
+
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 490, 330, 170));
+
+        jTable1.setForeground(new java.awt.Color(0, 0, 0));
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Kode barang", "Nama barang", "Stok"
+            }
+        ));
+        jTable1.setSelectionBackground(new java.awt.Color(25, 25, 25));
         jScrollPane1.setViewportView(jTable1);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 490, 340, 170));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 150, 340, 270));
 
         jButton1.setBackground(new java.awt.Color(85, 85, 85));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -192,12 +248,12 @@ public class dashboard extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    // Menutup frame lama sebelum membuka frame baru
-this.dispose(); 
+        // Menutup frame lama sebelum membuka frame baru
+        this.dispose();
 
 // Membuka frame baru
-restok restockMenu = new restok(); 
-restockMenu.setVisible(true);
+        restok restockMenu = new restok();
+        restockMenu.setVisible(true);
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -211,29 +267,29 @@ restockMenu.setVisible(true);
 
     private void bttnlaporanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttnlaporanActionPerformed
         // TODO add your handling code here:
-        this.dispose(); 
+        this.dispose();
 
 // Membuka frame baru
-laporan restockMenu = new laporan(); 
-restockMenu.setVisible(true);
+        laporan restockMenu = new laporan();
+        restockMenu.setVisible(true);
     }//GEN-LAST:event_bttnlaporanActionPerformed
 
     private void bttntransaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttntransaksiActionPerformed
         // TODO add your handling code here:
-        this.dispose(); 
+        this.dispose();
 
 // Membuka frame baru
-transaksi restockMenu = new transaksi(); 
-restockMenu.setVisible(true);
+        transaksi restockMenu = new transaksi();
+        restockMenu.setVisible(true);
     }//GEN-LAST:event_bttntransaksiActionPerformed
 
     private void bttnkaryawanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttnkaryawanActionPerformed
         // TODO add your handling code here:
-        this.dispose(); 
+        this.dispose();
 
 // Membuka frame baru
-karyawan restockMenu = new karyawan(); 
-restockMenu.setVisible(true);
+        karyawan restockMenu = new karyawan();
+        restockMenu.setVisible(true);
     }//GEN-LAST:event_bttnkaryawanActionPerformed
 
     /**
@@ -265,7 +321,8 @@ restockMenu.setVisible(true);
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
-
+        FlatLightLaf.setup();
+        UIManager.put("TableHeader.background", Color.BLACK);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -283,6 +340,10 @@ restockMenu.setVisible(true);
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable tbexpired;
+    private javax.swing.JTable tbpenjualanterlaris;
     // End of variables declaration//GEN-END:variables
 }

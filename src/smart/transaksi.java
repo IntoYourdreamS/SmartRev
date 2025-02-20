@@ -4,7 +4,12 @@
  */
 package smart;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
+import javax.swing.*;
+import javax.swing.table.*;
+import java.awt.*;
+
 
 /**
  *
@@ -18,19 +23,60 @@ public class transaksi extends javax.swing.JFrame {
     private static int counter = 1;
     public transaksi() {
         initComponents();
-        Nama_barang.setOpaque(false);
-        Nama_barang.setBackground(new Color(0, 0, 0, 0));
+        makeButtonTransparent(bttndashboard);
+         customizeTable();
+        qty.setOpaque(false);
+        qty.setBackground(new Color(0, 0, 0, 0));
         No_nota.setOpaque(false);
         No_nota.setBackground(new Color(0, 0, 0, 0));
+        stokbrg.setOpaque(false);
+        stokbrg.setBackground(new Color(0, 0, 0, 0));
+        namabrg.setOpaque(false);
+        namabrg.setBackground(new Color(0, 0, 0, 0));
+        NoBarang.setOpaque(false);
+        NoBarang.setBackground(new Color(0, 0, 0, 0));
+        hargastuan.setOpaque(false);
+        hargastuan.setBackground(new Color(0, 0, 0, 0));
+        totalharga.setOpaque(false);
+        totalharga.setBackground(new Color(0, 0, 0, 0));
         
         jDateChooser1.setDate(new java.util.Date());
         
         No_nota.setText(generateNota());
     }
     
+    private void makeButtonTransparent(JButton button) {
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+    }
+    
     private String generateNota() {
     return "Nota-" + String.format("%04d", counter++);
 }
+    
+     private void customizeTable() {
+         JTableHeader header = jTable1.getTableHeader();
+         
+         header.setFont(new Font("Inter", Font.BOLD, 11));
+         
+         header.setForeground(Color.WHITE); 
+         
+         header.setOpaque(false);
+         
+         jTable1.setFont(new Font("Arial", Font.PLAIN, 10));
+         
+         jTable1.setRowHeight(30); 
+         
+         jTable1.setShowGrid(true); 
+         
+         jTable1.setIntercellSpacing(new java.awt.Dimension(0, 0));
+         
+         jTable1.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+         
+         jTable1.setSelectionBackground(new Color(25, 25, 25)); 
+         jTable1.setSelectionForeground(Color.WHITE); 
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -41,18 +87,78 @@ public class transaksi extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bttndashboard = new javax.swing.JButton();
+        stokbrg = new javax.swing.JTextField();
+        namabrg = new javax.swing.JTextField();
+        NoBarang = new javax.swing.JTextField();
         No_nota = new javax.swing.JTextField();
+        hargastuan = new javax.swing.JTextField();
+        totalharga = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        Nama_barang = new javax.swing.JTextField();
+        qty = new javax.swing.JTextField();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        bttndashboard.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bttndashboardActionPerformed(evt);
+            }
+        });
+        getContentPane().add(bttndashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 160, 30));
+
+        stokbrg.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        stokbrg.setBorder(null);
+        stokbrg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stokbrgActionPerformed(evt);
+            }
+        });
+        getContentPane().add(stokbrg, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 236, 190, 30));
+
+        namabrg.setBorder(null);
+        namabrg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                namabrgActionPerformed(evt);
+            }
+        });
+        getContentPane().add(namabrg, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 180, 200, 30));
+
+        NoBarang.setBorder(null);
+        NoBarang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NoBarangActionPerformed(evt);
+            }
+        });
+        getContentPane().add(NoBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 126, 200, 30));
+
         No_nota.setBorder(null);
-        getContentPane().add(No_nota, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 160, 270, 30));
+        No_nota.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                No_notaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(No_nota, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 130, 190, 30));
+
+        hargastuan.setBorder(null);
+        hargastuan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hargastuanActionPerformed(evt);
+            }
+        });
+        getContentPane().add(hargastuan, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 226, 200, 30));
+
+        totalharga.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        totalharga.setBorder(null);
+        totalharga.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                totalhargaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(totalharga, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 280, 200, 50));
 
         jTable1.setForeground(new java.awt.Color(51, 51, 51));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -81,26 +187,55 @@ public class transaksi extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 340, 930, 270));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 390, 770, 210));
 
-        Nama_barang.setBorder(null);
-        Nama_barang.addActionListener(new java.awt.event.ActionListener() {
+        qty.setBorder(null);
+        qty.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Nama_barangActionPerformed(evt);
+                qtyActionPerformed(evt);
             }
         });
-        getContentPane().add(Nama_barang, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 300, 140, 30));
-        getContentPane().add(jDateChooser1, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 190, 280, 30));
+        getContentPane().add(qty, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 300, 190, 30));
+        getContentPane().add(jDateChooser1, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 180, 190, 30));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Transaksi (2).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void Nama_barangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Nama_barangActionPerformed
+    private void qtyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_qtyActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_Nama_barangActionPerformed
+    }//GEN-LAST:event_qtyActionPerformed
+
+    private void No_notaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_No_notaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_No_notaActionPerformed
+
+    private void NoBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NoBarangActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_NoBarangActionPerformed
+
+    private void namabrgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_namabrgActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_namabrgActionPerformed
+
+    private void stokbrgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stokbrgActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_stokbrgActionPerformed
+
+    private void hargastuanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hargastuanActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_hargastuanActionPerformed
+
+    private void totalhargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_totalhargaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_totalhargaActionPerformed
+
+    private void bttndashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttndashboardActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_bttndashboardActionPerformed
 
     /**
      * @param args the command line arguments
@@ -129,6 +264,8 @@ public class transaksi extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
+                FlatLightLaf.setup();
+        UIManager.put("TableHeader.background", Color.BLACK);
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -139,11 +276,17 @@ public class transaksi extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField Nama_barang;
+    private javax.swing.JTextField NoBarang;
     private javax.swing.JTextField No_nota;
+    private javax.swing.JButton bttndashboard;
+    private javax.swing.JTextField hargastuan;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextField namabrg;
+    private javax.swing.JTextField qty;
+    private javax.swing.JTextField stokbrg;
+    private javax.swing.JTextField totalharga;
     // End of variables declaration//GEN-END:variables
 }
