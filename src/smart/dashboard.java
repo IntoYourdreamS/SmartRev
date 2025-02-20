@@ -3,8 +3,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package smart;
-
+import java.awt.Color;
+import javax.swing.table.DefaultTableModel;
+import java.awt.Component;
+import java.awt.Font;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
 /**
+ * 
  *
  * @author acer
  */
@@ -15,20 +24,83 @@ public class dashboard extends javax.swing.JFrame {
      */
     public dashboard() {
         initComponents();
-        jButton1.setOpaque(false); 
-        jButton1.setContentAreaFilled(false); 
-        jButton1.setBorderPainted(false);
-        bttnlaporan.setOpaque(false); 
-        bttnlaporan.setContentAreaFilled(false); 
-        bttnlaporan.setBorderPainted(false);
-        bttntransaksi.setOpaque(false); 
-        bttntransaksi.setContentAreaFilled(false); 
-        bttntransaksi.setBorderPainted(false);
-        bttnkaryawan.setOpaque(false); 
-        bttnkaryawan.setContentAreaFilled(false); 
-        bttnkaryawan.setBorderPainted(false);
+        
+        makeButtonTransparent(jButton1);
+        makeButtonTransparent(bttnlaporan);
+        makeButtonTransparent(bttntransaksi);
+        makeButtonTransparent(bttnkaryawan);
+        customizeTable();
+        // Set model tabel dengan data awal
+        setTableData();
+
+        // Tambahkan renderer ke tabel
+        jTable1.getColumnModel().getColumn(2).setCellRenderer(new CustomCellRenderer());
+
         
     }
+    
+    private void makeButtonTransparent(JButton button) {
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+    }
+        
+    private void setTableData() {
+        DefaultTableModel model = new DefaultTableModel(
+            new Object[][] {
+                {"BRG001", "Teh Hijau", 10},
+                {"BRG002", "Teh Hitam", 5},
+                {"BRG003", "Teh Oolong", 2},  // Stok rendah (akan diberi warna merah)
+                {"BRG004", "Teh Herbal", 12}
+            },
+            new String[] {"Kode Barang", "Nama Barang", "Stok"}
+        );
+
+        jTable1.setModel(model);
+    }
+    
+    private void customizeTable() {
+        // Mengubah warna header tabel
+          JTableHeader header = jTable1.getTableHeader();
+        header.setFont(new Font("Inter", Font.BOLD, 14));
+        header.setBackground(Color.BLACK); // Warna hitam modern
+        header.setForeground(Color.WHITE); // Teks putih
+        header.setOpaque(false); // Membuat tampilan lebih clean
+        
+        // **Mengubah tampilan isi tabel**
+        jTable1.setFont(new Font("Arial", Font.PLAIN, 13));
+        jTable1.setRowHeight(30); // Mengatur tinggi baris agar lebih lega
+        jTable1.setShowGrid(false); // Menghilangkan grid tabel untuk tampilan lebih clean
+        jTable1.setIntercellSpacing(new java.awt.Dimension(0, 0)); // Menghilangkan jarak antar sel
+        
+        // **Mengatur border tabel agar tidak terlihat kasar**
+        jTable1.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        // **Mengubah warna baris selang-seling untuk efek zebra**
+        jTable1.setDefaultRenderer(Object.class, new CustomCellRenderer());
+    }
+
+    // Custom Renderer untuk memberi warna pada stok rendah
+    public class CustomCellRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+            if (column == 2) { // Kolom stok
+                int stok = (int) value;
+                if (stok <= 3) { // Jika stok rendah, beri warna merah
+                    cell.setBackground(Color.RED);
+                    cell.setForeground(Color.WHITE);
+                } else {
+                    cell.setBackground(Color.WHITE);
+                    cell.setForeground(Color.BLACK);
+                }
+            }
+
+            return cell;
+        }
+   
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -39,6 +111,8 @@ public class dashboard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         bttnkaryawan = new javax.swing.JButton();
         bttntransaksi = new javax.swing.JButton();
@@ -49,6 +123,22 @@ public class dashboard extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jTable1.setForeground(new java.awt.Color(0, 0, 0));
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Kode barang", "Nama barang", "Stok"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 490, 340, 170));
 
         jButton1.setBackground(new java.awt.Color(85, 85, 85));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -192,5 +282,7 @@ restockMenu.setVisible(true);
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }
