@@ -270,7 +270,7 @@ public class dashboard extends javax.swing.JFrame {
         this.dispose();
 
 // Membuka frame baru
-        laporan restockMenu = new laporan();
+        laporanpenjualan restockMenu = new laporanpenjualan();
         restockMenu.setVisible(true);
     }//GEN-LAST:event_bttnlaporanActionPerformed
 
