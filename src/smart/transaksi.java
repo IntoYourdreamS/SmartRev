@@ -133,7 +133,7 @@ public class transaksi extends javax.swing.JFrame {
                 NoBarangActionPerformed(evt);
             }
         });
-        getContentPane().add(NoBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 126, 200, 30));
+        getContentPane().add(NoBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 130, 200, 30));
 
         No_nota.setBorder(null);
         No_nota.addActionListener(new java.awt.event.ActionListener() {
