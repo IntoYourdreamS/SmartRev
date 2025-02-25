@@ -4,6 +4,9 @@
  */
 package popup;
 
+import java.awt.Color;
+import javax.swing.JButton;
+import javax.swing.border.EmptyBorder;
 import smart.*;
 
 /**
@@ -17,6 +20,18 @@ public class tambahkaryawan extends javax.swing.JFrame {
      */
     public tambahkaryawan() {
         initComponents();
+        makeButtonTransparent(kembali);
+       //  customizeTable();
+         nokaryawan.setOpaque(false);
+        nokaryawan.setBackground(new Color(0, 0, 0, 0));
+         nama.setOpaque(false);
+        nama.setBackground(new Color(0, 0, 0, 0));
+        nohp.setOpaque(false);
+        nohp.setBackground(new Color(0, 0, 0, 0));
+        password.setOpaque(false);
+        password.setBackground(new Color(0, 0, 0, 0));
+        
+        
     }
 
     /**
@@ -28,25 +43,64 @@ public class tambahkaryawan extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        nokaryawan = new javax.swing.JTextField();
+        nama = new javax.swing.JTextField();
+        password = new javax.swing.JTextField();
+        nohp = new javax.swing.JTextField();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        kembali = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        nokaryawan.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
+        nokaryawan.setBorder(null);
+        getContentPane().add(nokaryawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 160, 240, 40));
+
+        nama.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
+        nama.setBorder(null);
+        nama.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                namaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(nama, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 230, 230, 40));
+
+        password.setFont(new java.awt.Font("Segoe UI Semibold", 0, 18)); // NOI18N
+        password.setBorder(null);
+        getContentPane().add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 372, 240, 40));
+
+        nohp.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
+        nohp.setBorder(null);
+        getContentPane().add(nohp, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 300, 230, 40));
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "owner", "kasir" }));
+        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 440, 410, 40));
+
+        kembali.setBorder(null);
+        kembali.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                kembaliActionPerformed(evt);
+            }
+        });
+        getContentPane().add(kembali, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 510, 190, 40));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Tambah karyawan.png"))); // NOI18N
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void namaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_namaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_namaActionPerformed
+
+    private void kembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kembaliActionPerformed
+  // TODO add your handling code here:
+        new karyawan().setVisible(true);
+        this.setVisible(false);                                     
+    }//GEN-LAST:event_kembaliActionPerformed
 
     /**
      * @param args the command line arguments
@@ -87,6 +141,24 @@ public class tambahkaryawan extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton kembali;
+    private javax.swing.JTextField nama;
+    private javax.swing.JTextField nohp;
+    private javax.swing.JTextField nokaryawan;
+    private javax.swing.JTextField password;
     // End of variables declaration//GEN-END:variables
+
+    private void makeButtonTransparent(JButton kembali) {
+       kembali.setOpaque(false);
+        kembali.setContentAreaFilled(false);
+        kembali.setBorderPainted(false);
+        kembali.setBorder(new EmptyBorder(0, 0, 0, 0));
+    } // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    
+
+    private void customizeTable() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

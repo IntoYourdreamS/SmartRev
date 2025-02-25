@@ -91,7 +91,7 @@ public class login extends javax.swing.JFrame {
                 FieldUsernameKeyTyped(evt);
             }
         });
-        getContentPane().add(FieldUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 350, 290, 30));
+        getContentPane().add(FieldUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 350, 290, 40));
 
         Password.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         Password.setForeground(new java.awt.Color(255, 255, 255));
