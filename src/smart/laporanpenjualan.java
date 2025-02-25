@@ -3,6 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package smart;
+import javax.swing.JButton;
+import javax.swing.border.EmptyBorder;
 
 /**
  *
@@ -15,6 +17,18 @@ public class laporanpenjualan extends javax.swing.JFrame {
      */
     public laporanpenjualan() {
         initComponents();
+         makeButtonTransparent(dashboard);
+           makeButtonTransparent(transaksi);
+            makeButtonTransparent(restok);
+             makeButtonTransparent(karyawan);
+             makeButtonTransparent(pembelian);
+             makeButtonTransparent(returnn);
+    }
+    
+    private void makeButtonTransparent(JButton button) {
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
     }
 
     /**
@@ -26,25 +40,106 @@ public class laporanpenjualan extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        dashboard = new javax.swing.JButton();
+        transaksi = new javax.swing.JButton();
+        restok = new javax.swing.JButton();
+        karyawan = new javax.swing.JButton();
+        pembelian = new javax.swing.JButton();
+        returnn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        dashboard.setBorder(null);
+        dashboard.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dashboardActionPerformed(evt);
+            }
+        });
+        getContentPane().add(dashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 150, 130, 50));
+
+        transaksi.setBorder(null);
+        transaksi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                transaksiActionPerformed(evt);
+            }
+        });
+        getContentPane().add(transaksi, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 230, 140, 50));
+
+        restok.setBorder(null);
+        restok.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                restokActionPerformed(evt);
+            }
+        });
+        getContentPane().add(restok, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 320, 140, 40));
+
+        karyawan.setBorder(null);
+        karyawan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                karyawanActionPerformed(evt);
+            }
+        });
+        getContentPane().add(karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 470, 140, 40));
+
+        pembelian.setBorder(null);
+        pembelian.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pembelianActionPerformed(evt);
+            }
+        });
+        getContentPane().add(pembelian, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 120, 90, 30));
+
+        returnn.setBorder(null);
+        returnn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                returnnActionPerformed(evt);
+            }
+        });
+        getContentPane().add(returnn, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 120, 80, 30));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/laporan penjualan.png"))); // NOI18N
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void transaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transaksiActionPerformed
+        // TODO add your handling code here:
+          new transaksi().setVisible(true);
+        this.setVisible(false);   
+    }//GEN-LAST:event_transaksiActionPerformed
+
+    private void dashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardActionPerformed
+        // TODO add your handling code here:
+          new dashboard().setVisible(true);
+        this.setVisible(false);   
+    }//GEN-LAST:event_dashboardActionPerformed
+
+    private void restokActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restokActionPerformed
+        // TODO add your handling code here:
+          new restok().setVisible(true);
+        this.setVisible(false);   
+    }//GEN-LAST:event_restokActionPerformed
+
+    private void karyawanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_karyawanActionPerformed
+        // TODO add your handling code here:
+          new karyawan().setVisible(true);
+        this.setVisible(false);   
+    }//GEN-LAST:event_karyawanActionPerformed
+
+    private void returnnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnnActionPerformed
+        // TODO add your handling code here:
+         new laporanreturn().setVisible(true);
+        this.setVisible(false); 
+    }//GEN-LAST:event_returnnActionPerformed
+
+    private void pembelianActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pembelianActionPerformed
+        // TODO add your handling code here:
+         new laporanpembelian().setVisible(true);
+        this.setVisible(false); 
+    }//GEN-LAST:event_pembelianActionPerformed
 
     /**
      * @param args the command line arguments
@@ -89,6 +184,16 @@ public class laporanpenjualan extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton dashboard;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton karyawan;
+    private javax.swing.JButton pembelian;
+    private javax.swing.JButton restok;
+    private javax.swing.JButton returnn;
+    private javax.swing.JButton transaksi;
     // End of variables declaration//GEN-END:variables
+
+    private void makeButtonTransparent() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

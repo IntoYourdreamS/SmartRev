@@ -4,6 +4,8 @@
  */
 package smart;
 
+import javax.swing.JButton;
+
 /**
  *
  * @author acer
@@ -15,6 +17,15 @@ public class laporanreturn extends javax.swing.JFrame {
      */
     public laporanreturn() {
         initComponents();
+         makeButtonTransparent(pembelian);
+             makeButtonTransparent(penjualan);
+    }
+    
+    private void makeButtonTransparent(JButton button) {
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+    
     }
 
     /**
@@ -26,25 +37,46 @@ public class laporanreturn extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        penjualan = new javax.swing.JButton();
+        pembelian = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/laporan penjualan.png"))); // NOI18N
+        penjualan.setBorder(null);
+        penjualan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                penjualanActionPerformed(evt);
+            }
+        });
+        getContentPane().add(penjualan, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 120, 90, 30));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        pembelian.setBorder(null);
+        pembelian.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pembelianActionPerformed(evt);
+            }
+        });
+        getContentPane().add(pembelian, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 120, 100, 30));
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/laporan return.png"))); // NOI18N
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void penjualanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_penjualanActionPerformed
+        // TODO add your handling code here:
+          new laporanpenjualan().setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_penjualanActionPerformed
+
+    private void pembelianActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pembelianActionPerformed
+        // TODO add your handling code here:
+          new laporanpembelian().setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_pembelianActionPerformed
 
     /**
      * @param args the command line arguments
@@ -98,5 +130,7 @@ public class laporanreturn extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton pembelian;
+    private javax.swing.JButton penjualan;
     // End of variables declaration//GEN-END:variables
 }

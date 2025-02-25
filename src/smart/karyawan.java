@@ -7,6 +7,7 @@ package smart;
 import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
 import popup.tambahkaryawan;
+import popup.ubahkaryawan;
 
 /**
  *
@@ -20,7 +21,14 @@ public class karyawan extends javax.swing.JFrame {
     public karyawan() {
         initComponents();
          makeButtonTransparent(tambah);
+          makeButtonTransparent(dashboard);
+           makeButtonTransparent(transaksi);
+            makeButtonTransparent(restock);
+             makeButtonTransparent(laporan);
+             makeButtonTransparent(ubah);
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -32,6 +40,11 @@ public class karyawan extends javax.swing.JFrame {
     private void initComponents() {
 
         tambah = new javax.swing.JButton();
+        laporan = new javax.swing.JButton();
+        restock = new javax.swing.JButton();
+        transaksi = new javax.swing.JButton();
+        dashboard = new javax.swing.JButton();
+        ubah = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -45,6 +58,46 @@ public class karyawan extends javax.swing.JFrame {
         });
         getContentPane().add(tambah, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 130, 110, 40));
 
+        laporan.setBorder(null);
+        laporan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                laporanActionPerformed(evt);
+            }
+        });
+        getContentPane().add(laporan, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 390, 140, 40));
+
+        restock.setBorder(null);
+        restock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                restockActionPerformed(evt);
+            }
+        });
+        getContentPane().add(restock, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, 150, 40));
+
+        transaksi.setBorder(null);
+        transaksi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                transaksiActionPerformed(evt);
+            }
+        });
+        getContentPane().add(transaksi, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 240, 160, 40));
+
+        dashboard.setBorder(null);
+        dashboard.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dashboardActionPerformed(evt);
+            }
+        });
+        getContentPane().add(dashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 160, 40));
+
+        ubah.setBorder(null);
+        ubah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ubahActionPerformed(evt);
+            }
+        });
+        getContentPane().add(ubah, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 130, 90, 40));
+
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Karyawan.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
@@ -56,6 +109,36 @@ public class karyawan extends javax.swing.JFrame {
            new tambahkaryawan().setVisible(true);
         this.setVisible(false);   
     }//GEN-LAST:event_tambahActionPerformed
+
+    private void dashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardActionPerformed
+        // TODO add your handling code here:
+          new dashboard().setVisible(true);
+        this.setVisible(false);   
+    }//GEN-LAST:event_dashboardActionPerformed
+
+    private void transaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transaksiActionPerformed
+        // TODO add your handling code here:
+          new transaksi().setVisible(true);
+        this.setVisible(false);   
+    }//GEN-LAST:event_transaksiActionPerformed
+
+    private void restockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restockActionPerformed
+        // TODO add your handling code here:
+          new restok().setVisible(true);
+        this.setVisible(false);   
+    }//GEN-LAST:event_restockActionPerformed
+
+    private void laporanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_laporanActionPerformed
+        // TODO add your handling code here:
+          new laporanpenjualan().setVisible(true);
+        this.setVisible(false);   
+    }//GEN-LAST:event_laporanActionPerformed
+
+    private void ubahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ubahActionPerformed
+        // TODO add your handling code here:
+        new ubahkaryawan().setVisible(true);
+        this.setVisible(false); 
+    }//GEN-LAST:event_ubahActionPerformed
 
     /**
      * @param args the command line arguments
@@ -94,8 +177,13 @@ public class karyawan extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton dashboard;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton laporan;
+    private javax.swing.JButton restock;
     private javax.swing.JButton tambah;
+    private javax.swing.JButton transaksi;
+    private javax.swing.JButton ubah;
     // End of variables declaration//GEN-END:variables
 
     private void makeButtonTransparent(JButton tambah) {

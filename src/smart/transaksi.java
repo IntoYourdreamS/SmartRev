@@ -24,6 +24,9 @@ public class transaksi extends javax.swing.JFrame {
     public transaksi() {
         initComponents();
         makeButtonTransparent(bttndashboard);
+         makeButtonTransparent(restok);
+           makeButtonTransparent(karyawan);
+            makeButtonTransparent(laporan);
          customizeTable();
         qty.setOpaque(false);
         qty.setBackground(new Color(0, 0, 0, 0));
@@ -98,11 +101,15 @@ public class transaksi extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         qty = new javax.swing.JTextField();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        laporan = new javax.swing.JButton();
+        restok = new javax.swing.JButton();
+        karyawan = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        bttndashboard.setBorder(null);
         bttndashboard.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bttndashboardActionPerformed(evt);
@@ -198,6 +205,29 @@ public class transaksi extends javax.swing.JFrame {
         getContentPane().add(qty, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 300, 190, 30));
         getContentPane().add(jDateChooser1, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 180, 190, 30));
 
+        laporan.setBorder(null);
+        laporan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                laporanActionPerformed(evt);
+            }
+        });
+        getContentPane().add(laporan, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 390, 150, 40));
+
+        restok.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                restokActionPerformed(evt);
+            }
+        });
+        getContentPane().add(restok, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, 150, 40));
+
+        karyawan.setBorder(null);
+        karyawan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                karyawanActionPerformed(evt);
+            }
+        });
+        getContentPane().add(karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 470, 170, 40));
+
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Transaksi (4).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
@@ -235,7 +265,27 @@ public class transaksi extends javax.swing.JFrame {
 
     private void bttndashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttndashboardActionPerformed
         // TODO add your handling code here:
+         new dashboard().setVisible(true);
+        this.setVisible(false);  
     }//GEN-LAST:event_bttndashboardActionPerformed
+
+    private void laporanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_laporanActionPerformed
+        // TODO add your handling code here:
+         new laporanpenjualan().setVisible(true);
+        this.setVisible(false);  
+    }//GEN-LAST:event_laporanActionPerformed
+
+    private void karyawanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_karyawanActionPerformed
+        // TODO add your handling code here:
+         new karyawan().setVisible(true);
+        this.setVisible(false);  
+    }//GEN-LAST:event_karyawanActionPerformed
+
+    private void restokActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restokActionPerformed
+        // TODO add your handling code here:
+         new restok().setVisible(true);
+        this.setVisible(false);  
+    }//GEN-LAST:event_restokActionPerformed
 
     /**
      * @param args the command line arguments
@@ -284,8 +334,11 @@ public class transaksi extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JButton karyawan;
+    private javax.swing.JButton laporan;
     private javax.swing.JTextField namabrg;
     private javax.swing.JTextField qty;
+    private javax.swing.JButton restok;
     private javax.swing.JTextField stokbrg;
     private javax.swing.JTextField totalharga;
     // End of variables declaration//GEN-END:variables
