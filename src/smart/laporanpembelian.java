@@ -62,7 +62,7 @@ public class laporanpembelian extends javax.swing.JFrame {
         getContentPane().add(penjualan, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 120, 90, 30));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/laporan pembelian.png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1380, 720));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

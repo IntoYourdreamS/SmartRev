@@ -99,7 +99,7 @@ public class karyawan extends javax.swing.JFrame {
         getContentPane().add(ubah, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 130, 90, 40));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Karyawan.png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 720));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

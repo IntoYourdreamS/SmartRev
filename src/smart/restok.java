@@ -133,6 +133,7 @@ public class restok extends javax.swing.JFrame {
         });
         getContentPane().add(dataexpired, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 460, 160, 30));
 
+        datareturn.setBorder(null);
         datareturn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 datareturnActionPerformed(evt);
@@ -141,7 +142,7 @@ public class restok extends javax.swing.JFrame {
         getContentPane().add(datareturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1130, 620, 130, 30));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Restock (1).png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1380, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

@@ -249,9 +249,7 @@ public class dashboard extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // Menutup frame lama sebelum membuka frame baru
-        this.dispose();
-
-// Membuka frame baru
+      
         restok restockMenu = new restok();
         restockMenu.setVisible(true);
 

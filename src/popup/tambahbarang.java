@@ -51,7 +51,7 @@ public class tambahbarang extends javax.swing.JFrame {
         getContentPane().add(kembali, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 580, 230, 40));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/tambah barang.png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1380, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
