@@ -248,11 +248,8 @@ public class dashboard extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // Menutup frame lama sebelum membuka frame baru
-      
-        restok restockMenu = new restok();
-        restockMenu.setVisible(true);
-
+       new restok().setVisible(true);
+        this.setVisible(false); 
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -264,30 +261,18 @@ public class dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void bttnlaporanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttnlaporanActionPerformed
-        // TODO add your handling code here:
-        this.dispose();
-
-// Membuka frame baru
-        laporanpenjualan restockMenu = new laporanpenjualan();
-        restockMenu.setVisible(true);
+      new laporanpenjualan().setVisible(true);
+        this.setVisible(false); 
     }//GEN-LAST:event_bttnlaporanActionPerformed
 
     private void bttntransaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttntransaksiActionPerformed
-        // TODO add your handling code here:
-        this.dispose();
-
-// Membuka frame baru
-        transaksi restockMenu = new transaksi();
-        restockMenu.setVisible(true);
+       new transaksi().setVisible(true);
+        this.setVisible(false); 
     }//GEN-LAST:event_bttntransaksiActionPerformed
 
     private void bttnkaryawanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttnkaryawanActionPerformed
-        // TODO add your handling code here:
-        this.dispose();
-
-// Membuka frame baru
-        karyawan restockMenu = new karyawan();
-        restockMenu.setVisible(true);
+        new karyawan().setVisible(true);
+        this.setVisible(false); 
     }//GEN-LAST:event_bttnkaryawanActionPerformed
 
     /**
