@@ -29,7 +29,7 @@ public class tambahkaryawan extends javax.swing.JFrame {
         initComponents();
         makeButtonTransparent(kembali);
         makeButtonTransparent(tambah);
-       //  customizeTable();
+       // customizeTable();
          nokaryawan.setOpaque(false);
         nokaryawan.setBackground(new Color(0, 0, 0, 0));
          nama.setOpaque(false);
@@ -43,6 +43,8 @@ public class tambahkaryawan extends javax.swing.JFrame {
         
         
     }
+    
+    
  
 
     /**
@@ -130,35 +132,29 @@ public class tambahkaryawan extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
  private String generateCode() {
-        String kodeMenu = "KR001";
-        try (Connection conn = koneksi.getConnection()) {
-            if (conn != null) {
-                try {
-//                Statement st = conn.createStatement();
-                    Statement statem = conn.createStatement();
-                    String query = "SELECT id_karyawan FROM karyawan ORDER BY id_karyawan DESC LIMIT 1";
-                    ResultSet resultSet = statem.executeQuery(query);
+    String kodeMenu = "KR001"; // Default kode pertama jika belum ada data
 
-                    if (resultSet.next()) {
-                        String lastKode = resultSet.getString("nokaryawan");
-                        int kodeNum = Integer.parseInt(lastKode.substring(2)) + 1;
-                        kodeMenu = String.format("KR%03d", kodeNum);
-                    }
+    try (Connection conn = koneksi.getConnection()) { // Pastikan Koneksi.getConnection() mengembalikan koneksi valid
+        if (conn != null) {
+            String query = "SELECT id_karyawan FROM karyawan ORDER BY id_karyawan DESC LIMIT 1";
 
-                    resultSet.close();
-                    statem.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
+            try (Statement statem = conn.createStatement();
+                 ResultSet resultSet = statem.executeQuery(query)) {
+
+                if (resultSet.next()) {
+                    String lastKode = resultSet.getString("id_karyawan"); // Ambil kode terakhir
+                    int kodeNum = Integer.parseInt(lastKode.substring(2)) + 1; // Ambil angka setelah "KR"
+                    kodeMenu = String.format("KR%03d", kodeNum); // Format KRxxx dengan leading zero
                 }
             }
-        }catch(SQLException e){
-            e.printStackTrace();
-        }catch(Exception e){
-            e.printStackTrace();
         }
-
-        return kodeMenu;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+
+    return kodeMenu;
+}
+
     private void namaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_namaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_namaActionPerformed
@@ -212,6 +208,8 @@ public class tambahkaryawan extends javax.swing.JFrame {
             // Periksa apakah data berhasil ditambahkan
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(this, "Data berhasil ditambahkan!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                  karyawan karyawan = new karyawan(); // Buat objek halaman karyawan
+            karyawan.setVisible(true); 
                 // Panggil loadTableData() untuk memperbarui tampilan tabel
                // loadTableData();
             } else {
