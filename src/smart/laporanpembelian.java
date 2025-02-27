@@ -4,7 +4,11 @@
  */
 package smart;
 
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.table.JTableHeader;
 
 /**
  *
@@ -17,7 +21,7 @@ public class laporanpembelian extends javax.swing.JFrame {
      */
     public laporanpembelian() {
         initComponents();
-          
+          customizeTable();
              makeButtonTransparent(penjualan);
              makeButtonTransparent(returnn);
     }
@@ -28,6 +32,19 @@ public class laporanpembelian extends javax.swing.JFrame {
         button.setBorderPainted(false);
     
     }
+    
+     private void customizeTable() {
+          JTableHeader header = tbpembelian.getTableHeader();
+           header.setFont(new Font("Inter", Font.BOLD, 11));
+           header.setForeground(Color.black);
+            header.setOpaque(false);
+            tbpembelian.setFont(new Font("Arial", Font.PLAIN, 10));
+            tbpembelian.setRowHeight(30); 
+            tbpembelian.setShowGrid(true); 
+            tbpembelian.setIntercellSpacing(new java.awt.Dimension(0, 0));
+            tbpembelian.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+     }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -40,6 +57,8 @@ public class laporanpembelian extends javax.swing.JFrame {
 
         returnn = new javax.swing.JButton();
         penjualan = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tbpembelian = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -60,6 +79,27 @@ public class laporanpembelian extends javax.swing.JFrame {
             }
         });
         getContentPane().add(penjualan, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 120, 90, 30));
+
+        tbpembelian.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "No nota", "Nama produk", "Jumlah", "Harga", "Total", "Kategori", "Nama karyawan", "Tanggal"
+            }
+        ));
+        jScrollPane2.setViewportView(tbpembelian);
+
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 190, 1050, 390));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/laporan pembelian.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1380, 720));
@@ -123,7 +163,9 @@ public class laporanpembelian extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton penjualan;
     private javax.swing.JButton returnn;
+    private javax.swing.JTable tbpembelian;
     // End of variables declaration//GEN-END:variables
 }

@@ -19,6 +19,7 @@ public class tambahsupplier extends javax.swing.JFrame {
     public tambahsupplier() {
         initComponents();
                 makeButtonTransparent(kembali);
+              
     }
     
     private void makeButtonTransparent(JButton button) {

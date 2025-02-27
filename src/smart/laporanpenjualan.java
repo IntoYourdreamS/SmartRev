@@ -3,8 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package smart;
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.JTableHeader;
 
 /**
  *
@@ -17,6 +21,7 @@ public class laporanpenjualan extends javax.swing.JFrame {
      */
     public laporanpenjualan() {
         initComponents();
+        customizeTable();
          makeButtonTransparent(dashboard);
            makeButtonTransparent(transaksi);
             makeButtonTransparent(restok);
@@ -30,6 +35,19 @@ public class laporanpenjualan extends javax.swing.JFrame {
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
     }
+    
+     private void customizeTable() {
+          JTableHeader header = tbpenjualan.getTableHeader();
+           header.setFont(new Font("Inter", Font.BOLD, 11));
+           header.setForeground(Color.black);
+            header.setOpaque(false);
+            tbpenjualan.setFont(new Font("Arial", Font.PLAIN, 10));
+            tbpenjualan.setRowHeight(30); 
+            tbpenjualan.setShowGrid(true); 
+            tbpenjualan.setIntercellSpacing(new java.awt.Dimension(0, 0));
+            tbpenjualan.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+     }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -46,6 +64,8 @@ public class laporanpenjualan extends javax.swing.JFrame {
         karyawan = new javax.swing.JButton();
         pembelian = new javax.swing.JButton();
         returnn = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tbpenjualan = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -98,6 +118,27 @@ public class laporanpenjualan extends javax.swing.JFrame {
             }
         });
         getContentPane().add(returnn, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 120, 80, 30));
+
+        tbpenjualan.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "No nota", "Nama produk", "Jumlah", "Harga", "Total", "Kategori", "Nama karyawan", "Tanggal"
+            }
+        ));
+        jScrollPane2.setViewportView(tbpenjualan);
+
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 190, 1050, 390));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/laporan penjualan.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
@@ -186,10 +227,12 @@ public class laporanpenjualan extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton dashboard;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton karyawan;
     private javax.swing.JButton pembelian;
     private javax.swing.JButton restok;
     private javax.swing.JButton returnn;
+    private javax.swing.JTable tbpenjualan;
     private javax.swing.JButton transaksi;
     // End of variables declaration//GEN-END:variables
 

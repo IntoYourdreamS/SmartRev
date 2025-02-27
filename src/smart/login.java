@@ -157,7 +157,7 @@ public class login extends javax.swing.JFrame {
             if (rs.next()) {
                 // Login berhasil
                 Session.setKode(rs.getString("id_karyawan"));
-                Session.setRole(rs.getString("posisi"));
+                Session.setRole(rs.getString("role"));
                 JOptionPane.showMessageDialog(this, "Login berhasil sebagai " + Session.getRole() + "!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                 new dashboard().setVisible(true);
                 this.setVisible(false);

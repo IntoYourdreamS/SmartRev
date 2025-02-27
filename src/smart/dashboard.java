@@ -35,6 +35,7 @@ public class dashboard extends javax.swing.JFrame {
         makeButtonTransparent(bttnlaporan);
         makeButtonTransparent(bttntransaksi);
         makeButtonTransparent(bttnkaryawan);
+        makeButtonTransparent(logout);
         
         setTableData();
      
@@ -122,6 +123,7 @@ public class dashboard extends javax.swing.JFrame {
         bttnkaryawan = new javax.swing.JButton();
         bttntransaksi = new javax.swing.JButton();
         bttnlaporan = new javax.swing.JButton();
+        logout = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -129,7 +131,6 @@ public class dashboard extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        tbexpired.setForeground(new java.awt.Color(0, 0, 0));
         tbexpired.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
@@ -173,7 +174,6 @@ public class dashboard extends javax.swing.JFrame {
 
         getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 490, 330, 170));
 
-        jTable1.setForeground(new java.awt.Color(0, 0, 0));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
@@ -225,6 +225,14 @@ public class dashboard extends javax.swing.JFrame {
         });
         getContentPane().add(bttnlaporan, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 400, 150, 40));
 
+        logout.setBorder(null);
+        logout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutActionPerformed(evt);
+            }
+        });
+        getContentPane().add(logout, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 610, 120, 50));
+
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Dashboard kasir (1).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -20, 1372, 768));
 
@@ -274,6 +282,12 @@ public class dashboard extends javax.swing.JFrame {
         new karyawan().setVisible(true);
         this.setVisible(false); 
     }//GEN-LAST:event_bttnkaryawanActionPerformed
+
+    private void logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutActionPerformed
+        // TODO add your handling code here:
+          new login().setVisible(true);
+        this.setVisible(false); 
+    }//GEN-LAST:event_logoutActionPerformed
 
     /**
      * @param args the command line arguments
@@ -326,6 +340,7 @@ public class dashboard extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
+    private javax.swing.JButton logout;
     private javax.swing.JTable tbexpired;
     private javax.swing.JTable tbpenjualanterlaris;
     // End of variables declaration//GEN-END:variables
