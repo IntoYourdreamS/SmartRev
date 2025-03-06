@@ -27,7 +27,7 @@ public class laporanpenjualan extends javax.swing.JFrame {
             makeButtonTransparent(restok);
              makeButtonTransparent(karyawan);
              makeButtonTransparent(pembelian);
-             makeButtonTransparent(returnn);
+             
     }
     
     private void makeButtonTransparent(JButton button) {
@@ -63,7 +63,6 @@ public class laporanpenjualan extends javax.swing.JFrame {
         restok = new javax.swing.JButton();
         karyawan = new javax.swing.JButton();
         pembelian = new javax.swing.JButton();
-        returnn = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tbpenjualan = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
@@ -109,15 +108,7 @@ public class laporanpenjualan extends javax.swing.JFrame {
                 pembelianActionPerformed(evt);
             }
         });
-        getContentPane().add(pembelian, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 120, 90, 30));
-
-        returnn.setBorder(null);
-        returnn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                returnnActionPerformed(evt);
-            }
-        });
-        getContentPane().add(returnn, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 120, 80, 30));
+        getContentPane().add(pembelian, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 120, 90, 30));
 
         tbpenjualan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -138,9 +129,9 @@ public class laporanpenjualan extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(tbpenjualan);
 
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 190, 1050, 390));
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 200, 1040, 460));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/laporan penjualan.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/laporan penjualan (3).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
@@ -169,12 +160,6 @@ public class laporanpenjualan extends javax.swing.JFrame {
           new karyawan().setVisible(true);
         this.setVisible(false);   
     }//GEN-LAST:event_karyawanActionPerformed
-
-    private void returnnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnnActionPerformed
-        // TODO add your handling code here:
-         new laporanreturn().setVisible(true);
-        this.setVisible(false); 
-    }//GEN-LAST:event_returnnActionPerformed
 
     private void pembelianActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pembelianActionPerformed
         // TODO add your handling code here:
@@ -231,7 +216,6 @@ public class laporanpenjualan extends javax.swing.JFrame {
     private javax.swing.JButton karyawan;
     private javax.swing.JButton pembelian;
     private javax.swing.JButton restok;
-    private javax.swing.JButton returnn;
     private javax.swing.JTable tbpenjualan;
     private javax.swing.JButton transaksi;
     // End of variables declaration//GEN-END:variables

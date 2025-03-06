@@ -23,7 +23,7 @@ public class laporanpembelian extends javax.swing.JFrame {
         initComponents();
           customizeTable();
              makeButtonTransparent(penjualan);
-             makeButtonTransparent(returnn);
+            
     }
     
     private void makeButtonTransparent(JButton button) {
@@ -55,7 +55,6 @@ public class laporanpembelian extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        returnn = new javax.swing.JButton();
         penjualan = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tbpembelian = new javax.swing.JTable();
@@ -64,21 +63,13 @@ public class laporanpembelian extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        returnn.setBorder(null);
-        returnn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                returnnActionPerformed(evt);
-            }
-        });
-        getContentPane().add(returnn, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 120, 100, 30));
-
         penjualan.setBorder(null);
         penjualan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 penjualanActionPerformed(evt);
             }
         });
-        getContentPane().add(penjualan, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 120, 90, 30));
+        getContentPane().add(penjualan, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 120, 90, 30));
 
         tbpembelian.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -99,9 +90,9 @@ public class laporanpembelian extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(tbpembelian);
 
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 190, 1050, 390));
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 190, 1050, 470));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/laporan pembelian.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/laporan pembelian (4).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1380, 720));
 
         pack();
@@ -112,12 +103,6 @@ public class laporanpembelian extends javax.swing.JFrame {
          new laporanpenjualan().setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_penjualanActionPerformed
-
-    private void returnnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnnActionPerformed
-        // TODO add your handling code here: new laporanreturn().setVisible(true);
-         new laporanreturn().setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_returnnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -165,7 +150,6 @@ public class laporanpembelian extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton penjualan;
-    private javax.swing.JButton returnn;
     private javax.swing.JTable tbpembelian;
     // End of variables declaration//GEN-END:variables
 }
