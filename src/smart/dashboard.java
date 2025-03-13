@@ -151,7 +151,7 @@ public class dashboard extends javax.swing.JFrame {
         tbexpired.setSelectionBackground(new java.awt.Color(25, 25, 25));
         jScrollPane3.setViewportView(tbexpired);
 
-        getContentPane().add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 490, 340, 170));
+        getContentPane().add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 550, 250, 130));
 
         tbpenjualanterlaris.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -172,7 +172,7 @@ public class dashboard extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(tbpenjualanterlaris);
 
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 490, 330, 170));
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 550, 380, 140));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -194,7 +194,7 @@ public class dashboard extends javax.swing.JFrame {
         jTable1.setSelectionBackground(new java.awt.Color(25, 25, 25));
         jScrollPane1.setViewportView(jTable1);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 150, 340, 270));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 550, 310, 140));
 
         jButton1.setBackground(new java.awt.Color(85, 85, 85));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -209,7 +209,7 @@ public class dashboard extends javax.swing.JFrame {
                 bttnkaryawanActionPerformed(evt);
             }
         });
-        getContentPane().add(bttnkaryawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 470, 150, 40));
+        getContentPane().add(bttnkaryawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 460, 150, 40));
 
         bttntransaksi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -223,7 +223,7 @@ public class dashboard extends javax.swing.JFrame {
                 bttnlaporanActionPerformed(evt);
             }
         });
-        getContentPane().add(bttnlaporan, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 400, 150, 40));
+        getContentPane().add(bttnlaporan, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 380, 150, 40));
 
         logout.setBorder(null);
         logout.addActionListener(new java.awt.event.ActionListener() {
@@ -233,7 +233,7 @@ public class dashboard extends javax.swing.JFrame {
         });
         getContentPane().add(logout, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 610, 120, 50));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Dashboard kasir (1).png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Dashboard kasir (2).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -20, 1372, 768));
 
         jButton2.setBackground(new java.awt.Color(85, 85, 85));

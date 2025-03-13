@@ -52,8 +52,8 @@ public class login extends javax.swing.JFrame {
         hide_pasword1 = new javax.swing.JLabel();
         FieldUsername = new javax.swing.JTextField();
         Password = new javax.swing.JPasswordField();
-        jLabel1 = new javax.swing.JLabel();
         Login = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         RFIDInput = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -91,7 +91,7 @@ public class login extends javax.swing.JFrame {
                 FieldUsernameKeyTyped(evt);
             }
         });
-        getContentPane().add(FieldUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 350, 290, 40));
+        getContentPane().add(FieldUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 320, 290, 40));
 
         Password.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         Password.setForeground(new java.awt.Color(255, 255, 255));
@@ -106,10 +106,7 @@ public class login extends javax.swing.JFrame {
                 PasswordActionPerformed(evt);
             }
         });
-        getContentPane().add(Password, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 430, 290, 40));
-
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Log In (1).png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -70, 1370, 870));
+        getContentPane().add(Password, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 410, 290, 40));
 
         Login.setForeground(new java.awt.Color(255, 255, 255));
         Login.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Group 63 (1).png"))); // NOI18N
@@ -124,7 +121,10 @@ public class login extends javax.swing.JFrame {
                 LoginActionPerformed(evt);
             }
         });
-        getContentPane().add(Login, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 520, 310, 40));
+        getContentPane().add(Login, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 540, 310, 40));
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Log In (2).png"))); // NOI18N
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -70, 1370, 870));
 
         RFIDInput.setUI(null);
         getContentPane().add(RFIDInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 260, -1, -1));

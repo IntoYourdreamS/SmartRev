@@ -76,7 +76,7 @@ public class laporanpenjualan extends javax.swing.JFrame {
                 dashboardActionPerformed(evt);
             }
         });
-        getContentPane().add(dashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 150, 130, 50));
+        getContentPane().add(dashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 140, 150, 50));
 
         transaksi.setBorder(null);
         transaksi.addActionListener(new java.awt.event.ActionListener() {
@@ -84,7 +84,7 @@ public class laporanpenjualan extends javax.swing.JFrame {
                 transaksiActionPerformed(evt);
             }
         });
-        getContentPane().add(transaksi, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 230, 140, 50));
+        getContentPane().add(transaksi, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 220, 140, 50));
 
         restok.setBorder(null);
         restok.addActionListener(new java.awt.event.ActionListener() {
@@ -92,7 +92,7 @@ public class laporanpenjualan extends javax.swing.JFrame {
                 restokActionPerformed(evt);
             }
         });
-        getContentPane().add(restok, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 320, 140, 40));
+        getContentPane().add(restok, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 300, 140, 40));
 
         karyawan.setBorder(null);
         karyawan.addActionListener(new java.awt.event.ActionListener() {
@@ -100,7 +100,7 @@ public class laporanpenjualan extends javax.swing.JFrame {
                 karyawanActionPerformed(evt);
             }
         });
-        getContentPane().add(karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 470, 140, 40));
+        getContentPane().add(karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 460, 140, 40));
 
         pembelian.setBorder(null);
         pembelian.addActionListener(new java.awt.event.ActionListener() {
@@ -108,7 +108,7 @@ public class laporanpenjualan extends javax.swing.JFrame {
                 pembelianActionPerformed(evt);
             }
         });
-        getContentPane().add(pembelian, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 120, 90, 30));
+        getContentPane().add(pembelian, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 80, 160, 40));
 
         tbpenjualan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -131,7 +131,7 @@ public class laporanpenjualan extends javax.swing.JFrame {
 
         getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 200, 1040, 460));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/laporan penjualan (3).png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/laporan penjualan (4).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();

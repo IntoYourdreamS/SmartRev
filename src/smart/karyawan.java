@@ -127,7 +127,7 @@ public class karyawan extends javax.swing.JFrame {
                 tambahActionPerformed(evt);
             }
         });
-        getContentPane().add(tambah, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 130, 110, 40));
+        getContentPane().add(tambah, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 90, 110, 40));
 
         laporan.setBorder(null);
         laporan.addActionListener(new java.awt.event.ActionListener() {
@@ -135,7 +135,7 @@ public class karyawan extends javax.swing.JFrame {
                 laporanActionPerformed(evt);
             }
         });
-        getContentPane().add(laporan, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 390, 140, 40));
+        getContentPane().add(laporan, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 380, 140, 40));
 
         restock.setBorder(null);
         restock.addActionListener(new java.awt.event.ActionListener() {
@@ -143,7 +143,7 @@ public class karyawan extends javax.swing.JFrame {
                 restockActionPerformed(evt);
             }
         });
-        getContentPane().add(restock, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, 150, 40));
+        getContentPane().add(restock, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 300, 150, 40));
 
         transaksi.setBorder(null);
         transaksi.addActionListener(new java.awt.event.ActionListener() {
@@ -151,7 +151,7 @@ public class karyawan extends javax.swing.JFrame {
                 transaksiActionPerformed(evt);
             }
         });
-        getContentPane().add(transaksi, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 240, 160, 40));
+        getContentPane().add(transaksi, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, 160, 40));
 
         dashboard.setBorder(null);
         dashboard.addActionListener(new java.awt.event.ActionListener() {
@@ -159,7 +159,7 @@ public class karyawan extends javax.swing.JFrame {
                 dashboardActionPerformed(evt);
             }
         });
-        getContentPane().add(dashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 160, 40));
+        getContentPane().add(dashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 140, 160, 40));
 
         ubah.setBorder(null);
         ubah.addActionListener(new java.awt.event.ActionListener() {
@@ -167,7 +167,7 @@ public class karyawan extends javax.swing.JFrame {
                 ubahActionPerformed(evt);
             }
         });
-        getContentPane().add(ubah, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 130, 90, 40));
+        getContentPane().add(ubah, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 90, 90, 40));
 
         hapus.setBorder(null);
         hapus.addActionListener(new java.awt.event.ActionListener() {
@@ -175,7 +175,7 @@ public class karyawan extends javax.swing.JFrame {
                 hapusActionPerformed(evt);
             }
         });
-        getContentPane().add(hapus, new org.netbeans.lib.awtextra.AbsoluteConstraints(1170, 130, 90, 40));
+        getContentPane().add(hapus, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 90, 90, 40));
 
         tbkaryawan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -196,9 +196,9 @@ public class karyawan extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(tbkaryawan);
 
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 220, 1040, 440));
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 150, 1040, 440));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Karyawan.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/karyawan (1).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 720));
 
         pack();

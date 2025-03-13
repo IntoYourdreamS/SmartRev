@@ -43,7 +43,7 @@ public class transaksi extends javax.swing.JFrame {
         totalharga.setOpaque(false);
         totalharga.setBackground(new Color(0, 0, 0, 0));
         
-        jDateChooser1.setDate(new java.util.Date());
+       
         
         No_nota.setText(generateNota());
     }
@@ -100,7 +100,6 @@ public class transaksi extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         qty = new javax.swing.JTextField();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
         laporan = new javax.swing.JButton();
         restok = new javax.swing.JButton();
         karyawan = new javax.swing.JButton();
@@ -115,7 +114,7 @@ public class transaksi extends javax.swing.JFrame {
                 bttndashboardActionPerformed(evt);
             }
         });
-        getContentPane().add(bttndashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 160, 30));
+        getContentPane().add(bttndashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 140, 160, 30));
 
         stokbrg.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         stokbrg.setBorder(null);
@@ -124,7 +123,7 @@ public class transaksi extends javax.swing.JFrame {
                 stokbrgActionPerformed(evt);
             }
         });
-        getContentPane().add(stokbrg, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 236, 190, 30));
+        getContentPane().add(stokbrg, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 230, 190, 30));
 
         namabrg.setBorder(null);
         namabrg.addActionListener(new java.awt.event.ActionListener() {
@@ -140,7 +139,7 @@ public class transaksi extends javax.swing.JFrame {
                 NoBarangActionPerformed(evt);
             }
         });
-        getContentPane().add(NoBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 130, 200, 30));
+        getContentPane().add(NoBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 150, 200, 30));
 
         No_nota.setBorder(null);
         No_nota.addActionListener(new java.awt.event.ActionListener() {
@@ -194,7 +193,7 @@ public class transaksi extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 390, 770, 210));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 90, 620, -1));
 
         qty.setBorder(null);
         qty.addActionListener(new java.awt.event.ActionListener() {
@@ -202,8 +201,7 @@ public class transaksi extends javax.swing.JFrame {
                 qtyActionPerformed(evt);
             }
         });
-        getContentPane().add(qty, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 300, 190, 30));
-        getContentPane().add(jDateChooser1, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 180, 190, 30));
+        getContentPane().add(qty, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 310, 190, 30));
 
         laporan.setBorder(null);
         laporan.addActionListener(new java.awt.event.ActionListener() {
@@ -218,7 +216,7 @@ public class transaksi extends javax.swing.JFrame {
                 restokActionPerformed(evt);
             }
         });
-        getContentPane().add(restok, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, 150, 40));
+        getContentPane().add(restok, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 300, 150, 40));
 
         karyawan.setBorder(null);
         karyawan.addActionListener(new java.awt.event.ActionListener() {
@@ -226,9 +224,9 @@ public class transaksi extends javax.swing.JFrame {
                 karyawanActionPerformed(evt);
             }
         });
-        getContentPane().add(karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 470, 170, 40));
+        getContentPane().add(karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 460, 170, 40));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Transaksi (4).png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Transaksi (5).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
@@ -330,7 +328,6 @@ public class transaksi extends javax.swing.JFrame {
     private javax.swing.JTextField No_nota;
     private javax.swing.JButton bttndashboard;
     private javax.swing.JTextField hargastuan;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;

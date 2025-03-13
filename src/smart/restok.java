@@ -70,7 +70,7 @@ public class restok extends javax.swing.JFrame {
                 dashboardActionPerformed(evt);
             }
         });
-        getContentPane().add(dashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 150, 140, 50));
+        getContentPane().add(dashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 140, 140, 50));
 
         transaksi.setBorder(null);
         transaksi.addActionListener(new java.awt.event.ActionListener() {
@@ -78,21 +78,21 @@ public class restok extends javax.swing.JFrame {
                 transaksiActionPerformed(evt);
             }
         });
-        getContentPane().add(transaksi, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 240, 130, 40));
+        getContentPane().add(transaksi, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 230, 130, 40));
 
         laporan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 laporanActionPerformed(evt);
             }
         });
-        getContentPane().add(laporan, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 390, 130, 50));
+        getContentPane().add(laporan, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 380, 130, 50));
 
         karyawan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 karyawanActionPerformed(evt);
             }
         });
-        getContentPane().add(karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 470, 140, 40));
+        getContentPane().add(karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 450, 140, 40));
 
         suplier.setBorder(null);
         suplier.addActionListener(new java.awt.event.ActionListener() {
@@ -100,14 +100,14 @@ public class restok extends javax.swing.JFrame {
                 suplierActionPerformed(evt);
             }
         });
-        getContentPane().add(suplier, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 130, 100, 40));
+        getContentPane().add(suplier, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 90, 120, 30));
 
         inputbarang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inputbarangActionPerformed(evt);
             }
         });
-        getContentPane().add(inputbarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 130, 110, 40));
+        getContentPane().add(inputbarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 90, 120, 30));
 
         inputreturn.setBorder(null);
         inputreturn.addActionListener(new java.awt.event.ActionListener() {
@@ -115,7 +115,7 @@ public class restok extends javax.swing.JFrame {
                 inputreturnActionPerformed(evt);
             }
         });
-        getContentPane().add(inputreturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 130, 120, 40));
+        getContentPane().add(inputreturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 90, 120, 30));
 
         datasupplier.setBorder(null);
         datasupplier.addActionListener(new java.awt.event.ActionListener() {
@@ -123,7 +123,7 @@ public class restok extends javax.swing.JFrame {
                 datasupplierActionPerformed(evt);
             }
         });
-        getContentPane().add(datasupplier, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 310, 160, 30));
+        getContentPane().add(datasupplier, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 210, 160, 30));
 
         dataexpired.setBorder(null);
         dataexpired.addActionListener(new java.awt.event.ActionListener() {
@@ -131,7 +131,7 @@ public class restok extends javax.swing.JFrame {
                 dataexpiredActionPerformed(evt);
             }
         });
-        getContentPane().add(dataexpired, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 460, 160, 30));
+        getContentPane().add(dataexpired, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 420, 160, 30));
 
         datareturn.setBorder(null);
         datareturn.addActionListener(new java.awt.event.ActionListener() {
@@ -139,9 +139,9 @@ public class restok extends javax.swing.JFrame {
                 datareturnActionPerformed(evt);
             }
         });
-        getContentPane().add(datareturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1130, 620, 130, 30));
+        getContentPane().add(datareturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 690, 130, 30));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Restock (1).png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Restock (2).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1380, -1));
 
         pack();

@@ -69,7 +69,7 @@ public class laporanpembelian extends javax.swing.JFrame {
                 penjualanActionPerformed(evt);
             }
         });
-        getContentPane().add(penjualan, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 120, 90, 30));
+        getContentPane().add(penjualan, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 80, 170, 40));
 
         tbpembelian.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -92,7 +92,7 @@ public class laporanpembelian extends javax.swing.JFrame {
 
         getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 190, 1050, 470));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/laporan pembelian (4).png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/laporan pembelian (5).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1380, 720));
 
         pack();
