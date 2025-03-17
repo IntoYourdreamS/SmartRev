@@ -20,6 +20,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import popup.tambahkaryawan;
 import popup.ubahkaryawan;
+import popup.tambahkaryawan;
 
 /**
  *
@@ -206,8 +207,11 @@ public class karyawan extends javax.swing.JFrame {
 
     private void tambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahActionPerformed
         // TODO add your handling code here:
-           new tambahkaryawan().setVisible(true);
-        this.setVisible(false);   
+          // Menambahkan aksi ke tombol "Tambah"
+       
+                tambahkaryawan popup = new tambahkaryawan();
+                popup.setVisible(true);
+      
     }//GEN-LAST:event_tambahActionPerformed
 
     private void dashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardActionPerformed
@@ -235,27 +239,7 @@ public class karyawan extends javax.swing.JFrame {
     }//GEN-LAST:event_laporanActionPerformed
 
     private void ubahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ubahActionPerformed
-        // TODO add your handling code here:
-       // Ambil baris yang dipilih
-int selectedRow = tbkaryawan.getSelectedRow();
-if (selectedRow == -1) {
-    JOptionPane.showMessageDialog(this, "Pilih data yang akan diubah!", "Peringatan", JOptionPane.WARNING_MESSAGE);
-    return;
-}
-
-// Ambil ID karyawan dari tabel (kolom 0)
-String idKaryawan = tbkaryawan.getValueAt(selectedRow, 0).toString();
-String namaKaryawan = tbkaryawan.getValueAt(selectedRow, 1).toString();
-String noTelp = tbkaryawan.getValueAt(selectedRow, 2).toString();
-String password = tbkaryawan.getValueAt(selectedRow, 3).toString();
-String role = tbkaryawan.getValueAt(selectedRow, 4).toString();
-String rfid = tbkaryawan.getValueAt(selectedRow, 5).toString();
-
-// Buka halaman Ubah Karyawan dan kirim data
-ubahkaryawan ubahPage = new ubahkaryawan(idKaryawan, namaKaryawan, noTelp, password, role, rfid);
-ubahPage.setVisible(true);
-
-
+ 
     }//GEN-LAST:event_ubahActionPerformed
 
     private void hapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hapusActionPerformed

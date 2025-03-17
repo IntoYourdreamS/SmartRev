@@ -4,29 +4,44 @@
  */
 package popup;
 
+import java.awt.Color;
 import javax.swing.JButton;
-import smart.*;
+import javax.swing.JFrame;
+import smart.karyawan;
+import smart.restok;
 
 /**
  *
- * @author acer
+ * @author ASUS
  */
 public class tambahsupplier extends javax.swing.JFrame {
 
     /**
-     * Creates new form login
+     * Creates new form coba
      */
     public tambahsupplier() {
         initComponents();
-                makeButtonTransparent(kembali);
-              
+          makeButtonTransparent(kembali);
+            
+
     }
     
-    private void makeButtonTransparent(JButton button) {
+     private void makeButtonTransparent(JButton button) {
         button.setOpaque(false);
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
     }
+    
+    
+    
+    class Coba extends JFrame {
+    public Coba() {
+        setTitle("Popup Frame - Coba");
+        setSize(200, 150);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -39,27 +54,35 @@ public class tambahsupplier extends javax.swing.JFrame {
 
         kembali = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        kembali.setBorder(null);
         kembali.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 kembaliActionPerformed(evt);
             }
         });
-        getContentPane().add(kembali, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 580, 240, 40));
+        getContentPane().add(kembali, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 570, 200, 30));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Input supplier.png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1380, -1));
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Tambah Supplier.png"))); // NOI18N
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+
+        jTextField1.setText("jTextField1");
+        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 120, 400, 40));
+
+        jTextField2.setText("jTextField2");
+        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 190, -1, -1));
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void kembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kembaliActionPerformed
         // TODO add your handling code here:
-        new restok().setVisible(true);
+          new restok().setVisible(true);
         this.setVisible(false); 
     }//GEN-LAST:event_kembaliActionPerformed
 
@@ -90,12 +113,6 @@ public class tambahsupplier extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -107,6 +124,8 @@ public class tambahsupplier extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JButton kembali;
     // End of variables declaration//GEN-END:variables
 }

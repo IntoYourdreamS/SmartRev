@@ -11,6 +11,7 @@ import popup.datareturn;
 import popup.tambahbarang;
 import popup.tambahsupplier;
 import popup.returnbarang;
+import popup.tambahkaryawan;
 
 /**
  *
@@ -172,21 +173,19 @@ public class restok extends javax.swing.JFrame {
     }//GEN-LAST:event_karyawanActionPerformed
 
     private void inputreturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputreturnActionPerformed
-        // TODO add your handling code here:
-         new returnbarang().setVisible(true);
-        this.setVisible(false);  
+       returnbarang popup = new returnbarang();
+                popup.setVisible(true);
     }//GEN-LAST:event_inputreturnActionPerformed
 
     private void suplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suplierActionPerformed
         // TODO add your handling code here:
-         new tambahsupplier().setVisible(true);
-        this.setVisible(false);  
+        tambahsupplier popup = new tambahsupplier();
+                popup.setVisible(true);
     }//GEN-LAST:event_suplierActionPerformed
 
     private void inputbarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputbarangActionPerformed
-        // TODO add your handling code here:
-         new tambahbarang().setVisible(true);
-        this.setVisible(false);  
+        tambahbarang popup = new tambahbarang();
+                popup.setVisible(true);  
     }//GEN-LAST:event_inputbarangActionPerformed
 
     private void datasupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_datasupplierActionPerformed

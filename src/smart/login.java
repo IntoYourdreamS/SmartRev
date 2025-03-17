@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import javax.swing.JButton;
 
 /**
  *
@@ -28,6 +29,8 @@ public class login extends javax.swing.JFrame {
         Password.setBackground(new Color(0, 0, 0, 0));
         FieldUsername.setOpaque(false);
         FieldUsername.setBackground(new Color(0, 0, 0, 0));
+            makeButtonTransparent(login);
+   
 
         hide_pasword1.setVisible(false);
         hide_pasword1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -38,6 +41,13 @@ public class login extends javax.swing.JFrame {
 
     }
     Connection conn = koneksi.getConnection();
+     
+    
+    private void makeButtonTransparent(JButton button) {
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -52,7 +62,7 @@ public class login extends javax.swing.JFrame {
         hide_pasword1 = new javax.swing.JLabel();
         FieldUsername = new javax.swing.JTextField();
         Password = new javax.swing.JPasswordField();
-        Login = new javax.swing.JButton();
+        login = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         RFIDInput = new javax.swing.JTextField();
 
@@ -108,20 +118,12 @@ public class login extends javax.swing.JFrame {
         });
         getContentPane().add(Password, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 410, 290, 40));
 
-        Login.setForeground(new java.awt.Color(255, 255, 255));
-        Login.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Group 63 (1).png"))); // NOI18N
-        Login.setAutoscrolls(true);
-        Login.setBorder(null);
-        Login.setBorderPainted(false);
-        Login.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Group 47.png"))); // NOI18N
-        Login.setSelected(true);
-        Login.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Group 47.png"))); // NOI18N
-        Login.addActionListener(new java.awt.event.ActionListener() {
+        login.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                LoginActionPerformed(evt);
+                loginActionPerformed(evt);
             }
         });
-        getContentPane().add(Login, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 540, 310, 40));
+        getContentPane().add(login, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 540, 340, 50));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Log In (2).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -70, 1370, 870));
@@ -131,60 +133,6 @@ public class login extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginActionPerformed
-        // TODO add your handling code here:
-        String userInput = FieldUsername.getText();
-        char[] passwordInputChar = Password.getPassword();
-        String passwordInput = new String(passwordInputChar);
-
-        // Variabel untuk koneksi database
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            // Koneksi ke database (ganti URL, username, dan password sesuai konfigurasi Anda)
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart", "root", "");
-
-            // Query untuk memeriksa kombinasi login
-            String sql = "SELECT * FROM karyawan WHERE nama_karyawan = ? AND password = ?";
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, userInput);
-            pstmt.setString(2, passwordInput); // Pastikan password tersimpan dalam bentuk terenkripsi di database
-
-            rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                // Login berhasil
-                Session.setKode(rs.getString("id_karyawan"));
-                Session.setRole(rs.getString("role"));
-                JOptionPane.showMessageDialog(this, "Login berhasil sebagai " + Session.getRole() + "!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-                new dashboard().setVisible(true);
-                this.setVisible(false);
-            } else {
-                // Login gagal
-                JOptionPane.showMessageDialog(this, "Login gagal. Username, password, atau role salah.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } finally {
-            // Tutup koneksi database
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-    }//GEN-LAST:event_LoginActionPerformed
 
     private void FieldUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FieldUsernameActionPerformed
         // TODO add your handling code here:
@@ -255,6 +203,61 @@ public class login extends javax.swing.JFrame {
         hide_pasword1.getParent().revalidate();
         hide_pasword1.getParent().repaint();
     }//GEN-LAST:event_PasswordMouseClicked
+
+    private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
+        // TODO add your handling code here:
+           // TODO add your handling code here:
+        String userInput = FieldUsername.getText();
+        char[] passwordInputChar = Password.getPassword();
+        String passwordInput = new String(passwordInputChar);
+
+        // Variabel untuk koneksi database
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            // Koneksi ke database (ganti URL, username, dan password sesuai konfigurasi Anda)
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart", "root", "");
+
+            // Query untuk memeriksa kombinasi login
+            String sql = "SELECT * FROM karyawan WHERE nama_karyawan = ? AND password = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, userInput);
+            pstmt.setString(2, passwordInput); // Pastikan password tersimpan dalam bentuk terenkripsi di database
+
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                // Login berhasil
+                Session.setKode(rs.getString("id_karyawan"));
+                Session.setRole(rs.getString("role"));
+                JOptionPane.showMessageDialog(this, "Login berhasil sebagai " + Session.getRole() + "!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                new dashboard().setVisible(true);
+                this.setVisible(false);
+            } else {
+                // Login gagal
+                JOptionPane.showMessageDialog(this, "Login gagal. Username, password, atau role salah.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Tutup koneksi database
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_loginActionPerformed
     private void loginValidation() {
         char[] passChars = Password.getPassword();
         String password = new String(passChars);
@@ -334,11 +337,11 @@ public class login extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField FieldUsername;
-    private javax.swing.JButton Login;
     private javax.swing.JPasswordField Password;
     private javax.swing.JTextField RFIDInput;
     private javax.swing.JLabel hide_pasword1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton login;
     private javax.swing.JLabel show_pasword;
     // End of variables declaration//GEN-END:variables
 }

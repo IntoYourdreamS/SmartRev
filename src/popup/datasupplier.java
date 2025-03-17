@@ -49,9 +49,9 @@ public class datasupplier extends javax.swing.JFrame {
                 kembaliActionPerformed(evt);
             }
         });
-        getContentPane().add(kembali, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 600, 130, 30));
+        getContentPane().add(kembali, new org.netbeans.lib.awtextra.AbsoluteConstraints(1110, 660, 130, 30));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Data supplier.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Data Supplier (1).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
