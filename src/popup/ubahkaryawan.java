@@ -139,7 +139,7 @@ public class ubahkaryawan extends javax.swing.JFrame {
         String Password = password.getText();
         String selectedRole = role.getSelectedItem().toString();
         String Rfid = RFID.getText();
-        String kode = generateCode();
+//        String kode = generateCode();
 
 // Ambil ID karyawan yang dipilih dari tabel
         int selectedRow = karyawan.getSelectedRow();
@@ -154,7 +154,7 @@ public class ubahkaryawan extends javax.swing.JFrame {
                 "Konfirmasi",
                 JOptionPane.YES_NO_OPTION);
 
-        String idKaryawan = tb_karyawan.getValueAt(selectedRow, 0).toString(); // Asumsi ID ada di kolom 0
+//        String idKaryawan = tb_karyawan.getValueAt(selectedRow, 0).toString(); // Asumsi ID ada di kolom 0
 
 // Periksa apakah semua field sudah diisi
         if (namaKaryawan.isEmpty() || alamatKaryawan.isEmpty() || noTelp.isEmpty()) {
@@ -173,7 +173,7 @@ public class ubahkaryawan extends javax.swing.JFrame {
             pst.setString(2, alamatKaryawan);
             pst.setString(3, noTelp);
             pst.setString(4, selectedRole);
-            pst.setString(5, inputid);
+//            pst.setString(5, inputid);
 
             // Eksekusi query
             int rowsAffected = pst.executeUpdate();
@@ -182,12 +182,12 @@ public class ubahkaryawan extends javax.swing.JFrame {
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(this, "Data berhasil diubah!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                 // Panggil loadTableData() untuk memperbarui tampilan tabel
-                loadTableData();
-                // Reset form
-                inputID.setText("");
-                nama1.setText("");
-                alamat.setText("");
-                notelp.setText("");
+//                loadTableData();
+//                // Reset form
+//                inputID.setText("");
+//                nama1.setText("");
+//                alamat.setText("");
+//                notelp.setText("");
                 password.setText("");
 
             } else {

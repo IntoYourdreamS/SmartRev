@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 20, 2025 at 03:08 AM
+-- Generation Time: Mar 20, 2025 at 03:55 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.4.24
 
@@ -30,9 +30,8 @@ SET time_zone = "+00:00";
 CREATE TABLE `detail_pembelian` (
   `id_pembelian` varchar(8) DEFAULT NULL,
   `id_produk` varchar(8) DEFAULT NULL,
-  `nama_produk` varchar(25) NOT NULL,
   `jumlah` int(11) DEFAULT NULL,
-  `harga_jual` int(25) DEFAULT NULL,
+  `sub_total` int(25) DEFAULT NULL,
   `harga_beli` int(25) NOT NULL,
   `kategori` varchar(25) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -61,24 +60,10 @@ CREATE TABLE `detail_penjualan` (
 CREATE TABLE `karyawan` (
   `id_karyawan` varchar(8) NOT NULL,
   `nama_karyawan` varchar(25) DEFAULT NULL,
-  `alamat` text NOT NULL,
   `no_telp` int(9) NOT NULL,
   `password` varchar(25) DEFAULT NULL,
   `tanggal_masuk` timestamp NOT NULL DEFAULT current_timestamp(),
   `RFID` int(25) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `kategori`
---
-
-CREATE TABLE `kategori` (
-  `id_kategori` bigint(20) UNSIGNED NOT NULL,
-  `nama_kategori` varchar(255) DEFAULT NULL,
-  `create_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `update_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -177,12 +162,6 @@ ALTER TABLE `karyawan`
   ADD PRIMARY KEY (`id_karyawan`);
 
 --
--- Indexes for table `kategori`
---
-ALTER TABLE `kategori`
-  ADD PRIMARY KEY (`id_kategori`);
-
---
 -- Indexes for table `pembelian`
 --
 ALTER TABLE `pembelian`
@@ -215,16 +194,6 @@ ALTER TABLE `retur_penjualan`
 --
 ALTER TABLE `supplier`
   ADD PRIMARY KEY (`id_supplier`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `kategori`
---
-ALTER TABLE `kategori`
-  MODIFY `id_kategori` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
