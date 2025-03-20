@@ -385,36 +385,21 @@ public class transaksi extends javax.swing.JFrame {
                         DTps.executeUpdate();
                     }
 
-//                    String getStokMn = "SELECT id_menu, stok FROM tb_menu WHERE id_menu = ?";
-//                    try (PreparedStatement SMps = koneksi.getConnection().prepareStatement(getStokMn)) {
-//                        SMps.setString(1, id_menu[j]);
-//                        ResultSet rs = SMps.executeQuery();
-//                        while (rs.next()) {
-//                            String idMenu = rs.getString(1);
-//
-//                            String updateStokMenu = "UPDATE tb_menu SET stok = stok - ? WHERE id_menu = ?";
-//                            try (PreparedStatement updateSM = koneksi.getConnection().prepareStatement(updateStokMenu)) {
-//                                updateSM.setInt(1, jumlah[j]);
-//                                updateSM.setString(2, idMenu);
-//                                updateSM.executeUpdate();
-//                            }
-//                        }
-//                    }
-//                    String getStokMn = "SELECT id_menu, stok FROM tb_menu WHERE id_menu = ?";
-//                    try (PreparedStatement SMps = koneksi.getConnection().prepareStatement(getStokMn)) {
-//                        SMps.setString(1, id_menu[j]);
-//                        ResultSet rs = SMps.executeQuery();
-//                        while (rs.next()) {
-//                            String idMenu = rs.getString(1);
-//
-//                            String updateStokMenu = "UPDATE tb_menu SET stok = stok - ? WHERE id_menu = ?";
-//                            try (PreparedStatement updateSM = koneksi.getConnection().prepareStatement(updateStokMenu)) {
-//                                updateSM.setInt(1, jumlah[j]);
-//                                updateSM.setString(2, idMenu);
-//                                updateSM.executeUpdate();
-//                            }
-//                        }
-//                    }
+                    String getStokMn = "SELECT id_produk, stok FROM produk WHERE id_menu = ?";
+                    try (PreparedStatement SMps = koneksi.getConnection().prepareStatement(getStokMn)) {
+                        SMps.setString(1, idProduk[j]);
+                        ResultSet rs = SMps.executeQuery();
+                        while (rs.next()) {
+                            String idPrk = rs.getString(1);
+
+                            String updateStokMenu = "UPDATE produk SET stok = stok - ? WHERE id_produk = ?";
+                            try (PreparedStatement updateSM = koneksi.getConnection().prepareStatement(updateStokMenu)) {
+                                updateSM.setInt(1, jumlahProduk[j]);
+                                updateSM.setString(2, idPrk);
+                                updateSM.executeUpdate();
+                            }
+                        }
+                    }
                 }
             } catch (Exception e) {
                 throw e;
