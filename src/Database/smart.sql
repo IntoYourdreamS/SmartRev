@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 20, 2025 at 03:55 AM
+-- Generation Time: Mar 20, 2025 at 01:40 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.4.24
 
@@ -103,12 +103,19 @@ CREATE TABLE `penjualan` (
 CREATE TABLE `produk` (
   `id_produk` varchar(8) NOT NULL,
   `nama_produk` varchar(255) DEFAULT NULL,
-  `harga` decimal(10,2) DEFAULT NULL,
+  `harga` int(10) DEFAULT NULL,
   `stok` int(11) DEFAULT NULL,
   `id_supplier` varchar(8) DEFAULT NULL,
   `barcode` varchar(50) DEFAULT NULL,
-  `create_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `kategori` varchar(16) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `produk`
+--
+
+INSERT INTO `produk` (`id_produk`, `nama_produk`, `harga`, `stok`, `id_supplier`, `barcode`, `kategori`) VALUES
+('PR001', 'Beras', 50000, 3, NULL, '121', 'BahanBaku');
 
 -- --------------------------------------------------------
 

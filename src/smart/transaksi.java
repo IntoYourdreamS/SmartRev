@@ -4,6 +4,7 @@
  */
 package smart;
 
+import Config.Session;
 import Config.koneksi;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
@@ -14,6 +15,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -66,6 +70,32 @@ public class transaksi extends javax.swing.JFrame {
 
     private String generateNota() {
         return "Nota-" + String.format("%04d", counter++);
+    }
+
+    public static String generateKodeTransaksi() {
+        Connection conn = koneksi.getConnection();
+        String kodeTransaksi = "TR001";
+
+        if (conn != null) {
+            try {
+                Statement statement = conn.createStatement();
+                String query = "SELECT id_penjualan FROM penjualan ORDER BY id_penjualan DESC LIMIT 1";
+                ResultSet resultSet = statement.executeQuery(query);
+
+                if (resultSet.next()) {
+                    String lastKode = resultSet.getString("id_penjualan");
+                    int kodeNum = Integer.parseInt(lastKode.substring(3)) + 1;
+                    kodeTransaksi = String.format("TR%03d", kodeNum);
+                }
+
+                resultSet.close();
+                statement.close();
+                conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return kodeTransaksi;
     }
 
     public void refreshTable() {
@@ -328,17 +358,80 @@ public class transaksi extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_qtyActionPerformed
 
+    private void prosesTransaksi(String kodeTransaksi,String idKaryawan, String[] idProduk, int[] jumlahProduk, String[] Kategori, int[] hargaS, int[] SubTotal, Double bayar, int total) throws SQLException {
+        Connection conn = koneksi.getConnection();
+        if (conn != null) {
+            try {
+//              Insert Transaksi
+                String insertTransaksi = "INSERT INTO penjualan VALUES (?, ?, NOW(), ?, ?)";
+                try (PreparedStatement ps = koneksi.getConnection().prepareStatement(insertTransaksi)) {
+                    ps.setString(1, kodeTransaksi);
+                    ps.setString(2, idKaryawan);
+                    ps.setInt(3, total);
+                    ps.setDouble(4, bayar);
+                    ps.executeUpdate();
+                }
+
+                for (int j = 0; j < idProduk.length; j++) {
+//                      insert detail transaksi
+                    String insertDetailTransaksi = "INSERT INTO detail_penjualan VALUES (?, ?, ?, ?, ?, ?)";
+                    try (PreparedStatement DTps = koneksi.getConnection().prepareStatement(insertDetailTransaksi)) {
+                        DTps.setString(1, kodeTransaksi);
+                        DTps.setString(2, idProduk[j]);
+                        DTps.setString(3, Kategori[j]);
+                        DTps.setInt(4, jumlahProduk[j]);
+                        DTps.setInt(5, hargaS[j]);
+                        DTps.setInt(6, SubTotal[j]);
+                        DTps.executeUpdate();
+                    }
+
+//                    String getStokMn = "SELECT id_menu, stok FROM tb_menu WHERE id_menu = ?";
+//                    try (PreparedStatement SMps = koneksi.getConnection().prepareStatement(getStokMn)) {
+//                        SMps.setString(1, id_menu[j]);
+//                        ResultSet rs = SMps.executeQuery();
+//                        while (rs.next()) {
+//                            String idMenu = rs.getString(1);
+//
+//                            String updateStokMenu = "UPDATE tb_menu SET stok = stok - ? WHERE id_menu = ?";
+//                            try (PreparedStatement updateSM = koneksi.getConnection().prepareStatement(updateStokMenu)) {
+//                                updateSM.setInt(1, jumlah[j]);
+//                                updateSM.setString(2, idMenu);
+//                                updateSM.executeUpdate();
+//                            }
+//                        }
+//                    }
+//                    String getStokMn = "SELECT id_menu, stok FROM tb_menu WHERE id_menu = ?";
+//                    try (PreparedStatement SMps = koneksi.getConnection().prepareStatement(getStokMn)) {
+//                        SMps.setString(1, id_menu[j]);
+//                        ResultSet rs = SMps.executeQuery();
+//                        while (rs.next()) {
+//                            String idMenu = rs.getString(1);
+//
+//                            String updateStokMenu = "UPDATE tb_menu SET stok = stok - ? WHERE id_menu = ?";
+//                            try (PreparedStatement updateSM = koneksi.getConnection().prepareStatement(updateStokMenu)) {
+//                                updateSM.setInt(1, jumlah[j]);
+//                                updateSM.setString(2, idMenu);
+//                                updateSM.executeUpdate();
+//                            }
+//                        }
+//                    }
+                }
+            } catch (Exception e) {
+                throw e;
+            } finally {
+            }
+        }
+    }
+
     private void hitungTotalHarga() {
         int totalHarga = 0;
 
-        // Pastikan tabel memiliki data
         if (model != null) {
             for (int i = 0; i < model.getRowCount(); i++) {
                 totalHarga += Integer.parseInt(model.getValueAt(i, 4).toString()); // Ambil kolom total harga
             }
         }
 
-        // Set hasil perhitungan ke txt_totalharga
         txt_totalharga.setText(String.valueOf(totalHarga));
     }
 
@@ -349,8 +442,6 @@ public class transaksi extends javax.swing.JFrame {
         try {
             Connection conn = koneksi.getConnection();
             PreparedStatement pst = conn.prepareStatement("SELECT * FROM produk WHERE barcode = ?");
-//            String kode_bahan = txtkodebahan.getText();
-            //        String kode_bahan = txtkodebahan.getText();
             pst.setString(1, txt_noBarang.getText());
             ResultSet rs = pst.executeQuery();
 
@@ -449,6 +540,36 @@ public class transaksi extends javax.swing.JFrame {
                 return;
             }
 
+            String checkStockSQL = "SELECT stok FROM produk WHERE barcode = ?";
+            try (PreparedStatement ps = conn.prepareStatement(checkStockSQL)) {
+                ps.setString(1, txt_noBarang.getText().trim()); 
+                ResultSet rs = ps.executeQuery();
+
+                if (rs.next()) {
+                    int stokTersedia = rs.getInt("stok");
+
+                    if (stokTersedia < qty) {
+                        JOptionPane.showMessageDialog(null,
+                                "Stok tidak cukup!",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            "Produk tidak ditemukan dalam database.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null,
+                        "Terjadi kesalahan saat mengecek stok: " + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             int total = qty * harga;
 
             if (model == null) {
@@ -504,6 +625,72 @@ public class transaksi extends javax.swing.JFrame {
 
     private void btn_bayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_bayarActionPerformed
         // TODO add your handling code here:
+        String kodeTransaksi, idKaryawan;
+        double bayar, kembalian;
+
+        List<String> id_produk = new ArrayList<String>();
+        List<String> kategori = new ArrayList<String>();
+        List<Integer> jumlah = new ArrayList<Integer>();
+        List<Integer> hargaSatuan = new ArrayList<Integer>();
+        List<Integer> subTotal = new ArrayList<Integer>();
+
+        int total = Integer.parseInt(txt_totalharga.getText());
+        kodeTransaksi = generateKodeTransaksi();
+        idKaryawan = Session.getKode();
+        bayar = Double.parseDouble(txt_bayar.getText());
+
+        for (int i = 0; i < jTable1.getRowCount(); i++) {
+            id_produk.add((String) jTable1.getValueAt(i, 0));
+            jumlah.add((Integer) jTable1.getValueAt(i, 2));
+            hargaSatuan.add((Integer) jTable1.getValueAt(i, 3));
+            subTotal.add((Integer) jTable1.getValueAt(i, 4));
+            kategori.add((String) jTable1.getValueAt(i, 5));
+        }
+
+        String[] idProduk = id_produk.toArray(new String[0]);
+        int[] jumlahProduk = jumlah.stream().mapToInt(Integer::intValue).toArray();
+        int[] hargaS = hargaSatuan.stream().mapToInt(Integer::intValue).toArray();
+        int[] SubTotal = subTotal.stream().mapToInt(Integer::intValue).toArray();
+        String[] Kategori = kategori.toArray(new String[0]);
+
+        try {
+            if (jTable1.getRowCount() != 0) {
+                if (txt_bayar.getText().equals("")) {
+                    JOptionPane.showMessageDialog(null,
+                            "Gagal, Pastikan mengisi nominal bayar ",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                } else {
+                    if (Double.parseDouble(txt_bayar.getText()) >= total) {
+                        prosesTransaksi(kodeTransaksi, idKaryawan, idProduk, jumlahProduk, Kategori, hargaS, SubTotal, bayar, total);
+                        model.setRowCount(0);
+                        kembalian = bayar - total;
+                        txt_kembalian.setText("" + kembalian);
+                        refreshTable();
+
+                        JOptionPane.showMessageDialog(null,
+                                "Transaksi Berhasil!",
+                                "Hore",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "Gagal, Pastikan nominal bayar cukup!",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(null,
+                        "Pesan Menu Terlebih Dahulu!",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,
+                    "Transaksi Gagal" + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btn_bayarActionPerformed
 
     private void btn_cetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cetakActionPerformed
