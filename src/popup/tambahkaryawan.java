@@ -4,9 +4,16 @@
  */
 package popup;
 
+import Config.koneksi;
 import java.awt.Color;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import smart.karyawan;
 import smart.restok;
 
@@ -21,8 +28,20 @@ public class tambahkaryawan extends javax.swing.JFrame {
      */
     public tambahkaryawan() {
         initComponents();
+        id_karyawan.setOpaque(false);
+        id_karyawan.setBackground(new Color(0, 0, 0, 0));
+        nama_karyawan.setOpaque(false);
+        nama_karyawan.setBackground(new Color(0, 0, 0, 0));
+         no_telp.setOpaque(false);
+        no_telp.setBackground(new Color(0, 0, 0, 0));
+        password.setOpaque(false);
+        password.setBackground(new Color(0, 0, 0, 0));
+          RFID.setOpaque(false);
+        RFID.setBackground(new Color(0, 0, 0, 0));
           makeButtonTransparent(kembali);
             makeButtonTransparent(tambah);
+           
+            
 
     }
     
@@ -31,6 +50,8 @@ public class tambahkaryawan extends javax.swing.JFrame {
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
     }
+     
+     
     
     
     
@@ -54,11 +75,22 @@ public class tambahkaryawan extends javax.swing.JFrame {
 
         tambah = new javax.swing.JButton();
         kembali = new javax.swing.JButton();
+        nama_karyawan = new javax.swing.JTextField();
+        no_telp = new javax.swing.JTextField();
+        password = new javax.swing.JTextField();
+        RFID = new javax.swing.JTextField();
+        role = new javax.swing.JComboBox<>();
+        id_karyawan = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setIconImages(null);
+        setUndecorated(true);
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentHidden(java.awt.event.ComponentEvent evt) {
+                formComponentHidden(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         tambah.addActionListener(new java.awt.event.ActionListener() {
@@ -75,21 +107,130 @@ public class tambahkaryawan extends javax.swing.JFrame {
         });
         getContentPane().add(kembali, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 560, 200, 30));
 
+        nama_karyawan.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
+        nama_karyawan.setBorder(null);
+        getContentPane().add(nama_karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 190, 390, 40));
+
+        no_telp.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
+        no_telp.setBorder(null);
+        getContentPane().add(no_telp, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 260, 390, 40));
+
+        password.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
+        password.setBorder(null);
+        password.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                passwordActionPerformed(evt);
+            }
+        });
+        getContentPane().add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 330, 400, 40));
+
+        RFID.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
+        RFID.setBorder(null);
+        getContentPane().add(RFID, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 470, 400, 40));
+
+        role.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "owner", "kasir", " " }));
+        getContentPane().add(role, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 400, 410, 40));
+
+        id_karyawan.setFont(new java.awt.Font("Futura Md BT", 1, 12)); // NOI18N
+        id_karyawan.setForeground(new java.awt.Color(116, 77, 6));
+        id_karyawan.setBorder(null);
+        id_karyawan.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        id_karyawan.setEnabled(false);
+        id_karyawan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                id_karyawanActionPerformed(evt);
+            }
+        });
+        getContentPane().add(id_karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 120, 360, 40));
+
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Tambah karyawan (3).png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-
-        jTextField1.setText("jTextField1");
-        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 120, 400, 40));
-
-        jTextField2.setText("jTextField2");
-        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 190, -1, -1));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 640));
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+ private String generateCode() {
+        String kodeMenu = "KR001";
+        try (Connection conn = koneksi.getConnection()) {
+            if (conn != null) {
+                try {
+//                Statement st = conn.createStatement();
+                    Statement statem = conn.createStatement();
+                    String query = "SELECT id_karyawan FROM karyawan ORDER BY id_karyawan DESC LIMIT 1";
+                    ResultSet resultSet = statem.executeQuery(query);
+
+                    if (resultSet.next()) {
+                        String lastKode = resultSet.getString("id_karyawan");
+                        int kodeNum = Integer.parseInt(lastKode.substring(2)) + 1;
+                        kodeMenu = String.format("KR%03d", kodeNum);
+                    }
+
+                    resultSet.close();
+                    statem.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return kodeMenu;
+    }
 
     private void tambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahActionPerformed
         // TODO add your handling code here:
+         String namaKaryawan = nama_karyawan.getText(); // Misal nama adalah JTexField untuk nama karyawan
+        String alamatKaryawan = no_telp.getText(); // Misal alamat adalah JTexField untuk alamat
+        String noTelp = no_telp.getText(); // Misal notelp adalah JTexField untuk no telepon
+        String Password = password.getText();
+        String selectedRole = role.getSelectedItem().toString();
+        String Rfid = RFID.getText();
+        String kode = generateCode();
+        // Periksa apakah semua field sudah diisi
+        if (namaKaryawan.isEmpty() || alamatKaryawan.isEmpty() || noTelp.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Semua field harus diisi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Konfirmasi penambahan
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Apakah Anda yakin ingin menambah data?",
+                "Konfirmasi",
+                JOptionPane.YES_NO_OPTION);
+
+        // Query untuk menambahkan data ke tabel karyawan
+        String query = "INSERT INTO karyawan (id_karyawan, nama_karyawan, no_telp, password, role, RFID,tanggal_masuk) VALUES (?, ?, ?, ?, ?,?, NOW())";
+
+        // Menambahkan data ke database
+        try (Connection conn = koneksi.getConnection(); PreparedStatement stat = conn.prepareStatement(query)) {
+            // Set nilai parameter
+            stat.setString(1, kode);
+            stat.setString(2, namaKaryawan);
+           
+            stat.setString(3, noTelp);
+            stat.setString(4, Password);
+            stat.setString(5, selectedRole);
+             stat.setString(6, Rfid);
+
+            // Eksekusi query
+            int rowsAffected = stat.executeUpdate();
+
+            // Periksa apakah data berhasil ditambahkan
+            if (rowsAffected > 0) {
+               notifberhasilkrw popup = new notifberhasilkrw();
+              popup.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Gagal menambahkan data.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (SQLException e) {
+            // Menangani kesalahan
+            JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(); // Menampilkan detail kesalahan di konsol (untuk debug)
+        }
+
     }//GEN-LAST:event_tambahActionPerformed
 
     private void kembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kembaliActionPerformed
@@ -98,10 +239,23 @@ public class tambahkaryawan extends javax.swing.JFrame {
         this.setVisible(false); 
     }//GEN-LAST:event_kembaliActionPerformed
 
+    private void passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_passwordActionPerformed
+
+    private void id_karyawanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_id_karyawanActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_id_karyawanActionPerformed
+
+    private void formComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentHidden
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formComponentHidden
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -134,10 +288,14 @@ public class tambahkaryawan extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField RFID;
+    private javax.swing.JTextField id_karyawan;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JButton kembali;
+    private javax.swing.JTextField nama_karyawan;
+    private javax.swing.JTextField no_telp;
+    private javax.swing.JTextField password;
+    private javax.swing.JComboBox<String> role;
     private javax.swing.JButton tambah;
     // End of variables declaration//GEN-END:variables
 }

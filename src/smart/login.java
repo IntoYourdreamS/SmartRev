@@ -89,7 +89,6 @@ public class login extends javax.swing.JFrame {
         getContentPane().add(hide_pasword1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1140, 430, 50, 50));
 
         FieldUsername.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
-        FieldUsername.setForeground(new java.awt.Color(255, 255, 255));
         FieldUsername.setBorder(null);
         FieldUsername.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -104,7 +103,6 @@ public class login extends javax.swing.JFrame {
         getContentPane().add(FieldUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 320, 290, 40));
 
         Password.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
-        Password.setForeground(new java.awt.Color(255, 255, 255));
         Password.setBorder(null);
         Password.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
