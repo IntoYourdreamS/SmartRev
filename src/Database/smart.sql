@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 20, 2025 at 01:40 PM
+-- Generation Time: Mar 21, 2025 at 02:48 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.4.24
 
@@ -51,6 +51,17 @@ CREATE TABLE `detail_penjualan` (
   `subtotal` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `detail_penjualan`
+--
+
+INSERT INTO `detail_penjualan` (`id_penjualan`, `id_produk`, `kategori`, `jumlah`, `harga_satuan`, `subtotal`) VALUES
+('TR001', '121', 'BahanBaku', 2, '50000.00', '100000.00'),
+('TR001', '12345', 'BahanBaku', 2, '6000.00', '12000.00'),
+('TR002', '121', 'BahanBaku', 1, '50000.00', '50000.00'),
+('TR003', '121', 'BahanBaku', 2, '50000.00', '100000.00'),
+('TR004', '121', 'BahanBaku', 2, '50000.00', '100000.00');
+
 -- --------------------------------------------------------
 
 --
@@ -63,8 +74,16 @@ CREATE TABLE `karyawan` (
   `no_telp` int(9) NOT NULL,
   `password` varchar(25) DEFAULT NULL,
   `tanggal_masuk` timestamp NOT NULL DEFAULT current_timestamp(),
+  `role` enum('Owner','Karyawan') NOT NULL,
   `RFID` int(25) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `karyawan`
+--
+
+INSERT INTO `karyawan` (`id_karyawan`, `nama_karyawan`, `no_telp`, `password`, `tanggal_masuk`, `role`, `RFID`) VALUES
+('KR001', 'SobriKakap', 12521512, '12345', '2025-03-20 14:43:31', 'Owner', 12415125);
 
 -- --------------------------------------------------------
 
@@ -90,9 +109,18 @@ CREATE TABLE `penjualan` (
   `id_karyawan` varchar(8) DEFAULT NULL,
   `tanggal` date DEFAULT NULL,
   `total_harga` decimal(10,2) DEFAULT NULL,
-  `bayar` decimal(10,2) NOT NULL,
-  `kembali` decimal(10,2) NOT NULL
+  `bayar` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `penjualan`
+--
+
+INSERT INTO `penjualan` (`id_penjualan`, `id_karyawan`, `tanggal`, `total_harga`, `bayar`) VALUES
+('TR001', NULL, '2025-03-20', '112000.00', '120000.00'),
+('TR002', NULL, '2025-03-20', '50000.00', '60000.00'),
+('TR003', 'KR001', '2025-03-21', '100000.00', '120000.00'),
+('TR004', 'KR001', '2025-03-21', '100000.00', '120000.00');
 
 -- --------------------------------------------------------
 
@@ -115,7 +143,8 @@ CREATE TABLE `produk` (
 --
 
 INSERT INTO `produk` (`id_produk`, `nama_produk`, `harga`, `stok`, `id_supplier`, `barcode`, `kategori`) VALUES
-('PR001', 'Beras', 50000, 3, NULL, '121', 'BahanBaku');
+('PR001', 'Beras', 50000, 3, NULL, '121', 'BahanBaku'),
+('PR002', 'Indomie', 6000, 4, NULL, '12345', 'BahanBaku');
 
 -- --------------------------------------------------------
 
@@ -210,15 +239,7 @@ ALTER TABLE `supplier`
 -- Constraints for table `detail_pembelian`
 --
 ALTER TABLE `detail_pembelian`
-  ADD CONSTRAINT `detail_pembelian_ibfk_1` FOREIGN KEY (`id_pembelian`) REFERENCES `pembelian` (`id_pembelian`),
-  ADD CONSTRAINT `detail_pembelian_ibfk_2` FOREIGN KEY (`id_produk`) REFERENCES `produk` (`id_produk`);
-
---
--- Constraints for table `detail_penjualan`
---
-ALTER TABLE `detail_penjualan`
-  ADD CONSTRAINT `detail_penjualan_ibfk_1` FOREIGN KEY (`id_penjualan`) REFERENCES `penjualan` (`id_penjualan`),
-  ADD CONSTRAINT `detail_penjualan_ibfk_2` FOREIGN KEY (`id_produk`) REFERENCES `produk` (`id_produk`);
+  ADD CONSTRAINT `detail_pembelian_ibfk_1` FOREIGN KEY (`id_pembelian`) REFERENCES `pembelian` (`id_pembelian`);
 
 --
 -- Constraints for table `pembelian`
@@ -226,12 +247,6 @@ ALTER TABLE `detail_penjualan`
 ALTER TABLE `pembelian`
   ADD CONSTRAINT `pembelian_ibfk_1` FOREIGN KEY (`id_karyawan`) REFERENCES `karyawan` (`id_karyawan`),
   ADD CONSTRAINT `pembelian_ibfk_2` FOREIGN KEY (`id_supplier`) REFERENCES `supplier` (`id_supplier`);
-
---
--- Constraints for table `penjualan`
---
-ALTER TABLE `penjualan`
-  ADD CONSTRAINT `penjualan_ibfk_1` FOREIGN KEY (`id_karyawan`) REFERENCES `karyawan` (`id_karyawan`);
 
 --
 -- Constraints for table `produk`
