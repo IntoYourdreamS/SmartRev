@@ -356,9 +356,10 @@ public class transaksi extends javax.swing.JFrame {
 
     private void txt_qtyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_qtyActionPerformed
         // TODO add your handling code here:
+        btn_simpan.doClick();
     }//GEN-LAST:event_txt_qtyActionPerformed
 
-    private void prosesTransaksi(String kodeTransaksi,String idKaryawan, String[] idProduk, int[] jumlahProduk, String[] Kategori, int[] hargaS, int[] SubTotal, Double bayar, int total) throws SQLException {
+    private void prosesTransaksi(String kodeTransaksi, String idKaryawan, String[] idProduk, int[] jumlahProduk, String[] Kategori, int[] hargaS, int[] SubTotal, Double bayar, int total) throws SQLException {
         Connection conn = koneksi.getConnection();
         if (conn != null) {
             try {
@@ -385,7 +386,7 @@ public class transaksi extends javax.swing.JFrame {
                         DTps.executeUpdate();
                     }
 
-                    String getStokMn = "SELECT id_produk, stok FROM produk WHERE id_menu = ?";
+                    String getStokMn = "SELECT id_produk, stok FROM produk WHERE id_produk = ?";
                     try (PreparedStatement SMps = koneksi.getConnection().prepareStatement(getStokMn)) {
                         SMps.setString(1, idProduk[j]);
                         ResultSet rs = SMps.executeQuery();
@@ -438,6 +439,7 @@ public class transaksi extends javax.swing.JFrame {
                 txt_namabrg.setText(namaProduk);
                 txt_harga.setText(harga);
                 txt_kategori.setText(kategori);
+                txt_qty.requestFocus();
             } else {
                 JOptionPane.showMessageDialog(this, "Kode bahan tidak ditemukan", "Kesalahan", JOptionPane.ERROR_MESSAGE);
                 txt_namabrg.setText("");
@@ -527,11 +529,12 @@ public class transaksi extends javax.swing.JFrame {
 
             String checkStockSQL = "SELECT stok FROM produk WHERE barcode = ?";
             try (PreparedStatement ps = conn.prepareStatement(checkStockSQL)) {
-                ps.setString(1, txt_noBarang.getText().trim()); 
+                ps.setString(1, txt_noBarang.getText().trim());
                 ResultSet rs = ps.executeQuery();
 
                 if (rs.next()) {
                     int stokTersedia = rs.getInt("stok");
+                    txt_noBarang.requestFocus();
 
                     if (stokTersedia < qty) {
                         JOptionPane.showMessageDialog(null,

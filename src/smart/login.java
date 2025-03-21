@@ -29,8 +29,8 @@ public class login extends javax.swing.JFrame {
         Password.setBackground(new Color(0, 0, 0, 0));
         FieldUsername.setOpaque(false);
         FieldUsername.setBackground(new Color(0, 0, 0, 0));
-            makeButtonTransparent(login);
-   
+        makeButtonTransparent(login);
+        FieldUsername.requestFocus();
 
         hide_pasword1.setVisible(false);
         hide_pasword1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -41,8 +41,7 @@ public class login extends javax.swing.JFrame {
 
     }
     Connection conn = koneksi.getConnection();
-     
-    
+
     private void makeButtonTransparent(JButton button) {
         button.setOpaque(false);
         button.setContentAreaFilled(false);
@@ -134,7 +133,6 @@ public class login extends javax.swing.JFrame {
 
     private void FieldUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FieldUsernameActionPerformed
         // TODO add your handling code here:
-        loginValidation();
     }//GEN-LAST:event_FieldUsernameActionPerformed
 
     private void show_paswordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_show_paswordMouseClicked
@@ -155,11 +153,11 @@ public class login extends javax.swing.JFrame {
         hide_pasword1.getParent().repaint();
 
     }//GEN-LAST:event_hide_pasword1MouseClicked
-    
+
     private long lastTime = 0;
     private String buffer = "";
     private final int RFID_THRESHOLD = 30;
-    
+
     private void FieldUsernameKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_FieldUsernameKeyTyped
         // TODO add your handling code here:
         long currentTime = System.currentTimeMillis();
@@ -190,7 +188,7 @@ public class login extends javax.swing.JFrame {
 
     private void PasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordActionPerformed
         // TODO add your handling code here:
-        loginValidation();
+        login.doClick();
     }//GEN-LAST:event_PasswordActionPerformed
 
     private void PasswordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PasswordMouseClicked
@@ -204,7 +202,7 @@ public class login extends javax.swing.JFrame {
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
         // TODO add your handling code here:
-           // TODO add your handling code here:
+        // TODO add your handling code here:
         String userInput = FieldUsername.getText();
         char[] passwordInputChar = Password.getPassword();
         String passwordInput = new String(passwordInputChar);
@@ -256,24 +254,7 @@ public class login extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_loginActionPerformed
-    private void loginValidation() {
-        char[] passChars = Password.getPassword();
-        String password = new String(passChars);
-        String username = FieldUsername.getText().trim();
 
-        if (username.equals("admin") && password.equals("admin123")) {
-            dashboard dashboardMenu = new dashboard();
-            dashboardMenu.setVisible(true);
-
-            this.setVisible(false);
-            this.dispose();
-        } else {
-            JOptionPane.showMessageDialog(this, "Username atau Password Salah!", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        java.util.Arrays.fill(passChars, '0');
-        Password.setText("");
-    }
-    
     private void ambilData(String rfid) {
         String query = "SELECT * FROM karyawan WHERE RFID = ? LIMIT 1";
         try (PreparedStatement ps = conn.prepareStatement(query)) {
