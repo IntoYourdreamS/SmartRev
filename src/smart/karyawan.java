@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import popup.notifberhasilkrw;
 import popup.tambahkaryawan;
 import popup.ubahkaryawan;
 import popup.tambahkaryawan;
@@ -29,6 +30,14 @@ import popup.tambahkaryawan;
 public class karyawan extends javax.swing.JFrame {
 
     public static int getSelectedRow() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public static Object getValueAt(int selectedRow, int i) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public static Object getModel() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
@@ -243,7 +252,9 @@ public class karyawan extends javax.swing.JFrame {
     }//GEN-LAST:event_laporanActionPerformed
 
     private void ubahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ubahActionPerformed
- 
+       ubahkaryawan popup = new ubahkaryawan();
+                popup.setVisible(true);
+      
     }//GEN-LAST:event_ubahActionPerformed
 
     private void hapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hapusActionPerformed

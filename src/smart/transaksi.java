@@ -172,21 +172,23 @@ public class transaksi extends javax.swing.JFrame {
         });
         getContentPane().add(bttndashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 140, 160, 30));
 
+        txt_kategori.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         txt_kategori.setBorder(null);
         txt_kategori.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txt_kategoriActionPerformed(evt);
             }
         });
-        getContentPane().add(txt_kategori, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 520, 320, 30));
+        getContentPane().add(txt_kategori, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 520, 320, 40));
 
+        txt_namabrg.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         txt_namabrg.setBorder(null);
         txt_namabrg.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txt_namabrgActionPerformed(evt);
             }
         });
-        getContentPane().add(txt_namabrg, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 290, 320, 30));
+        getContentPane().add(txt_namabrg, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 290, 320, 40));
 
         btn_cetak.setBorder(null);
         btn_cetak.addActionListener(new java.awt.event.ActionListener() {
@@ -212,13 +214,14 @@ public class transaksi extends javax.swing.JFrame {
         });
         getContentPane().add(btn_hapus, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 650, 170, 40));
 
+        txt_harga.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         txt_harga.setBorder(null);
         txt_harga.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txt_hargaActionPerformed(evt);
             }
         });
-        getContentPane().add(txt_harga, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 440, 320, 30));
+        getContentPane().add(txt_harga, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 440, 320, 40));
 
         btn_simpan.setBorder(null);
         btn_simpan.addActionListener(new java.awt.event.ActionListener() {
@@ -246,13 +249,14 @@ public class transaksi extends javax.swing.JFrame {
         });
         getContentPane().add(txt_bayar, new org.netbeans.lib.awtextra.AbsoluteConstraints(920, 580, 170, 30));
 
+        txt_noBarang.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         txt_noBarang.setBorder(null);
         txt_noBarang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txt_noBarangActionPerformed(evt);
             }
         });
-        getContentPane().add(txt_noBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 210, 320, 30));
+        getContentPane().add(txt_noBarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 210, 320, 40));
 
         txt_totalharga.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         txt_totalharga.setBorder(null);
@@ -311,6 +315,7 @@ public class transaksi extends javax.swing.JFrame {
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 90, 620, -1));
 
+        txt_qty.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         txt_qty.setBorder(null);
         txt_qty.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -322,7 +327,7 @@ public class transaksi extends javax.swing.JFrame {
                 txt_qtyKeyReleased(evt);
             }
         });
-        getContentPane().add(txt_qty, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 370, 320, 30));
+        getContentPane().add(txt_qty, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 360, 320, 40));
 
         laporan.setBorder(null);
         laporan.addActionListener(new java.awt.event.ActionListener() {

@@ -8,6 +8,7 @@ import Config.koneksi;
 import java.awt.Color;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -20,6 +21,7 @@ import smart.restok;
  * @author ASUS
  */
 public class ubahkaryawan extends javax.swing.JFrame {
+    private ResultSet rs;
 
     /**
      * Creates new form coba
@@ -27,8 +29,22 @@ public class ubahkaryawan extends javax.swing.JFrame {
     public ubahkaryawan() {
         initComponents();
           makeButtonTransparent(kembali);
-            makeButtonTransparent(tambah);
+            makeButtonTransparent(ubah);
+            
+        no_karyawan.setBackground(new Color(0, 0, 0, 0));
+        nama_karyawan.setOpaque(false);
+        nama_karyawan.setBackground(new Color(0, 0, 0, 0));
+         no_telp.setOpaque(false);
+        no_telp.setBackground(new Color(0, 0, 0, 0));
+        password.setOpaque(false);
+        password.setBackground(new Color(0, 0, 0, 0));
+          RFID.setOpaque(false);
+        RFID.setBackground(new Color(0, 0, 0, 0));
 
+    }
+
+    public ubahkaryawan(int id_karyawan, String namaKaryawan, String noTelp, String password, String role, String rfid) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
      private void makeButtonTransparent(JButton button) {
@@ -57,13 +73,12 @@ public class ubahkaryawan extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        tambah = new javax.swing.JButton();
+        ubah = new javax.swing.JButton();
         kembali = new javax.swing.JButton();
-        id_karyawan = new javax.swing.JTextField();
         nama_karyawan = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
         no_telp = new javax.swing.JTextField();
         password = new javax.swing.JTextField();
+        no_karyawan = new javax.swing.JTextField();
         role = new javax.swing.JComboBox<>();
         RFID = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -71,12 +86,12 @@ public class ubahkaryawan extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        tambah.addActionListener(new java.awt.event.ActionListener() {
+        ubah.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tambahActionPerformed(evt);
+                ubahActionPerformed(evt);
             }
         });
-        getContentPane().add(tambah, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 560, 190, 30));
+        getContentPane().add(ubah, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 560, 190, 30));
 
         kembali.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -85,24 +100,9 @@ public class ubahkaryawan extends javax.swing.JFrame {
         });
         getContentPane().add(kembali, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 560, 200, 30));
 
-        id_karyawan.setFont(new java.awt.Font("Futura Md BT", 1, 12)); // NOI18N
-        id_karyawan.setForeground(new java.awt.Color(116, 77, 6));
-        id_karyawan.setBorder(null);
-        id_karyawan.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        id_karyawan.setEnabled(false);
-        id_karyawan.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                id_karyawanActionPerformed(evt);
-            }
-        });
-        getContentPane().add(id_karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 120, 360, 40));
-
         nama_karyawan.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         nama_karyawan.setBorder(null);
         getContentPane().add(nama_karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 190, 390, 40));
-
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Tambah karyawan (3).png"))); // NOI18N
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 640));
 
         no_telp.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         no_telp.setBorder(null);
@@ -116,6 +116,15 @@ public class ubahkaryawan extends javax.swing.JFrame {
             }
         });
         getContentPane().add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 330, 400, 40));
+
+        no_karyawan.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
+        no_karyawan.setBorder(null);
+        no_karyawan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                no_karyawanActionPerformed(evt);
+            }
+        });
+        getContentPane().add(no_karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 120, 390, 40));
 
         role.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "owner", "kasir", " " }));
         getContentPane().add(role, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 400, 410, 40));
@@ -131,74 +140,44 @@ public class ubahkaryawan extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void tambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahActionPerformed
-        // TODO add your handling code here:
-        String namaKaryawan = nama_karyawan.getText(); // Misal nama adalah JTexField untuk nama karyawan
-        String alamatKaryawan = no_telp.getText(); // Misal alamat adalah JTexField untuk alamat
-        String noTelp = no_telp.getText(); // Misal notelp adalah JTexField untuk no telepon
-        String Password = password.getText();
-        String selectedRole = role.getSelectedItem().toString();
-        String Rfid = RFID.getText();
-//        String kode = generateCode();
+    private void ubahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ubahActionPerformed
+String idKaryawan = no_karyawan.getText();
+String namaKaryawan = nama_karyawan.getText();
+String noTelp = no_telp.getText();
+String Password = password.getText();
+String Role = role.getSelectedItem().toString();
+String rfid = RFID.getText();
 
-// Ambil ID karyawan yang dipilih dari tabel
-        int selectedRow = karyawan.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Pilih data yang akan diubah!", "Peringatan", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+try {
+    Connection conn = koneksi.getConnection();
+    String sql = "UPDATE karyawan SET nama_karyawan = ?, no_telp = ?, password = ?, role = ?, rfid = ? WHERE id_karyawan = ?";
+    PreparedStatement pst = conn.prepareStatement(sql);
 
-// Konfirmasi ubah
-        int confirm = JOptionPane.showConfirmDialog(this,
-                "Apakah Anda yakin ingin mengubah data?",
-                "Konfirmasi",
-                JOptionPane.YES_NO_OPTION);
+    pst.setString(1, namaKaryawan);
+    pst.setString(2, noTelp);
+    pst.setString(3, Password);
+    pst.setString(4, Role);
+    pst.setString(5, rfid);
+    pst.setString(6, idKaryawan); // WHERE id_karyawan = ?
 
-//        String idKaryawan = tb_karyawan.getValueAt(selectedRow, 0).toString(); // Asumsi ID ada di kolom 0
+    int updatedRows = pst.executeUpdate();
 
-// Periksa apakah semua field sudah diisi
-        if (namaKaryawan.isEmpty() || alamatKaryawan.isEmpty() || noTelp.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Semua field harus diisi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+    if (updatedRows > 0) {
+        JOptionPane.showMessageDialog(this, "Data karyawan berhasil diubah.");
+    } else {
+        JOptionPane.showMessageDialog(this, "Gagal mengubah data. ID Karyawan tidak ditemukan.", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+    }
 
-// Query untuk mengupdate data karyawan
-        String query = "UPDATE karyawan SET nama_karyawan=?, alamat=?, no_telp=?, role=? WHERE id_karyawan=?";
+} catch (SQLException e) {
+    JOptionPane.showMessageDialog(null,
+            "Kesalahan: " + e.getMessage(),
+            "Kesalahan Database",
+            JOptionPane.ERROR_MESSAGE
+    );
+    e.printStackTrace();
+}
 
-// Update data ke database
-        try (Connection conn = koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement(query)) {
-
-            // Set nilai parameter
-            pst.setString(1, namaKaryawan);
-            pst.setString(2, alamatKaryawan);
-            pst.setString(3, noTelp);
-            pst.setString(4, selectedRole);
-//            pst.setString(5, inputid);
-
-            // Eksekusi query
-            int rowsAffected = pst.executeUpdate();
-
-            // Periksa apakah data berhasil diupdate
-            if (rowsAffected > 0) {
-                JOptionPane.showMessageDialog(this, "Data berhasil diubah!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-                // Panggil loadTableData() untuk memperbarui tampilan tabel
-//                loadTableData();
-//                // Reset form
-//                inputID.setText("");
-//                nama1.setText("");
-//                alamat.setText("");
-//                notelp.setText("");
-                password.setText("");
-
-            } else {
-                JOptionPane.showMessageDialog(this, "Gagal mengubah data.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (SQLException e) {
-            // Menangani kesalahan
-            JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        }
-    }//GEN-LAST:event_tambahActionPerformed
+    }//GEN-LAST:event_ubahActionPerformed
 
     private void kembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kembaliActionPerformed
         // TODO add your handling code here:
@@ -206,13 +185,51 @@ public class ubahkaryawan extends javax.swing.JFrame {
         this.setVisible(false); 
     }//GEN-LAST:event_kembaliActionPerformed
 
-    private void id_karyawanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_id_karyawanActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_id_karyawanActionPerformed
-
     private void passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_passwordActionPerformed
+
+    private void no_karyawanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_no_karyawanActionPerformed
+        // TODO add your handling code here:
+  String noKaryawan = no_karyawan.getText();
+
+try {
+    Connection conn = koneksi.getConnection();
+    PreparedStatement pst = conn.prepareStatement("SELECT * FROM karyawan WHERE id_karyawan = ?");
+    pst.setString(1, noKaryawan);
+    ResultSet rs = pst.executeQuery();
+
+    if (rs.next()) {
+        String namaKaryawan = rs.getString("nama_karyawan");
+        String noTelp = rs.getString("no_telp");
+        String Password = rs.getString("password");
+        String Role = rs.getString("role");
+        String rfid = rs.getString("rfid");
+
+        nama_karyawan.setText(namaKaryawan);
+        no_telp.setText(noTelp);
+        password.setText(Password);
+        role.setSelectedItem(Role); // JComboBox update
+        RFID.setText(rfid);
+    } else {
+        JOptionPane.showMessageDialog(this, "No Karyawan tidak ditemukan", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+        nama_karyawan.setText("");
+        no_telp.setText("");
+        password.setText("");
+        role.setSelectedIndex(-1); // Tidak memilih apapun
+        RFID.setText("");
+    }
+
+} catch (SQLException e) {
+    JOptionPane.showMessageDialog(null,
+            "Kesalahan: " + e.getMessage(),
+            "Kesalahan Database",
+            JOptionPane.ERROR_MESSAGE
+    );
+    e.printStackTrace();
+}
+
+    }//GEN-LAST:event_no_karyawanActionPerformed
 
     /**
      * @param args the command line arguments
@@ -252,14 +269,13 @@ public class ubahkaryawan extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField RFID;
-    private javax.swing.JTextField id_karyawan;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JButton kembali;
     private javax.swing.JTextField nama_karyawan;
+    private javax.swing.JTextField no_karyawan;
     private javax.swing.JTextField no_telp;
     private javax.swing.JTextField password;
     private javax.swing.JComboBox<String> role;
-    private javax.swing.JButton tambah;
+    private javax.swing.JButton ubah;
     // End of variables declaration//GEN-END:variables
 }
