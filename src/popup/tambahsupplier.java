@@ -212,7 +212,8 @@ if (confirm == JOptionPane.YES_OPTION) {
         int rowsAffected = stat.executeUpdate();
 
         if (rowsAffected > 0) {
-            JOptionPane.showMessageDialog(this, "Data berhasil ditambahkan!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+             notifberhasilkrw popup = new notifberhasilkrw();
+              popup.setVisible(true);
         } else {
             JOptionPane.showMessageDialog(this, "Gagal menambahkan data.", "Error", JOptionPane.ERROR_MESSAGE);
         }
