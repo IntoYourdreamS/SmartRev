@@ -127,7 +127,7 @@ public class ubahkaryawan extends javax.swing.JFrame {
         getContentPane().add(no_karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 120, 390, 40));
 
         role.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "owner", "kasir", " " }));
-        getContentPane().add(role, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 400, 410, 40));
+        getContentPane().add(role, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 400, 410, 40));
 
         RFID.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
         RFID.setBorder(null);
@@ -163,7 +163,8 @@ try {
     int updatedRows = pst.executeUpdate();
 
     if (updatedRows > 0) {
-        JOptionPane.showMessageDialog(this, "Data karyawan berhasil diubah.");
+         notifberhasilubhkrw popup = new notifberhasilubhkrw();
+              popup.setVisible(true);
     } else {
         JOptionPane.showMessageDialog(this, "Gagal mengubah data. ID Karyawan tidak ditemukan.", "Kesalahan", JOptionPane.ERROR_MESSAGE);
     }

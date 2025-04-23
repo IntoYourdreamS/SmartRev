@@ -4,7 +4,18 @@
  */
 package popup;
 
+import Config.koneksi;
+import java.awt.Color;
+import java.awt.Font;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import smart.*;
 
 /**
@@ -27,6 +38,53 @@ public class datasupplier extends javax.swing.JFrame {
         button.setBorderPainted(false);
     }
     
+     private void customizeTable() {
+          JTableHeader header = tbkaryawan.getTableHeader();
+           header.setFont(new Font("Inter", Font.BOLD, 11));
+           header.setForeground(Color.WHITE);
+            header.setOpaque(false);
+            tbkaryawan.setFont(new Font("Arial", Font.PLAIN, 10));
+            tbkaryawan.setRowHeight(30); 
+            tbkaryawan.setShowGrid(true); 
+            tbkaryawan.setIntercellSpacing(new java.awt.Dimension(0, 0));
+            tbkaryawan.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+     }
+     
+  
+       private void loadDataToTable() {
+    // Definisikan model tabel dengan header kolom sesuai dengan data supplier
+    DefaultTableModel model = new DefaultTableModel(
+            new Object[]{"No Supplier", "Nama Supplier", "No Hp", "Alamat"}, 0
+    );
+    tbkaryawan.setModel(model); // Set model ke JTable (asumsi tbkaryawan adalah nama JTable)
+
+    try (Connection conn = koneksi.getConnection(); Statement stmt = conn.createStatement()) {
+        // Query untuk mengambil data supplier
+        String query = "SELECT id_supplier, nama_supplier, no_telp, alamat FROM supplier";
+
+        try (ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                // Ambil data dari ResultSet sesuai dengan nama kolom tabel supplier
+                String idSupplier = rs.getString("id_supplier");
+                String namaSupplier = rs.getString("nama_supplier");
+                String noTelp = rs.getString("no_telp");
+                String alamat = rs.getString("alamat");
+
+                // Tambahkan data ke model tabel
+                model.addRow(new Object[]{idSupplier, namaSupplier, noTelp, alamat});
+            }
+        }
+    } catch (SQLException e) {
+        // Tampilkan pesan kesalahan jika terjadi SQLException
+        JOptionPane.showMessageDialog(this,
+                "Gagal memuat data: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace(); // Untuk debug
+    }
+}
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -38,6 +96,8 @@ public class datasupplier extends javax.swing.JFrame {
     private void initComponents() {
 
         kembali = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tbkaryawan = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -50,6 +110,21 @@ public class datasupplier extends javax.swing.JFrame {
             }
         });
         getContentPane().add(kembali, new org.netbeans.lib.awtextra.AbsoluteConstraints(1110, 660, 130, 30));
+
+        tbkaryawan.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "No Supplier", "Nama Supplier", "No Hp", "Alamat"
+            }
+        ));
+        jScrollPane2.setViewportView(tbkaryawan);
+
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 100, 1120, 500));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Data Supplier (1).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
@@ -115,6 +190,8 @@ public class datasupplier extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton kembali;
+    private javax.swing.JTable tbkaryawan;
     // End of variables declaration//GEN-END:variables
 }

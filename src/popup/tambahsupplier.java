@@ -4,11 +4,18 @@
  */
 package popup;
 
+import Config.koneksi;
 import java.awt.Color;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import smart.karyawan;
 import smart.restok;
+import java.sql.PreparedStatement;
 
 /**
  *
@@ -21,7 +28,16 @@ public class tambahsupplier extends javax.swing.JFrame {
      */
     public tambahsupplier() {
         initComponents();
+         id_supplier.setOpaque(false);
+        id_supplier.setBackground(new Color(0, 0, 0, 0));
+        nama_supplier.setOpaque(false);
+        nama_supplier.setBackground(new Color(0, 0, 0, 0));
+         no_telp.setOpaque(false);
+        no_telp.setBackground(new Color(0, 0, 0, 0));
+        alamat.setOpaque(false);
+        alamat.setBackground(new Color(0, 0, 0, 0));
           makeButtonTransparent(kembali);
+          makeButtonTransparent(tambah);
             
 
     }
@@ -53,9 +69,12 @@ public class tambahsupplier extends javax.swing.JFrame {
     private void initComponents() {
 
         kembali = new javax.swing.JButton();
+        id_supplier = new javax.swing.JTextField();
+        nama_supplier = new javax.swing.JTextField();
+        no_telp = new javax.swing.JTextField();
+        alamat = new javax.swing.JTextField();
+        tambah = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -67,24 +86,146 @@ public class tambahsupplier extends javax.swing.JFrame {
         });
         getContentPane().add(kembali, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 570, 200, 30));
 
+        id_supplier.setFont(new java.awt.Font("Futura Md BT", 1, 12)); // NOI18N
+        id_supplier.setForeground(new java.awt.Color(116, 77, 6));
+        id_supplier.setBorder(null);
+        id_supplier.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        id_supplier.setEnabled(false);
+        id_supplier.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                id_supplierActionPerformed(evt);
+            }
+        });
+        getContentPane().add(id_supplier, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 90, 360, 40));
+
+        nama_supplier.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
+        nama_supplier.setBorder(null);
+        getContentPane().add(nama_supplier, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 150, 390, 50));
+
+        no_telp.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
+        no_telp.setBorder(null);
+        no_telp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                no_telpActionPerformed(evt);
+            }
+        });
+        getContentPane().add(no_telp, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 220, 400, 50));
+
+        alamat.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
+        alamat.setBorder(null);
+        alamat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                alamatActionPerformed(evt);
+            }
+        });
+        getContentPane().add(alamat, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 290, 400, 50));
+
+        tambah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tambahActionPerformed(evt);
+            }
+        });
+        getContentPane().add(tambah, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 570, 190, 30));
+
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Tambah Supplier.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-
-        jTextField1.setText("jTextField1");
-        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 120, 400, 40));
-
-        jTextField2.setText("jTextField2");
-        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 190, -1, -1));
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+private String generateCode() {
+        String kodeMenu = "SP001";
+        try (Connection conn = koneksi.getConnection()) {
+            if (conn != null) {
+                try {
+//                Statement st = conn.createStatement();
+                    Statement statem = conn.createStatement();
+                    String query = "SELECT id_karyawan FROM supplier ORDER BY id_supplier DESC LIMIT 1";
+                    ResultSet resultSet = statem.executeQuery(query);
 
+                    if (resultSet.next()) {
+                        String lastKode = resultSet.getString("id_supplier");
+                        int kodeNum = Integer.parseInt(lastKode.substring(2)) + 1;
+                        kodeMenu = String.format("SP%03d", kodeNum);
+                    }
+
+                    resultSet.close();
+                    statem.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return kodeMenu;
+    }
     private void kembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kembaliActionPerformed
         // TODO add your handling code here:
           new restok().setVisible(true);
         this.setVisible(false); 
     }//GEN-LAST:event_kembaliActionPerformed
+
+    private void no_telpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_no_telpActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_no_telpActionPerformed
+
+    private void alamatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_alamatActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_alamatActionPerformed
+
+    private void tambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahActionPerformed
+// Ambil input dari field
+String namaSupplier = nama_supplier.getText();
+String noTelp = no_telp.getText();
+String alamatSupplier = alamat.getText();
+String kode = generateCode();
+
+// Periksa apakah semua field sudah diisi
+if (namaSupplier.isEmpty() || noTelp.isEmpty() || alamatSupplier.isEmpty()) {
+    JOptionPane.showMessageDialog(this, "Semua field harus diisi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+    return;
+}
+
+// Konfirmasi penambahan
+int confirm = JOptionPane.showConfirmDialog(this,
+        "Apakah Anda yakin ingin menambah data?",
+        "Konfirmasi",
+        JOptionPane.YES_NO_OPTION);
+
+if (confirm == JOptionPane.YES_OPTION) {
+    String query = "INSERT INTO supplier (id_supplier, nama_supplier, no_telp, alamat, create_at) VALUES (?, ?, ?, ?, NOW())";
+
+    try (Connection conn = koneksi.getConnection();
+         PreparedStatement stat = conn.prepareStatement(query)) {
+
+        // Isi parameter pada prepared statement
+        stat.setString(1, kode);
+        stat.setString(2, namaSupplier);
+        stat.setString(3, noTelp);
+        stat.setString(4, alamatSupplier);
+
+        // Eksekusi perintah SQL
+        int rowsAffected = stat.executeUpdate();
+
+        if (rowsAffected > 0) {
+            JOptionPane.showMessageDialog(this, "Data berhasil ditambahkan!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Gagal menambahkan data.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace(); // Untuk debugging
+    }
+}
+    }//GEN-LAST:event_tambahActionPerformed
+
+    private void id_supplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_id_supplierActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_id_supplierActionPerformed
 
     /**
      * @param args the command line arguments
@@ -123,9 +264,12 @@ public class tambahsupplier extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField alamat;
+    private javax.swing.JTextField id_supplier;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JButton kembali;
+    private javax.swing.JTextField nama_supplier;
+    private javax.swing.JTextField no_telp;
+    private javax.swing.JButton tambah;
     // End of variables declaration//GEN-END:variables
 }
