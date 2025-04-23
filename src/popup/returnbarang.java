@@ -21,7 +21,20 @@ public class returnbarang extends javax.swing.JFrame {
      */
     public returnbarang() {
         initComponents();
-          makeButtonTransparent(kembali);
+         // makeButtonTransparent(kembali);
+         //  makeButtonTransparent(tambah);
+           id_supplier.setOpaque(false);
+        id_supplier.setBackground(new Color(0, 0, 0, 0));
+        id_barang.setOpaque(false);
+        id_barang.setBackground(new Color(0, 0, 0, 0));
+         nama_produk.setOpaque(false);
+        nama_produk.setBackground(new Color(0, 0, 0, 0));
+        id_pembelian.setOpaque(false);
+        id_pembelian.setBackground(new Color(0, 0, 0, 0));
+         alasan.setOpaque(false);
+        alasan.setBackground(new Color(0, 0, 0, 0));
+        harga_jual.setOpaque(false);
+        harga_jual.setBackground(new Color(0, 0, 0, 0));
           
 
     }
@@ -43,6 +56,7 @@ public class returnbarang extends javax.swing.JFrame {
     }
     
     
+    
 }
 
     /**
@@ -54,39 +68,70 @@ public class returnbarang extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        kembali = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        nama_produk = new javax.swing.JTextField();
+        id_pembelian = new javax.swing.JTextField();
+        harga_jual = new javax.swing.JTextField();
+        id_supplier = new javax.swing.JTextField();
+        id_barang = new javax.swing.JTextField();
+        alasan = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        kembali.addActionListener(new java.awt.event.ActionListener() {
+        nama_produk.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
+        nama_produk.setBorder(null);
+        nama_produk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                kembaliActionPerformed(evt);
+                nama_produkActionPerformed(evt);
             }
         });
-        getContentPane().add(kembali, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 570, 200, 30));
+        getContentPane().add(nama_produk, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 190, 260, 20));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Return Barang (1).png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        id_pembelian.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
+        id_pembelian.setBorder(null);
+        getContentPane().add(id_pembelian, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 140, 260, 20));
 
-        jTextField1.setText("jTextField1");
-        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 120, 400, 40));
+        harga_jual.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
+        harga_jual.setBorder(null);
+        getContentPane().add(harga_jual, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 240, 260, 20));
 
-        jTextField2.setText("jTextField2");
-        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 190, -1, -1));
+        id_supplier.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
+        id_supplier.setBorder(null);
+        id_supplier.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                id_supplierActionPerformed(evt);
+            }
+        });
+        getContentPane().add(id_supplier, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 280, 260, 30));
+
+        id_barang.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
+        id_barang.setBorder(null);
+        getContentPane().add(id_barang, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 90, 260, 30));
+
+        alasan.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
+        alasan.setBorder(null);
+        getContentPane().add(alasan, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 330, 300, 30));
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/return barang v2.png"))); // NOI18N
+        jLabel2.setText("jLabel2");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 820, -1));
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void kembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kembaliActionPerformed
+    private void id_supplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_id_supplierActionPerformed
         // TODO add your handling code here:
-          new restok().setVisible(true);
-        this.setVisible(false); 
-    }//GEN-LAST:event_kembaliActionPerformed
+    }//GEN-LAST:event_id_supplierActionPerformed
+
+    private void nama_produkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nama_produkActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nama_produkActionPerformed
 
     /**
      * @param args the command line arguments
@@ -125,9 +170,13 @@ public class returnbarang extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JButton kembali;
+    private javax.swing.JTextField alasan;
+    private javax.swing.JTextField harga_jual;
+    private javax.swing.JTextField id_barang;
+    private javax.swing.JTextField id_pembelian;
+    private javax.swing.JTextField id_supplier;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JTextField nama_produk;
     // End of variables declaration//GEN-END:variables
 }

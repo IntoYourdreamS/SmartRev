@@ -6,6 +6,10 @@ package popup;
 
 import Config.koneksi;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,6 +20,12 @@ import javax.swing.JOptionPane;
 import smart.karyawan;
 import smart.restok;
 import java.sql.PreparedStatement;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
+import org.netbeans.lib.awtextra.AbsoluteConstraints;
+import org.netbeans.lib.awtextra.AbsoluteLayout;
 
 /**
  *
@@ -36,8 +46,9 @@ public class tambahsupplier extends javax.swing.JFrame {
         no_telp.setBackground(new Color(0, 0, 0, 0));
         alamat.setOpaque(false);
         alamat.setBackground(new Color(0, 0, 0, 0));
-          makeButtonTransparent(kembali);
+          makeButtonTransparent(ubah);
           makeButtonTransparent(tambah);
+           makeButtonTransparent(hapus);
             
 
     }
@@ -69,14 +80,20 @@ public class tambahsupplier extends javax.swing.JFrame {
     private void initComponents() {
 
         kembali = new javax.swing.JButton();
-        id_supplier = new javax.swing.JTextField();
         nama_supplier = new javax.swing.JTextField();
         no_telp = new javax.swing.JTextField();
         alamat = new javax.swing.JTextField();
         tambah = new javax.swing.JButton();
+        ubah = new javax.swing.JButton();
+        id_supplier = new javax.swing.JTextField();
+        hapus = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMaximumSize(new java.awt.Dimension(820, 470));
+        setMinimumSize(new java.awt.Dimension(820, 470));
+        setUndecorated(true);
+        setPreferredSize(new java.awt.Dimension(820, 470));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         kembali.addActionListener(new java.awt.event.ActionListener() {
@@ -86,99 +103,112 @@ public class tambahsupplier extends javax.swing.JFrame {
         });
         getContentPane().add(kembali, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 570, 200, 30));
 
-        id_supplier.setFont(new java.awt.Font("Futura Md BT", 1, 12)); // NOI18N
-        id_supplier.setForeground(new java.awt.Color(116, 77, 6));
-        id_supplier.setBorder(null);
-        id_supplier.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        id_supplier.setEnabled(false);
-        id_supplier.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                id_supplierActionPerformed(evt);
-            }
-        });
-        getContentPane().add(id_supplier, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 90, 360, 40));
-
-        nama_supplier.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
+        nama_supplier.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
         nama_supplier.setBorder(null);
-        getContentPane().add(nama_supplier, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 150, 390, 50));
+        getContentPane().add(nama_supplier, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 100, 260, 40));
 
-        no_telp.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
+        no_telp.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
         no_telp.setBorder(null);
         no_telp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 no_telpActionPerformed(evt);
             }
         });
-        getContentPane().add(no_telp, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 220, 400, 50));
+        getContentPane().add(no_telp, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 195, 250, 40));
 
-        alamat.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
+        alamat.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
         alamat.setBorder(null);
         alamat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 alamatActionPerformed(evt);
             }
         });
-        getContentPane().add(alamat, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 290, 400, 50));
+        getContentPane().add(alamat, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 250, 310, 30));
 
+        tambah.setBorder(null);
         tambah.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tambahActionPerformed(evt);
             }
         });
-        getContentPane().add(tambah, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 570, 190, 30));
+        getContentPane().add(tambah, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 370, 160, 40));
+
+        ubah.setBorder(null);
+        ubah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ubahActionPerformed(evt);
+            }
+        });
+        getContentPane().add(ubah, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 370, 160, 40));
+
+        id_supplier.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
+        id_supplier.setBorder(null);
+        id_supplier.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                id_supplierActionPerformed(evt);
+            }
+        });
+        getContentPane().add(id_supplier, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 150, 260, 40));
+
+        hapus.setBorder(null);
+        hapus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hapusActionPerformed(evt);
+            }
+        });
+        getContentPane().add(hapus, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 370, 160, 40));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Tambah Supplier.png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        jLabel1.setText("jLabel1");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 820, -1));
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 private String generateCode() {
-        String kodeMenu = "SP001";
-        try (Connection conn = koneksi.getConnection()) {
-            if (conn != null) {
-                try {
-//                Statement st = conn.createStatement();
-                    Statement statem = conn.createStatement();
-                    String query = "SELECT id_karyawan FROM supplier ORDER BY id_supplier DESC LIMIT 1";
-                    ResultSet resultSet = statem.executeQuery(query);
+    String prefix = "SP";
+    String query = "SELECT id_supplier FROM supplier ORDER BY id_supplier DESC LIMIT 1";
+    String newCode = "";
 
-                    if (resultSet.next()) {
-                        String lastKode = resultSet.getString("id_supplier");
-                        int kodeNum = Integer.parseInt(lastKode.substring(2)) + 1;
-                        kodeMenu = String.format("SP%03d", kodeNum);
-                    }
+    try (Connection conn = koneksi.getConnection();
+         Statement stmt = conn.createStatement();
+         ResultSet rs = stmt.executeQuery(query)) {
 
-                    resultSet.close();
-                    statem.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }catch(SQLException e){
-            e.printStackTrace();
-        }catch(Exception e){
-            e.printStackTrace();
+        if (rs.next()) {
+            String lastId = rs.getString("id_supplier"); // Contoh: "SP005"
+            int number = Integer.parseInt(lastId.substring(2)); // Ambil "005" lalu ubah ke int
+            number++; // Tambah 1
+            newCode = prefix + String.format("%03d", number); // Format jadi "SP006"
+        } else {
+            newCode = prefix + "001"; // Jika belum ada data, mulai dari SP001
         }
 
-        return kodeMenu;
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Gagal membuat ID supplier baru: " + e.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
     }
-    private void kembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kembaliActionPerformed
+
+    return newCode;
+}
+
+    private void kembaliActionPerformed(ActionEvent evt) {//GEN-FIRST:event_kembaliActionPerformed
         // TODO add your handling code here:
           new restok().setVisible(true);
         this.setVisible(false); 
     }//GEN-LAST:event_kembaliActionPerformed
 
-    private void no_telpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_no_telpActionPerformed
+    private void no_telpActionPerformed(ActionEvent evt) {//GEN-FIRST:event_no_telpActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_no_telpActionPerformed
 
-    private void alamatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_alamatActionPerformed
+    private void alamatActionPerformed(ActionEvent evt) {//GEN-FIRST:event_alamatActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_alamatActionPerformed
 
-    private void tambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahActionPerformed
-// Ambil input dari field
+    private void tambahActionPerformed(ActionEvent evt) {//GEN-FIRST:event_tambahActionPerformed
+        // TODO add your handling code here:
+        // Ambil input dari field
 String namaSupplier = nama_supplier.getText();
 String noTelp = no_telp.getText();
 String alamatSupplier = alamat.getText();
@@ -212,8 +242,8 @@ if (confirm == JOptionPane.YES_OPTION) {
         int rowsAffected = stat.executeUpdate();
 
         if (rowsAffected > 0) {
-             notifberhasilkrw popup = new notifberhasilkrw();
-              popup.setVisible(true);
+            notifberhasilkrw popup = new notifberhasilkrw();
+            popup.setVisible(true);
         } else {
             JOptionPane.showMessageDialog(this, "Gagal menambahkan data.", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -222,11 +252,123 @@ if (confirm == JOptionPane.YES_OPTION) {
         e.printStackTrace(); // Untuk debugging
     }
 }
+
     }//GEN-LAST:event_tambahActionPerformed
 
-    private void id_supplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_id_supplierActionPerformed
+    private void ubahActionPerformed(ActionEvent evt) {//GEN-FIRST:event_ubahActionPerformed
         // TODO add your handling code here:
+        String idSupplier = id_supplier.getText();
+String namaSupplier = nama_supplier.getText();
+String noTelp = no_telp.getText();
+String Alamat = alamat.getText();
+
+try {
+    Connection conn = koneksi.getConnection();
+    String sql = "UPDATE supplier SET nama_supplier = ?, no_telp = ?, alamat = ? WHERE id_supplier = ?";
+    PreparedStatement pst = conn.prepareStatement(sql);
+
+    pst.setString(1, namaSupplier);
+    pst.setString(2, noTelp);
+    pst.setString(3, Alamat);
+   
+    pst.setString(4, idSupplier); // WHERE id_karyawan = ?
+
+    int updatedRows = pst.executeUpdate();
+
+    if (updatedRows > 0) {
+         notifberhasilubhkrw popup = new notifberhasilubhkrw();
+              popup.setVisible(true);
+    } else {
+        JOptionPane.showMessageDialog(this, "Gagal mengubah data. ID Karyawan tidak ditemukan.", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+    }
+
+} catch (SQLException e) {
+    JOptionPane.showMessageDialog(null,
+            "Kesalahan: " + e.getMessage(),
+            "Kesalahan Database",
+            JOptionPane.ERROR_MESSAGE
+    );
+    e.printStackTrace();
+}
+    }//GEN-LAST:event_ubahActionPerformed
+
+    private void id_supplierActionPerformed(ActionEvent evt) {//GEN-FIRST:event_id_supplierActionPerformed
+        // TODO add your handling code here:
+         String idSupplier = id_supplier.getText();
+
+try {
+    Connection conn = koneksi.getConnection();
+    PreparedStatement pst = conn.prepareStatement("SELECT * FROM supplier WHERE id_supplier = ?");
+    pst.setString(1, idSupplier);
+    ResultSet rs = pst.executeQuery();
+
+    if (rs.next()) {
+        String namaKaryawan = rs.getString("nama_supplier");
+        String noTelp = rs.getString("no_telp");
+        String Alamat = rs.getString("alamat");
+        
+
+        nama_supplier.setText(namaKaryawan);
+        no_telp.setText(noTelp);
+        alamat.setText(Alamat);
+        
+    } else {
+        JOptionPane.showMessageDialog(this, "No Karyawan tidak ditemukan", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+        nama_supplier.setText("");
+        no_telp.setText("");
+        alamat.setText("");
+        
+    }
+
+} catch (SQLException e) {
+    JOptionPane.showMessageDialog(null,
+            "Kesalahan: " + e.getMessage(),
+            "Kesalahan Database",
+            JOptionPane.ERROR_MESSAGE
+    );
+    e.printStackTrace();
+}
     }//GEN-LAST:event_id_supplierActionPerformed
+
+    private void hapusActionPerformed(ActionEvent evt) {//GEN-FIRST:event_hapusActionPerformed
+        // TODO add your handling code here:
+            String idSupplier = id_supplier.getText();
+
+    // Validasi input
+    if (idSupplier.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "ID Supplier harus diisi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    // Konfirmasi penghapusan
+    int confirm = JOptionPane.showConfirmDialog(this,
+            "Apakah Anda yakin ingin menghapus data supplier ini?",
+            "Konfirmasi Hapus",
+            JOptionPane.YES_NO_OPTION);
+
+    if (confirm == JOptionPane.YES_OPTION) {
+        String query = "DELETE FROM supplier WHERE id_supplier = ?";
+
+        try (Connection conn = koneksi.getConnection();
+             PreparedStatement stat = conn.prepareStatement(query)) {
+
+            stat.setString(1, idSupplier);
+
+            int deletedRows = stat.executeUpdate();
+
+            if (deletedRows > 0) {
+                JOptionPane.showMessageDialog(this, "Data berhasil dihapus!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Data supplier tidak ditemukan atau gagal dihapus.", "Gagal", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Kesalahan saat menghapus data: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    }//GEN-LAST:event_hapusActionPerformed
 
     /**
      * @param args the command line arguments
@@ -265,12 +407,14 @@ if (confirm == JOptionPane.YES_OPTION) {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField alamat;
-    private javax.swing.JTextField id_supplier;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JButton kembali;
-    private javax.swing.JTextField nama_supplier;
-    private javax.swing.JTextField no_telp;
-    private javax.swing.JButton tambah;
+    javax.swing.JTextField alamat;
+    javax.swing.JButton hapus;
+    javax.swing.JTextField id_supplier;
+    javax.swing.JLabel jLabel1;
+    javax.swing.JButton kembali;
+    javax.swing.JTextField nama_supplier;
+    javax.swing.JTextField no_telp;
+    javax.swing.JButton tambah;
+    javax.swing.JButton ubah;
     // End of variables declaration//GEN-END:variables
 }
