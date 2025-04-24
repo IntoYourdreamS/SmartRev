@@ -27,12 +27,12 @@ import smart.restok;
  *
  * @author ASUS
  */
-public class notifberhasilkrw extends javax.swing.JFrame {
+public class notifberhasilbrg extends javax.swing.JFrame {
 
     /**
      * Creates new form coba
      */
-    public notifberhasilkrw() {
+    public notifberhasilbrg() {
         initComponents();
         makeButtonTransparent(kembali);
   // setUndecorated(true); // Hilangkan tombol X dan border
@@ -105,7 +105,7 @@ public class notifberhasilkrw extends javax.swing.JFrame {
 
     private void kembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kembaliActionPerformed
         // TODO add your handling code here:
-        new tambahkaryawan().setVisible(true);
+        new restok().setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_kembaliActionPerformed
 
@@ -126,21 +126,23 @@ public class notifberhasilkrw extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(notifberhasilkrw.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(notifberhasilbrg.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(notifberhasilkrw.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(notifberhasilbrg.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(notifberhasilkrw.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(notifberhasilbrg.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(notifberhasilkrw.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(notifberhasilbrg.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new notifberhasilkrw().setVisible(true);
+                new notifberhasilbrg().setVisible(true);
             }
         });
     }

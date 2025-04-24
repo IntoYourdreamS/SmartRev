@@ -21,7 +21,7 @@ public class tambahbarang extends javax.swing.JFrame {
      */
     public tambahbarang() {
         initComponents();
-          makeButtonTransparent(kembali);
+//          makeButtonTransparent(kembali);
             
 
     }
@@ -52,39 +52,19 @@ public class tambahbarang extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        kembali = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        kembali.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                kembaliActionPerformed(evt);
-            }
-        });
-        getContentPane().add(kembali, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 570, 200, 30));
-
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Tambah Barang (1).png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-
-        jTextField1.setText("jTextField1");
-        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 120, 400, 40));
-
-        jTextField2.setText("jTextField2");
-        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 190, -1, -1));
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Tambah Barang v2.png"))); // NOI18N
+        jLabel2.setText("jLabel2");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void kembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kembaliActionPerformed
-        // TODO add your handling code here:
-          new restok().setVisible(true);
-        this.setVisible(false); 
-    }//GEN-LAST:event_kembaliActionPerformed
 
     /**
      * @param args the command line arguments
@@ -125,9 +105,6 @@ public class tambahbarang extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JButton kembali;
+    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 }

@@ -36,6 +36,7 @@ public class dashboard extends javax.swing.JFrame {
         makeButtonTransparent(bttntransaksi);
         makeButtonTransparent(bttnkaryawan);
         makeButtonTransparent(logout);
+         makeButtonTransparent(txdepan);
         
         setTableData();
      
@@ -124,6 +125,7 @@ public class dashboard extends javax.swing.JFrame {
         bttntransaksi = new javax.swing.JButton();
         bttnlaporan = new javax.swing.JButton();
         logout = new javax.swing.JButton();
+        txdepan = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -233,6 +235,9 @@ public class dashboard extends javax.swing.JFrame {
         });
         getContentPane().add(logout, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 640, 140, 50));
 
+        txdepan.setBorder(null);
+        getContentPane().add(txdepan, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 450, 190, 30));
+
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Dashboard kasir (2).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -20, 1372, 768));
 
@@ -276,6 +281,7 @@ public class dashboard extends javax.swing.JFrame {
     private void bttntransaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttntransaksiActionPerformed
        new transaksi().setVisible(true);
         this.setVisible(false); 
+        dispose();
     }//GEN-LAST:event_bttntransaksiActionPerformed
 
     private void bttnkaryawanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttnkaryawanActionPerformed
@@ -343,5 +349,6 @@ public class dashboard extends javax.swing.JFrame {
     private javax.swing.JButton logout;
     private javax.swing.JTable tbexpired;
     private javax.swing.JTable tbpenjualanterlaris;
+    private javax.swing.JButton txdepan;
     // End of variables declaration//GEN-END:variables
 }
