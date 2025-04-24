@@ -36,6 +36,7 @@ public class transaksi extends javax.swing.JFrame {
 
     public transaksi() {
         initComponents();
+        SwingUtilities.invokeLater(() -> txt_noBarang.requestFocusInWindow());
         refreshTable();
         makeButtonTransparent(bttndashboard);
         makeButtonTransparent(restok);
@@ -428,6 +429,7 @@ public class transaksi extends javax.swing.JFrame {
 
     private void txt_noBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_noBarangActionPerformed
         // TODO add your handling code here:
+        
         String kode_bahan = txt_noBarang.getText();
         txt_namabrg.setText(kode_bahan);
         try {
