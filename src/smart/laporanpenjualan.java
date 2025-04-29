@@ -3,32 +3,110 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package smart;
+import Config.koneksi;
+import com.sun.jdi.connect.spi.Connection;
 import java.awt.Color;
 import java.awt.Font;
+import java.io.IOException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
- * @author acer
+ * @author sobri
  */
 public class laporanpenjualan extends javax.swing.JFrame {
 
     /**
      * Creates new form login
      */
-    public laporanpenjualan() {
+    public laporanpenjualan()  {
+     try {
         initComponents();
         customizeTable();
-         makeButtonTransparent(dashboard);
-           makeButtonTransparent(transaksi);
-            makeButtonTransparent(restok);
-             makeButtonTransparent(karyawan);
-             makeButtonTransparent(pembelian);
-             
+        makeButtonTransparent(dashboard);
+        makeButtonTransparent(transaksi);
+        makeButtonTransparent(restok);
+        makeButtonTransparent(karyawan);
+        makeButtonTransparent(pembelian);
+        loadDataPenjualan();
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error inisialisasi: " + e.getMessage(), 
+            "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
     }
+    }
+  private void loadDataPenjualan() {
+    DefaultTableModel model = new DefaultTableModel();
+    model.addColumn("No Nota");
+    model.addColumn("Nama Produk");
+    model.addColumn("Jumlah");
+    model.addColumn("Harga");
+    model.addColumn("Total");
+    model.addColumn("Kategori");
+    model.addColumn("Nama Karyawan");
+    model.addColumn("Tanggal");
+
+    String sql = "SELECT " +
+                 "p.id_penjualan, " +
+                 "pr.nama_produk, " +
+                 "dp.jumlah, " +
+                 "dp.harga_satuan, " +
+                 "dp.subtotal, " +
+                 "dp.kategori, " +
+                 "k.nama_karyawan, " +
+                 "p.tanggal " +
+                 "FROM detail_penjualan dp " +
+                 "JOIN penjualan p ON dp.id_penjualan = p.id_penjualan " +
+                 "LEFT JOIN produk pr ON dp.id_produk = pr.id_produk " +
+                 "LEFT JOIN karyawan k ON p.id_karyawan = k.id_karyawan";
+
+     java.sql.Connection conn = null;
+        java.sql.PreparedStatement ps = null;
+        java.sql.ResultSet rs = null;
+
+
+    try {
+        conn = koneksi.getConnection();
+        ps = conn.prepareStatement(sql);
+        rs = ps.executeQuery();
+
+        while (rs.next()) {
+            model.addRow(new Object[]{
+                rs.getString("id_penjualan"),
+                rs.getString("nama_produk"),
+                rs.getInt("jumlah"),
+                rs.getDouble("harga_satuan"),
+                rs.getDouble("subtotal"),
+                rs.getString("kategori"),
+                rs.getString("nama_karyawan"),
+                rs.getDate("tanggal")
+            });
+        }
+
+        tbpenjualan.setModel(model);
+
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, "Gagal load data penjualan:\n" + e.getMessage(), 
+            "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
     
     private void makeButtonTransparent(JButton button) {
         button.setOpaque(false);
@@ -129,7 +207,7 @@ public class laporanpenjualan extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(tbpenjualan);
 
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 200, 1040, 460));
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 140, 1040, 460));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/laporan penjualan (4).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));

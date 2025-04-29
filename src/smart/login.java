@@ -202,24 +202,23 @@ public class login extends javax.swing.JFrame {
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
         // TODO add your handling code here:
-        // TODO add your handling code here:
         String userInput = FieldUsername.getText();
         char[] passwordInputChar = Password.getPassword();
         String passwordInput = new String(passwordInputChar);
 
-        // Variabel untuk koneksi database
+        
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            // Koneksi ke database (ganti URL, username, dan password sesuai konfigurasi Anda)
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart", "root", "");
+            
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smartt", "root", "");
 
-            // Query untuk memeriksa kombinasi login
+           
             String sql = "SELECT * FROM karyawan WHERE nama_karyawan = ? AND password = ?";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, userInput);
-            pstmt.setString(2, passwordInput); // Pastikan password tersimpan dalam bentuk terenkripsi di database
+            pstmt.setString(2, passwordInput); 
 
             rs = pstmt.executeQuery();
 
