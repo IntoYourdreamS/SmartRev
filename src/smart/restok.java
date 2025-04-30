@@ -4,7 +4,10 @@
  */
 package smart;
 
+import com.formdev.flatlaf.FlatLightLaf;
+import java.awt.Color;
 import javax.swing.JButton;
+import javax.swing.UIManager;
 import popup.dataexpired;
 import popup.datasupplier;
 import popup.datareturn;
@@ -233,7 +236,8 @@ public class restok extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-
+FlatLightLaf.setup();
+        UIManager.put("TableHeader.background", Color.BLACK);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

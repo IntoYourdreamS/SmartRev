@@ -730,7 +730,8 @@ public class transaksi extends javax.swing.JFrame {
         //</editor-fold>
         FlatLightLaf.setup();
         UIManager.put("TableHeader.background", Color.BLACK);
-
+FlatLightLaf.setup();
+        UIManager.put("TableHeader.background", Color.BLACK);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

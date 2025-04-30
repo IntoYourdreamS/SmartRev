@@ -7,12 +7,14 @@ package smart;
 import java.awt.Color;
 import Config.koneksi;
 import Config.Session;
+import com.formdev.flatlaf.FlatLightLaf;
 import java.sql.Connection;
 import javax.swing.JOptionPane;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JButton;
+import javax.swing.UIManager;
 
 /**
  *
@@ -304,7 +306,8 @@ public class login extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+FlatLightLaf.setup();
+        UIManager.put("TableHeader.background", Color.BLACK);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

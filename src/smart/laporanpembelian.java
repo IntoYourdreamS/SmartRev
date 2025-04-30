@@ -4,10 +4,12 @@
  */
 package smart;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.UIManager;
 import javax.swing.table.JTableHeader;
 
 /**
@@ -137,7 +139,8 @@ public class laporanpembelian extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
-
+FlatLightLaf.setup();
+        UIManager.put("TableHeader.background", Color.BLACK);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

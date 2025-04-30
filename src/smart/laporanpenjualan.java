@@ -4,6 +4,7 @@
  */
 package smart;
 import Config.koneksi;
+import com.formdev.flatlaf.FlatLightLaf;
 import com.sun.jdi.connect.spi.Connection;
 import java.awt.Color;
 import java.awt.Font;
@@ -17,6 +18,7 @@ import javax.swing.table.JTableHeader;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.UIManager;
 
 /**
  *
@@ -278,7 +280,8 @@ public class laporanpenjualan extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
-
+FlatLightLaf.setup();
+        UIManager.put("TableHeader.background", Color.BLACK);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

@@ -5,6 +5,7 @@
 package smart;
 
 import Config.koneksi;
+import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
 import java.awt.Font;
 import java.sql.Connection;
@@ -15,6 +16,7 @@ import java.sql.Statement;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -340,7 +342,8 @@ if (confirm == JOptionPane.YES_OPTION) {
         }
         //</editor-fold>
         //</editor-fold>
-
+FlatLightLaf.setup();
+        UIManager.put("TableHeader.background", Color.BLACK);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

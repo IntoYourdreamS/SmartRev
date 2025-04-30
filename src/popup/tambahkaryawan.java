@@ -38,6 +38,7 @@ public class tambahkaryawan extends javax.swing.JFrame {
         password.setBackground(new Color(0, 0, 0, 0));
           RFID.setOpaque(false);
         RFID.setBackground(new Color(0, 0, 0, 0));
+        makeButtonTransparent(exit);
           
             makeButtonTransparent(tambah);
            
@@ -80,6 +81,7 @@ public class tambahkaryawan extends javax.swing.JFrame {
         RFID = new javax.swing.JTextField();
         role = new javax.swing.JComboBox<>();
         id_karyawan = new javax.swing.JTextField();
+        exit = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -101,11 +103,11 @@ public class tambahkaryawan extends javax.swing.JFrame {
 
         nama_karyawan.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         nama_karyawan.setBorder(null);
-        getContentPane().add(nama_karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 140, 390, -1));
+        getContentPane().add(nama_karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 140, 320, -1));
 
         no_telp.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         no_telp.setBorder(null);
-        getContentPane().add(no_telp, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 185, 390, -1));
+        getContentPane().add(no_telp, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 185, 320, -1));
 
         password.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         password.setBorder(null);
@@ -114,14 +116,14 @@ public class tambahkaryawan extends javax.swing.JFrame {
                 passwordActionPerformed(evt);
             }
         });
-        getContentPane().add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 230, 400, 30));
+        getContentPane().add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 230, 320, 30));
 
         RFID.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
         RFID.setBorder(null);
-        getContentPane().add(RFID, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 330, 400, 30));
+        getContentPane().add(RFID, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 330, 320, 30));
 
         role.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "owner", "kasir", " " }));
-        getContentPane().add(role, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 280, 410, 30));
+        getContentPane().add(role, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 280, 320, 30));
 
         id_karyawan.setFont(new java.awt.Font("Futura Md BT", 1, 12)); // NOI18N
         id_karyawan.setForeground(new java.awt.Color(116, 77, 6));
@@ -133,7 +135,14 @@ public class tambahkaryawan extends javax.swing.JFrame {
                 id_karyawanActionPerformed(evt);
             }
         });
-        getContentPane().add(id_karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 90, 360, 30));
+        getContentPane().add(id_karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 90, 320, 30));
+
+        exit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitActionPerformed(evt);
+            }
+        });
+        getContentPane().add(exit, new org.netbeans.lib.awtextra.AbsoluteConstraints(755, 23, 40, 40));
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/TAMBAH KARYAWAN V2.png"))); // NOI18N
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
@@ -237,6 +246,12 @@ public class tambahkaryawan extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_formComponentHidden
 
+    private void exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    new karyawan().setVisible(true);
+    }//GEN-LAST:event_exitActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -275,6 +290,7 @@ public class tambahkaryawan extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField RFID;
+    private javax.swing.JButton exit;
     private javax.swing.JTextField id_karyawan;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JTextField nama_karyawan;
