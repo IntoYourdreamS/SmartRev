@@ -6,8 +6,21 @@ package smart;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import static javax.management.Query.value;
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.UIManager;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import popup.dataexpired;
 import popup.datasupplier;
 import popup.datareturn;
@@ -18,25 +31,104 @@ import popup.tambahkaryawan;
 
 /**
  *
- * @author acer
+ * @author Muhammad Shobri
  */
 public class restok extends javax.swing.JFrame {
+ private Connection conn;
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/smart";
+    private static final String DB_USER = "root"; // sesuaikan dengan username DB Anda
+    private static final String DB_PASS = ""; // sesuaikan dengan password DB Anda
 
-    /**
-     * Creates new form login
-     */
     public restok() {
         initComponents();
-         makeButtonTransparent(dashboard);
-           makeButtonTransparent(transaksi);
-            makeButtonTransparent(laporan);
-             makeButtonTransparent(karyawan);
-             makeButtonTransparent(suplier);
-           makeButtonTransparent(inputbarang);
-            makeButtonTransparent(inputreturn);
-             makeButtonTransparent(datasupplier);
-              makeButtonTransparent(dataexpired);
-             makeButtonTransparent(datareturn);
+        
+        // Custom header table
+        javax.swing.table.JTableHeader header = tablerestock.getTableHeader();
+        header.setDefaultRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                
+                setBackground(Color.BLACK); // Warna background header
+                setForeground(Color.WHITE); // Warna teks putih
+                setFont(new Font("Segoe UI", Font.BOLD, 12)); // Font lebih tebal
+                setHorizontalAlignment(JLabel.CENTER); // Posisi teks di tengah
+                
+                return this;
+            }
+        });
+        
+        makeButtonTransparent(dashboard);
+        makeButtonTransparent(transaksi);
+        makeButtonTransparent(laporan);
+        makeButtonTransparent(karyawan);
+        makeButtonTransparent(suplier);
+        makeButtonTransparent(inputbarang);
+        makeButtonTransparent(inputreturn);
+        makeButtonTransparent(datasupplier);
+        makeButtonTransparent(dataexpired);
+        makeButtonTransparent(datareturn);
+        
+        // Koneksi database dan load data
+        connectToDatabase();
+        loadRestockData();
+    }
+    
+private void connectToDatabase() {
+        try {
+            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Gagal terhubung ke database: " + e.getMessage(), 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void loadRestockData() {
+        DefaultTableModel model = (DefaultTableModel) tablerestock.getModel();
+        model.setRowCount(0); // Kosongkan tabel terlebih dahulu
+        
+        try {
+            // Query untuk mengambil data produk yang perlu restok
+            String query = "SELECT p.id_produk, p.nama_produk, p.harga, p.stok, s.nama_supplier, p.kategori " +
+                          "FROM produk p " +
+                          "LEFT JOIN supplier s ON p.id_supplier = s.id_supplier " +
+                          "WHERE p.stok < 5"; // Ambang batas restok
+            
+            PreparedStatement pst = conn.prepareStatement(query);
+            ResultSet rs = pst.executeQuery();
+            
+            int no = 1;
+            while (rs.next()) {
+                String idProduk = rs.getString("id_produk");
+                String namaBarang = rs.getString("nama_produk");
+                int hargaBeli = rs.getInt("harga");
+                int hargaJual = (int) (hargaBeli * 1.2); // Harga jual +20%
+                int jumlah = rs.getInt("stok");
+                String kategori = rs.getString("kategori");
+                String supplier = rs.getString("nama_supplier");
+                
+                if (supplier == null) {
+                    supplier = "Tidak ada supplier";
+                }
+                
+                model.addRow(new Object[]{
+                    no++,
+                    namaBarang,
+                    hargaBeli,
+                    hargaJual,
+                    jumlah,
+                    kategori,
+                    supplier
+                });
+            }
+            
+            rs.close();
+            pst.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Gagal memuat data restok: " + e.getMessage(), 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     private void makeButtonTransparent(JButton button) {
@@ -45,6 +137,7 @@ public class restok extends javax.swing.JFrame {
         button.setBorderPainted(false);
     }
 
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -64,6 +157,8 @@ public class restok extends javax.swing.JFrame {
         datasupplier = new javax.swing.JButton();
         dataexpired = new javax.swing.JButton();
         datareturn = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tablerestock = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -144,6 +239,22 @@ public class restok extends javax.swing.JFrame {
             }
         });
         getContentPane().add(datareturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 690, 130, 30));
+
+        tablerestock.setForeground(new java.awt.Color(0, 0, 0));
+        tablerestock.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "No", "Nama  Barang", "Harga Beli", "Harga Jual", "Jumlah", "Kategori", "Supplier"
+            }
+        ));
+        jScrollPane1.setViewportView(tablerestock);
+
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 150, 720, -1));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Restock (2).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1380, -1));
@@ -254,9 +365,13 @@ FlatLightLaf.setup();
     private javax.swing.JButton inputbarang;
     private javax.swing.JButton inputreturn;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton karyawan;
     private javax.swing.JButton laporan;
     private javax.swing.JButton suplier;
+    private javax.swing.JTable tablerestock;
     private javax.swing.JButton transaksi;
     // End of variables declaration//GEN-END:variables
+
+
 }

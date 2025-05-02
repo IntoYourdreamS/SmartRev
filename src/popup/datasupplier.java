@@ -6,6 +6,7 @@ package popup;
 
 import Config.koneksi;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -13,7 +14,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import smart.*;
@@ -29,7 +33,23 @@ public class datasupplier extends javax.swing.JFrame {
      */
     public datasupplier() {
         initComponents();
+        javax.swing.table.JTableHeader header = tbkaryawan.getTableHeader();
+        header.setDefaultRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                
+                setBackground(Color.BLACK); // Warna background header
+                setForeground(Color.WHITE); // Warna teks putih
+                setFont(new Font("Segoe UI", Font.BOLD, 12)); // Font lebih tebal
+                setHorizontalAlignment(JLabel.CENTER); // Posisi teks di tengah
+                
+                return this;
+            }
+        });
              makeButtonTransparent(kembali);
+             loadDataToTable();
     }
     
     private void makeButtonTransparent(JButton button) {
@@ -52,38 +72,35 @@ public class datasupplier extends javax.swing.JFrame {
      }
      
   
-       private void loadDataToTable() {
-    // Definisikan model tabel dengan header kolom sesuai dengan data supplier
-    DefaultTableModel model = new DefaultTableModel(
-            new Object[]{"No Supplier", "Nama Supplier", "No Hp", "Alamat"}, 0
-    );
-    tbkaryawan.setModel(model); // Set model ke JTable (asumsi tbkaryawan adalah nama JTable)
+    private void loadDataToTable() {
+        DefaultTableModel model = new DefaultTableModel(
+                new Object[]{"ID Supplier", "Nama Supplier", "Telepon", "Alamat"}, 0);
+        tbkaryawan.setModel(model);
 
-    try (Connection conn = koneksi.getConnection(); Statement stmt = conn.createStatement()) {
-        // Query untuk mengambil data supplier
-        String query = "SELECT id_supplier, nama_supplier, no_telp, alamat FROM supplier";
+        try (Connection conn = koneksi.getConnection();
+             Statement stmt = conn.createStatement()) {
+            
+            // Perhatikan: di database kolomnya 'no_telp' bukan 'no_hp'
+            String query = "SELECT id_supplier, nama_supplier, telepon, alamat FROM supplier";
+            
+            try (ResultSet rs = stmt.executeQuery(query)) {
+                while (rs.next()) {
+                    String idSupplier = rs.getString("id_supplier");
+                    String namaSupplier = rs.getString("nama_supplier");
+                    String telepon = rs.getString("telepon");
+                    String alamat = rs.getString("alamat");
 
-        try (ResultSet rs = stmt.executeQuery(query)) {
-            while (rs.next()) {
-                // Ambil data dari ResultSet sesuai dengan nama kolom tabel supplier
-                String idSupplier = rs.getString("id_supplier");
-                String namaSupplier = rs.getString("nama_supplier");
-                String noTelp = rs.getString("no_telp");
-                String alamat = rs.getString("alamat");
-
-                // Tambahkan data ke model tabel
-                model.addRow(new Object[]{idSupplier, namaSupplier, noTelp, alamat});
+                    model.addRow(new Object[]{idSupplier, namaSupplier, telepon, alamat});
+                }
             }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Gagal memuat data supplier: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        // Tampilkan pesan kesalahan jika terjadi SQLException
-        JOptionPane.showMessageDialog(this,
-                "Gagal memuat data: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace(); // Untuk debug
     }
-}
 
 
     /**

@@ -4,12 +4,23 @@
  */
 package smart;
 
+import Config.koneksi;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.UIManager;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 /**
@@ -23,11 +34,80 @@ public class laporanpembelian extends javax.swing.JFrame {
      */
     public laporanpembelian() {
         initComponents();
+        javax.swing.table.JTableHeader header = tbpembelian.getTableHeader();
+        header.setDefaultRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                
+                setBackground(Color.BLACK); // Warna background header
+                setForeground(Color.WHITE); // Warna teks putih
+                setFont(new Font("Segoe UI", Font.BOLD, 12)); // Font lebih tebal
+                setHorizontalAlignment(JLabel.CENTER); // Posisi teks di tengah
+                
+                return this;
+            }
+        });
           customizeTable();
              makeButtonTransparent(penjualan);
+             loadDataPembelian();
             
     }
     
+   private void loadDataPembelian() {
+        DefaultTableModel model = (DefaultTableModel) tbpembelian.getModel();
+        model.setRowCount(0); // Clear existing data
+
+        Connection conn = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+
+        try {
+            // Dapatkan koneksi dari class koneksi
+            conn = koneksi.getConnection();
+            
+            String query = "SELECT p.id_pembelian, pr.nama_produk, dp.jumlah, dp.harga_beli, " +
+                         "(dp.jumlah * dp.harga_beli) as total, pr.kategori, " +
+                         "k.nama_karyawan, p.tanggal " +
+                         "FROM pembelian p " +
+                         "JOIN detail_pembelian dp ON p.id_pembelian = dp.id_pembelian " +
+                         "JOIN produk pr ON dp.id_produk = pr.id_produk " +
+                         "LEFT JOIN karyawan k ON p.id_karyawan = k.id_karyawan " +
+                         "ORDER BY p.tanggal DESC";
+            
+            pst = conn.prepareStatement(query);
+            rs = pst.executeQuery();
+            
+            while (rs.next()) {
+                model.addRow(new Object[]{
+                    rs.getString("id_pembelian"),
+                    rs.getString("nama_produk"),
+                    rs.getInt("jumlah"),
+                    rs.getInt("harga_beli"),
+                    rs.getInt("total"),
+                    rs.getString("kategori"),
+                    rs.getString("nama_karyawan"),
+                    rs.getDate("tanggal")
+                });
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, 
+                    "Gagal memuat data pembelian: " + e.getMessage(),
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } finally {
+            // Tutup resources
+            try {
+                if (rs != null) rs.close();
+                if (pst != null) pst.close();
+                if (conn != null) conn.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
     private void makeButtonTransparent(JButton button) {
         button.setOpaque(false);
         button.setContentAreaFilled(false);
@@ -92,7 +172,7 @@ public class laporanpembelian extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(tbpembelian);
 
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 190, 1050, 470));
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 140, 1050, 470));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/laporan pembelian (5).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1380, 720));

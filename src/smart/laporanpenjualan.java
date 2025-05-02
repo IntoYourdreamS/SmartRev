@@ -7,6 +7,7 @@ import Config.koneksi;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.sun.jdi.connect.spi.Connection;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.io.IOException;
 import javax.swing.BorderFactory;
@@ -18,7 +19,10 @@ import javax.swing.table.JTableHeader;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
+import javax.swing.JTable;
 import javax.swing.UIManager;
+import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  *
@@ -26,12 +30,25 @@ import javax.swing.UIManager;
  */
 public class laporanpenjualan extends javax.swing.JFrame {
 
-    /**
-     * Creates new form login
-     */
+
     public laporanpenjualan()  {
      try {
         initComponents();
+         javax.swing.table.JTableHeader header = tbpenjualan.getTableHeader();
+        header.setDefaultRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                
+                setBackground(Color.BLACK); // Warna background header
+                setForeground(Color.WHITE); // Warna teks putih
+                setFont(new Font("Segoe UI", Font.BOLD, 12)); // Font lebih tebal
+                setHorizontalAlignment(JLabel.CENTER); // Posisi teks di tengah
+                
+                return this;
+            }
+        });
         customizeTable();
         makeButtonTransparent(dashboard);
         makeButtonTransparent(transaksi);

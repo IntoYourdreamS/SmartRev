@@ -151,7 +151,7 @@ public class karyawan extends javax.swing.JFrame {
                 laporanActionPerformed(evt);
             }
         });
-        getContentPane().add(laporan, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 380, 140, 40));
+        getContentPane().add(laporan, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 380, 150, 40));
 
         restock.setBorder(null);
         restock.addActionListener(new java.awt.event.ActionListener() {
@@ -175,7 +175,7 @@ public class karyawan extends javax.swing.JFrame {
                 dashboardActionPerformed(evt);
             }
         });
-        getContentPane().add(dashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 140, 160, 40));
+        getContentPane().add(dashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 140, 160, 40));
 
         ubah.setBorder(null);
         ubah.addActionListener(new java.awt.event.ActionListener() {
@@ -267,43 +267,32 @@ if (selectedRow == -1) {
     return;
 }
 
-// Ambil ID karyawan dari baris yang dipilih
-String idKaryawan = tbkaryawan.getValueAt(selectedRow, 0).toString(); // Asumsi ID ada di kolom 0
+String idKaryawan = tbkaryawan.getValueAt(selectedRow, 0).toString(); 
 
-// Konfirmasi penghapusan
 int confirm = JOptionPane.showConfirmDialog(this,
         "Apakah Anda yakin ingin menghapus data ini?",
         "Konfirmasi Hapus",
         JOptionPane.YES_NO_OPTION);
 
 if (confirm == JOptionPane.YES_OPTION) {
-    // Query untuk menghapus data karyawan
     String query = "DELETE FROM karyawan WHERE id_karyawan=?";
 
-    // Hapus data dari database
     try (Connection conn = koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement(query)) {
-        // Set nilai parameter
         pst.setString(1, idKaryawan);
 
-        // Eksekusi query
         int rowsAffected = pst.executeUpdate();
 
-        // Periksa apakah data berhasil dihapus
         if (rowsAffected > 0) {
             JOptionPane.showMessageDialog(this, "Data berhasil dihapus!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
             
-            // Hapus langsung dari tabel tampilan (GUI) tanpa harus reload dari DB
             DefaultTableModel model = (DefaultTableModel) tbkaryawan.getModel();
             model.removeRow(selectedRow);
 
-            // Atau gunakan metode ini jika ingin reload dari database:
-            // loadTableData();
             
         } else {
             JOptionPane.showMessageDialog(this, "Gagal menghapus data.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     } catch (SQLException e) {
-        // Menangani kesalahan
         JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         e.printStackTrace();
     }
