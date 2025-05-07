@@ -214,7 +214,7 @@ public class login extends javax.swing.JFrame {
         ResultSet rs = null;
         try {
             
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smartt", "root", "");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart", "root", "");
 
            
             String sql = "SELECT * FROM karyawan WHERE nama_karyawan = ? AND password = ?";

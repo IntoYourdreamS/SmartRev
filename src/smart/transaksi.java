@@ -353,7 +353,7 @@ public class transaksi extends javax.swing.JFrame {
         });
         getContentPane().add(karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 460, 170, 40));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Transaksi.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Transaksi (5).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();

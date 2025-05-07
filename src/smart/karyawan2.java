@@ -29,7 +29,7 @@ import popup.tambahkaryawan;
  *
  * @author acer
  */
-public class karyawan extends javax.swing.JFrame {
+public class karyawan2 extends javax.swing.JFrame {
 
     public static int getSelectedRow() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -46,18 +46,17 @@ public class karyawan extends javax.swing.JFrame {
     /**
      * Creates new form login
      */
-    public karyawan() {
+    public karyawan2() {
         initComponents();
          loadDataToTable();
          customizeTable();
-         makeButtonTransparent(tambah);
+         makeButtonTransparent(karyawan);
           makeButtonTransparent(dashboard);
            makeButtonTransparent(transaksi);
             makeButtonTransparent(restock);
              makeButtonTransparent(laporan);
-             makeButtonTransparent(ubah);
+          
               makeButtonTransparent(hapus);
-                makeButtonTransparent(presensi);
     }
     
     private void makeButtonTransparent(JButton button) {
@@ -84,7 +83,7 @@ public class karyawan extends javax.swing.JFrame {
     private void loadDataToTable() {
         // Definisikan model tabel dengan header kolom sesuai dengan data karyawan
         DefaultTableModel model = new DefaultTableModel(
-                new Object[]{"No Karyawan", "Nama Karyawan", "No HP", "Password", "Role", "RFID"}, 0
+                new Object[]{"No Karyawan", "Nama Karyawan", "No HP", "Role", "Jam masuk", "Jam keluar"}, 0
         );
         tbkaryawan.setModel(model); // Set model ke JTable (asumsi tb_karyawan adalah nama JTable)
 
@@ -124,28 +123,18 @@ public class karyawan extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        tambah = new javax.swing.JButton();
         laporan = new javax.swing.JButton();
         restock = new javax.swing.JButton();
         transaksi = new javax.swing.JButton();
         dashboard = new javax.swing.JButton();
-        ubah = new javax.swing.JButton();
         hapus = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tbkaryawan = new javax.swing.JTable();
-        presensi = new javax.swing.JButton();
+        karyawan = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        tambah.setBorder(null);
-        tambah.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tambahActionPerformed(evt);
-            }
-        });
-        getContentPane().add(tambah, new org.netbeans.lib.awtextra.AbsoluteConstraints(1110, 90, 60, 40));
 
         laporan.setBorder(null);
         laporan.addActionListener(new java.awt.event.ActionListener() {
@@ -179,21 +168,13 @@ public class karyawan extends javax.swing.JFrame {
         });
         getContentPane().add(dashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 140, 160, 40));
 
-        ubah.setBorder(null);
-        ubah.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ubahActionPerformed(evt);
-            }
-        });
-        getContentPane().add(ubah, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 90, 60, 40));
-
         hapus.setBorder(null);
         hapus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 hapusActionPerformed(evt);
             }
         });
-        getContentPane().add(hapus, new org.netbeans.lib.awtextra.AbsoluteConstraints(1260, 90, 60, 40));
+        getContentPane().add(hapus, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 90, 90, 40));
 
         tbkaryawan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -209,35 +190,26 @@ public class karyawan extends javax.swing.JFrame {
                 {null, null, null, null, null, null}
             },
             new String [] {
-                "No karyawan", "Nama karyawan", "No hp", "Password", "Role", "RFID"
+                "No karyawan", "Nama karyawan", "No hp", "Role", "Jam  masuk", "Jam keluar"
             }
         ));
         jScrollPane2.setViewportView(tbkaryawan);
 
         getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 150, 1040, 440));
 
-        presensi.setBorder(null);
-        presensi.addActionListener(new java.awt.event.ActionListener() {
+        karyawan.setBorder(null);
+        karyawan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                presensiActionPerformed(evt);
+                karyawanActionPerformed(evt);
             }
         });
-        getContentPane().add(presensi, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 90, 160, 40));
+        getContentPane().add(karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 90, 180, 40));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/karyawan (2).png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/karyawan (3).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 720));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void tambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahActionPerformed
-        // TODO add your handling code here:
-          // Menambahkan aksi ke tombol "Tambah"
-       
-                tambahkaryawan popup = new tambahkaryawan();
-                popup.setVisible(true);
-      
-    }//GEN-LAST:event_tambahActionPerformed
 
     private void dashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardActionPerformed
         // TODO add your handling code here:
@@ -262,12 +234,6 @@ public class karyawan extends javax.swing.JFrame {
           new laporanpenjualan().setVisible(true);
         this.setVisible(false);   
     }//GEN-LAST:event_laporanActionPerformed
-
-    private void ubahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ubahActionPerformed
-       ubahkaryawan popup = new ubahkaryawan();
-                popup.setVisible(true);
-      
-    }//GEN-LAST:event_ubahActionPerformed
 
     private void hapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hapusActionPerformed
      // TODO add your handling code here:
@@ -311,11 +277,12 @@ if (confirm == JOptionPane.YES_OPTION) {
 
     }//GEN-LAST:event_hapusActionPerformed
 
-    private void presensiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_presensiActionPerformed
+    private void karyawanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_karyawanActionPerformed
         // TODO add your handling code here:
-          new karyawan2().setVisible(true);
+        // Menambahkan aksi ke tombol "Tambah"
+  new karyawan().setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_presensiActionPerformed
+    }//GEN-LAST:event_karyawanActionPerformed
 
     
      
@@ -337,13 +304,13 @@ if (confirm == JOptionPane.YES_OPTION) {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(karyawan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(karyawan2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(karyawan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(karyawan2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(karyawan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(karyawan2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(karyawan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(karyawan2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -352,7 +319,7 @@ FlatLightLaf.setup();
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new karyawan().setVisible(true);
+                new karyawan2().setVisible(true);
             }
         });
     }
@@ -362,13 +329,11 @@ FlatLightLaf.setup();
     private javax.swing.JButton hapus;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton karyawan;
     private javax.swing.JButton laporan;
-    private javax.swing.JButton presensi;
     private javax.swing.JButton restock;
-    private javax.swing.JButton tambah;
     private javax.swing.JTable tbkaryawan;
     private javax.swing.JButton transaksi;
-    private javax.swing.JButton ubah;
     // End of variables declaration//GEN-END:variables
 
     private void loadTableData() {

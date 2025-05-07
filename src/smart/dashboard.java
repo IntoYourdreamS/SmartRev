@@ -15,20 +15,22 @@ import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
+import javax.swing.JPanel;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Calendar;
+import javax.swing.JOptionPane;
 
-/**
- *
- *
- * @author acer
- */
 public class dashboard extends javax.swing.JFrame {
 
-    /**
-     * Creates new form login
-     */
     public dashboard() {
         initComponents();
-
 
         customizeTable();
         makeButtonTransparent(jButton1);
@@ -36,12 +38,10 @@ public class dashboard extends javax.swing.JFrame {
         makeButtonTransparent(bttntransaksi);
         makeButtonTransparent(bttnkaryawan);
         makeButtonTransparent(logout);
-         makeButtonTransparent(txdepan);
+        makeButtonTransparent(txdepan);
         
         setTableData();
-     
-      
-
+        initSalesChart();
     }
 
     private void makeButtonTransparent(JButton button) {
@@ -57,7 +57,6 @@ public class dashboard extends javax.swing.JFrame {
                     {"BRG002", "Teh Hitam", 5},
                     {"BRG003", "Teh Oolong", 2},
                     {"BRG004", "Teh Herbal", 12}
-                     
                 },
                 new String[]{"Kode Barang", "Nama Barang", "Stok"}
         );
@@ -66,7 +65,6 @@ public class dashboard extends javax.swing.JFrame {
     }
 
     private void customizeTable() {
-        // Mengubah warna header tabel
         JTableHeader header = jTable1.getTableHeader();
         JTableHeader header2 = tbpenjualanterlaris.getTableHeader();
         JTableHeader header3 = tbexpired.getTableHeader();
@@ -105,11 +103,150 @@ public class dashboard extends javax.swing.JFrame {
         
         tbpenjualanterlaris.setSelectionBackground(new Color(25, 25, 25)); 
         tbpenjualanterlaris.setSelectionForeground(Color.WHITE); 
-
-      
     }
     
+private class SalesChartPanel extends JPanel {
+    private int[] salesData = new int[12];
+    private String[] months = {
+        "Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
+        "Jul", "Agu", "Sep", "Okt", "Nov", "Des"
+    };
     
+    // Define fonts
+    private final Font titleFont = new Font("Segoe UI Semibold", Font.BOLD, 16);
+    private final Font axisLabelFont = new Font("Segoe UI Semibold", Font.PLAIN, 12);
+    private final Font valueFont = new Font("Segoe UI Semibold", Font.PLAIN, 10);
+    private final Font monthFont = new Font("Segoe UI Semibold", Font.PLAIN, 10);
+    private final Font yAxisFont = new Font("Segoe UI Semibold", Font.PLAIN, 10);
+    
+    public SalesChartPanel() {
+        setOpaque(false);
+        fetchSalesDataFromDatabase();
+    }
+    
+    private void fetchSalesDataFromDatabase() {
+        // Initialize with zeros
+        for (int i = 0; i < salesData.length; i++) {
+            salesData[i] = 0;
+        }
+
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/smart", 
+                "root", 
+                "");
+
+            String sql = "SELECT MONTH(tanggal) as bulan, SUM(total_harga) as total " +
+                         "FROM penjualan " +
+                         "WHERE YEAR(tanggal) = YEAR(CURDATE()) " +
+                         "GROUP BY MONTH(tanggal) " +
+                         "ORDER BY MONTH(tanggal)";
+
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                int month = rs.getInt("bulan");
+                int total = rs.getInt("total");
+                if (month >= 1 && month <= 12) {
+                    salesData[month - 1] = total;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, 
+                "Error: " + e.getMessage(), 
+                "Database Error", 
+                JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) { e.printStackTrace(); }
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) { e.printStackTrace(); }
+            try { if (conn != null) conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
+    }
+    
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        // Draw chart border
+        g2d.setColor(Color.BLACK);
+        g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
+        
+        // Draw title with Segoe UI Semibold
+        g2d.setFont(titleFont);
+        String title = "Grafik Penjualan Tahunan";
+        int titleWidth = g2d.getFontMetrics().stringWidth(title);
+        g2d.drawString(title, (getWidth() - titleWidth) / 20, 30);
+        
+        int width = getWidth() - 40;
+        int height = getHeight() - 80;
+        int barWidth = width / salesData.length;
+        
+        // Fixed scale 0-4 million
+        final int MAX_SCALE = 4000000;
+        
+        // Draw bars
+        for (int i = 0; i < salesData.length; i++) {
+            int barHeight = (int) ((double) salesData[i] / MAX_SCALE * height);
+            barHeight = Math.max(0, barHeight); // Ensure not negative
+            
+            int x = 20 + i * barWidth;
+            int y = getHeight() - 60 - barHeight;
+            
+            // Draw bar
+            g2d.setColor(new Color(41, 128, 185));
+            g2d.fillRect(x + 5, y, barWidth - 10, barHeight);
+            
+            // Draw value label with Segoe UI Semibold
+            g2d.setColor(Color.BLACK);
+            g2d.setFont(valueFont);
+            String value = String.format("%,d", salesData[i]);
+            int labelWidth = g2d.getFontMetrics().stringWidth(value);
+            g2d.drawString(value, x + (barWidth - labelWidth)/2, y - 5);
+            
+            // Draw month label with Segoe UI Semibold
+            g2d.setFont(monthFont);
+            String month = months[i];
+            int monthWidth = g2d.getFontMetrics().stringWidth(month);
+            g2d.drawString(month, x + (barWidth - monthWidth)/2, getHeight() - 40);
+        }
+        
+        // Draw axes
+        g2d.setColor(Color.BLACK);
+        g2d.drawLine(20, getHeight() - 60, getWidth() - 20, getHeight() - 60); // X-axis
+        g2d.drawLine(20, getHeight() - 60, 20, 40); // Y-axis
+        
+        // Draw X-axis label with Segoe UI Semibold
+        g2d.setFont(axisLabelFont);
+        String xLabel = "Bulan";
+        int xLabelWidth = g2d.getFontMetrics().stringWidth(xLabel);
+        g2d.drawString(xLabel, getWidth()/2 - xLabelWidth/2, getHeight() - 20);
+
+        // Draw Y-axis labels (fixed 0-4 million) with Segoe UI Semibold
+        g2d.setFont(yAxisFont);
+        for (int i = 0; i <= 3; i++) {
+            int value = i * 1000000;
+            int yPos = getHeight() - 60 - (int)((double)value / MAX_SCALE * height);
+            String label = i + " jt";
+            g2d.drawString(label, 19 - g2d.getFontMetrics().stringWidth(label), yPos + 3);
+        }
+    }
+}
+
+private void initSalesChart() {
+    SalesChartPanel chartPanel = new SalesChartPanel();
+    chartPanel.setVisible(true);
+    getContentPane().add(chartPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(304, 250, 700, 220));
+    getContentPane().setComponentZOrder(chartPanel, 0);
+    chartPanel.repaint();
+}
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
