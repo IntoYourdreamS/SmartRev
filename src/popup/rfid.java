@@ -4,6 +4,7 @@
  */
 package popup;
 
+import Config.Session;
 import Config.koneksi;
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
@@ -20,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import smart.dashboard;
 import smart.karyawan;
 import smart.restok;
 
@@ -27,16 +29,20 @@ import smart.restok;
  *
  * @author ASUS
  */
-public class notifberhasilkrw extends javax.swing.JFrame {
-
+public class rfid extends javax.swing.JFrame {
+private Connection conn;
     /**
      * Creates new form coba
      */
-    public notifberhasilkrw() {
+    public rfid() {
         initComponents();
-          this.setBackground(new Color(0, 0, 0, 0));
         makeButtonTransparent(kembali);
+          this.setBackground(new Color(0, 0, 0, 0));
+          initializeDatabaseConnection(); 
   // setUndecorated(true); // Hilangkan tombol X dan border
+    }
+     private void initializeDatabaseConnection() {
+         conn = koneksi.getConnection(); // Mendapatkan koneksi dari class koneksi
     }
 
     private void makeButtonTransparent(JButton button) {
@@ -84,6 +90,7 @@ public class notifberhasilkrw extends javax.swing.JFrame {
 
         kembali = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        RFIDInput = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -97,8 +104,11 @@ public class notifberhasilkrw extends javax.swing.JFrame {
         });
         getContentPane().add(kembali, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 10, 30, 20));
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/pop up berhasil - Copy.png"))); // NOI18N
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 450, 120));
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/rfid.png"))); // NOI18N
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 670, 290));
+
+        RFIDInput.setUI(null);
+        getContentPane().add(RFIDInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 40, 10, 10));
 
         pack();
         setLocationRelativeTo(null);
@@ -109,6 +119,78 @@ public class notifberhasilkrw extends javax.swing.JFrame {
         new tambahkaryawan().setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_kembaliActionPerformed
+private void ambilData(String rfid) {
+    // Validasi format RFID terlebih dahulu
+    if (rfid == null || rfid.trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "RFID tidak valid", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    String query = "SELECT * FROM karyawan WHERE RFID = ? LIMIT 1";
+    try (PreparedStatement ps = conn.prepareStatement(query)) {
+        ps.setString(1, rfid);
+        ResultSet hasil = ps.executeQuery();
+
+        if (hasil.next()) {
+            String idKaryawan = hasil.getString("id_karyawan");
+            String role = hasil.getString("role");
+            
+            // Verifikasi kesesuaian RFID dengan karyawan
+            if (!rfid.equals(hasil.getString("RFID"))) {
+                JOptionPane.showMessageDialog(this, "RFID tidak sesuai dengan karyawan", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // Set session data
+            Session.setKode(idKaryawan);
+            Session.setRole(role);
+            
+            // Insert data login dengan transaction handling
+            try {
+                conn.setAutoCommit(false); // Mulai transaction
+                
+                // 1. Update RFID di tabel karyawan jika belum sesuai (optional)
+                String updateQuery = "UPDATE karyawan SET RFID = ? WHERE id_karyawan = ? AND (RFID IS NULL OR RFID != ?)";
+                try (PreparedStatement updatePs = conn.prepareStatement(updateQuery)) {
+                    updatePs.setString(1, rfid);
+                    updatePs.setString(2, idKaryawan);
+                    updatePs.setString(3, rfid);
+                    updatePs.executeUpdate();
+                }
+                
+                // 2. Insert data login ke detail_karyawan
+                String insertQuery = "INSERT INTO detail_karyawan (id_karyawan, RFID, tanggal_masuk) VALUES (?, ?, NOW())";
+                try (PreparedStatement insertPs = conn.prepareStatement(insertQuery)) {
+                    insertPs.setString(1, idKaryawan);
+                    insertPs.setString(2, rfid);
+                    int affectedRows = insertPs.executeUpdate();
+                    
+                    if (affectedRows == 0) {
+                        throw new SQLException("Gagal menyimpan data login");
+                    }
+                }
+                
+                conn.commit(); // Commit transaction jika semua sukses
+                
+                JOptionPane.showMessageDialog(this, "Login berhasil sebagai " + role, "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                new dashboard().setVisible(true);
+                this.dispose();
+                
+            } catch (SQLException e) {
+                conn.rollback(); // Rollback jika ada error
+                throw e;
+            } finally {
+                conn.setAutoCommit(true); // Kembalikan auto-commit
+            }
+            
+        } else {
+            JOptionPane.showMessageDialog(this, "RFID Tidak Terdaftar", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
 
     /**
      * @param args the command line arguments
@@ -127,26 +209,33 @@ public class notifberhasilkrw extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(notifberhasilkrw.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(rfid.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(notifberhasilkrw.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(rfid.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(notifberhasilkrw.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(rfid.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(notifberhasilkrw.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(rfid.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new notifberhasilkrw().setVisible(true);
+                new rfid().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField RFIDInput;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JButton kembali;
     // End of variables declaration//GEN-END:variables

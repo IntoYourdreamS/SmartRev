@@ -8,11 +8,13 @@ import Config.koneksi;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
 import java.awt.Font;
+import java.security.Timestamp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -66,53 +68,72 @@ public class karyawan2 extends javax.swing.JFrame {
     }
     
      private void customizeTable() {
-          JTableHeader header = tbkaryawan.getTableHeader();
+          JTableHeader header = tbkaryawan2.getTableHeader();
            header.setFont(new Font("Inter", Font.BOLD, 11));
            header.setForeground(Color.WHITE);
             header.setOpaque(false);
-            tbkaryawan.setFont(new Font("Arial", Font.PLAIN, 10));
-            tbkaryawan.setRowHeight(30); 
-            tbkaryawan.setShowGrid(true); 
-            tbkaryawan.setIntercellSpacing(new java.awt.Dimension(0, 0));
-            tbkaryawan.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            tbkaryawan2.setFont(new Font("Arial", Font.PLAIN, 10));
+            tbkaryawan2.setRowHeight(30); 
+            tbkaryawan2.setShowGrid(true); 
+            tbkaryawan2.setIntercellSpacing(new java.awt.Dimension(0, 0));
+            tbkaryawan2.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
      }
     
    
 
-    private void loadDataToTable() {
-        // Definisikan model tabel dengan header kolom sesuai dengan data karyawan
-        DefaultTableModel model = new DefaultTableModel(
-                new Object[]{"No Karyawan", "Nama Karyawan", "No HP", "Role", "Jam masuk", "Jam keluar"}, 0
-        );
-        tbkaryawan.setModel(model); // Set model ke JTable (asumsi tb_karyawan adalah nama JTable)
-
-        try (Connection conn = koneksi.getConnection(); Statement stmt = conn.createStatement()) {
-            // Query untuk mengambil data karyawan
-            String query = "SELECT id_karyawan, nama_karyawan, no_telp, password, role, RFID FROM karyawan";
-
-            try (ResultSet rs = stmt.executeQuery(query)) {
-                while (rs.next()) {
-                    // Ambil data dari ResultSet sesuai dengan nama kolom tabel karyawan
-                    String idKaryawan = rs.getString("id_karyawan");
-                    String namaKaryawan = rs.getString("nama_karyawan");
-                    String noTelp = rs.getString("no_telp");
-                    String password = rs.getString("password");
-                    String role = rs.getString("role");
-                    String rfid = rs.getString("RFID");
-
-                    // Tambahkan data ke model tabel
-                    model.addRow(new Object[]{idKaryawan, namaKaryawan, noTelp, password, role, rfid});
-                }
-            }
-        } catch (SQLException e) {
-            // Tampilkan pesan kesalahan jika terjadi SQLException
-            JOptionPane.showMessageDialog(this,
-                    "Gagal memuat data: " + e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+private void loadDataToTable() {
+    // Model tabel dengan kolom yang diinginkan
+    DefaultTableModel model = new DefaultTableModel(
+        new Object[]{"No Karyawan", "Nama Karyawan", "No HP", "Role", "Jam Masuk"}, 
+        0
+    ) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false; // Membuat tabel tidak bisa di-edit
         }
-    }
+    };
+    
+    tbkaryawan2.setModel(model);
+
+    try (Connection conn = koneksi.getConnection()) {
+        // Query untuk mendapatkan semua data karyawan beserta semua jam masuk
+        String query = "SELECT k.id_karyawan, k.nama_karyawan, k.no_telp, k.role, " +
+                     "dk.tanggal_masuk as jam_masuk " +
+                     "FROM karyawan k " +
+                     "LEFT JOIN detail_karyawan dk ON k.id_karyawan = dk.id_karyawan " +
+                     "ORDER BY k.id_karyawan, dk.tanggal_masuk DESC"; // Urutkan berdasarkan id dan jam masuk terbaru
+
+        try (PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            while (rs.next()) {
+                // Format tanggal
+                String jamMasukFormatted = "Belum ada data";
+                java.sql.Timestamp jamMasuk = rs.getTimestamp("jam_masuk");
+                if (jamMasuk != null && !rs.wasNull()) {
+                    jamMasukFormatted = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(jamMasuk);
+                }
+                
+                // Tambahkan semua baris tanpa peduli duplikat id_karyawan
+                model.addRow(new Object[]{
+                    rs.getString("id_karyawan"),
+                    rs.getString("nama_karyawan"),
+                    rs.getString("no_telp"),
+                    rs.getString("role"),
+                    jamMasukFormatted
+                });
+            }
+        }
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this,
+            "Gagal memuat data: " + e.getMessage(),
+            "Error",
+            JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    
+}
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -129,11 +150,12 @@ public class karyawan2 extends javax.swing.JFrame {
         dashboard = new javax.swing.JButton();
         hapus = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tbkaryawan = new javax.swing.JTable();
+        tbkaryawan2 = new javax.swing.JTable();
         karyawan = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         laporan.setBorder(null);
@@ -176,24 +198,24 @@ public class karyawan2 extends javax.swing.JFrame {
         });
         getContentPane().add(hapus, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 90, 90, 40));
 
-        tbkaryawan.setModel(new javax.swing.table.DefaultTableModel(
+        tbkaryawan2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "No karyawan", "Nama karyawan", "No hp", "Role", "Jam  masuk", "Jam keluar"
+                "No karyawan", "Nama karyawan", "No hp", "Role", "Jam  masuk"
             }
         ));
-        jScrollPane2.setViewportView(tbkaryawan);
+        jScrollPane2.setViewportView(tbkaryawan2);
 
         getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 150, 1040, 440));
 
@@ -237,13 +259,13 @@ public class karyawan2 extends javax.swing.JFrame {
 
     private void hapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hapusActionPerformed
      // TODO add your handling code here:
-int selectedRow = tbkaryawan.getSelectedRow();
+int selectedRow = tbkaryawan2.getSelectedRow();
 if (selectedRow == -1) {
     JOptionPane.showMessageDialog(this, "Pilih data yang akan dihapus!", "Peringatan", JOptionPane.WARNING_MESSAGE);
     return;
 }
 
-String idKaryawan = tbkaryawan.getValueAt(selectedRow, 0).toString(); 
+String idKaryawan = tbkaryawan2.getValueAt(selectedRow, 0).toString(); 
 
 int confirm = JOptionPane.showConfirmDialog(this,
         "Apakah Anda yakin ingin menghapus data ini?",
@@ -261,7 +283,7 @@ if (confirm == JOptionPane.YES_OPTION) {
         if (rowsAffected > 0) {
             JOptionPane.showMessageDialog(this, "Data berhasil dihapus!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
             
-            DefaultTableModel model = (DefaultTableModel) tbkaryawan.getModel();
+            DefaultTableModel model = (DefaultTableModel) tbkaryawan2.getModel();
             model.removeRow(selectedRow);
 
             
@@ -332,7 +354,7 @@ FlatLightLaf.setup();
     private javax.swing.JButton karyawan;
     private javax.swing.JButton laporan;
     private javax.swing.JButton restock;
-    private javax.swing.JTable tbkaryawan;
+    private javax.swing.JTable tbkaryawan2;
     private javax.swing.JButton transaksi;
     // End of variables declaration//GEN-END:variables
 

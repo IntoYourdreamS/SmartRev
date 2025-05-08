@@ -4,6 +4,7 @@
  */
 package smart;
 
+import Config.Session;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
 import javax.swing.table.DefaultTableModel;
@@ -13,6 +14,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.UIManager;
+import java.sql.PreparedStatement;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.JPanel;
@@ -31,6 +33,8 @@ public class dashboard extends javax.swing.JFrame {
 
     public dashboard() {
         initComponents();
+        loadDataToTable();
+        loadData();
 
         customizeTable();
         makeButtonTransparent(jButton1);
@@ -42,13 +46,52 @@ public class dashboard extends javax.swing.JFrame {
         
         setTableData();
         initSalesChart();
+    
     }
+    
+
 
     private void makeButtonTransparent(JButton button) {
         button.setOpaque(false);
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
     }
+    
+private void loadDataToTable()  {
+    // Definisikan model tabel dengan header kolom
+    DefaultTableModel model = new DefaultTableModel(
+      new Object[][]{}, 
+        new String[]{"Kode Barang", "Nama Barang", "Stok"}
+    );
+    tbexpired.setModel(model); // Set model ke JTable (asumsi jTable1 adalah nama JTable)
+
+    try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart", "root", "");
+         Statement stmt = conn.createStatement()) {
+
+        // Query untuk mengambil data produk dengan stok < 10
+        String query = "SELECT id_produk, nama_produk, stok FROM produk WHERE stok < 10 ORDER BY stok ASC";
+
+        try (ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                // Ambil data dari ResultSet
+                String kodeBarang = rs.getString("id_produk");
+                String namaBarang = rs.getString("nama_produk");
+                int stok = rs.getInt("stok");
+
+                // Tambahkan data ke model tabel
+                model.addRow(new Object[]{kodeBarang, namaBarang, stok});
+            }
+        }
+
+    } catch (SQLException e) {
+        // Tampilkan pesan kesalahan
+        JOptionPane.showMessageDialog(this,
+            "Gagal memuat data produk: " + e.getMessage(),
+            "Error",
+            JOptionPane.ERROR_MESSAGE);
+    }
+}
+
 
     private void setTableData() {
         DefaultTableModel model = new DefaultTableModel(
@@ -63,6 +106,69 @@ public class dashboard extends javax.swing.JFrame {
 
         jTable1.setModel(model);
     }
+    
+  private void loadData() {
+    // Definisikan model tabel dengan header kolom
+    DefaultTableModel model = new DefaultTableModel(
+            new Object[][]{},
+            new String[]{"Kode Produk", "Nama Produk", "Total Terjual", "Kategori"}
+    ) {
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            // Set proper column classes for sorting
+            switch (columnIndex) {
+                case 0: return String.class;  // Kode Produk
+                case 1: return String.class;  // Nama Produk
+                case 2: return Integer.class; // Total Terjual
+                case 3: return String.class; // Kategori
+                default: return Object.class;
+            }
+        }
+    };
+    
+    tbpenjualanterlaris.setModel(model); // Set model ke JTable
+
+    // Query SQL untuk ambil data penjualan terlaris
+    String query = """
+    SELECT detail_penjualan.id_produk, 
+           COALESCE(produk.nama_produk, 'Produk Tidak Ditemukan') AS nama_produk,
+           SUM(detail_penjualan.jumlah) AS total_terjual,
+           COALESCE(detail_penjualan.kategori, 'Tidak Diketahui') AS kategori
+    FROM detail_penjualan
+    LEFT JOIN produk ON detail_penjualan.id_produk = produk.id_produk
+    GROUP BY detail_penjualan.id_produk, produk.nama_produk, detail_penjualan.kategori
+    ORDER BY total_terjual DESC
+""";
+
+
+    try (
+        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart?useUnicode=true&characterEncoding=UTF-8", "root", "");
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(query)
+    ) {
+        while (rs.next()) {
+            String kodeProduk = rs.getString("id_produk");
+            String namaProduk = rs.getString("nama_produk");
+            int totalTerjual = rs.getInt("total_terjual");
+            String kategori = rs.getString("kategori");
+
+            // Tambahkan ke tabel
+            model.addRow(new Object[]{
+                kodeProduk != null ? kodeProduk : "N/A",
+                namaProduk,
+                totalTerjual,
+                kategori
+            });
+        }
+
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this,
+                "Gagal memuat data penjualan terlaris: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    }
+}
 
     private void customizeTable() {
         JTableHeader header = jTable1.getTableHeader();
@@ -263,11 +369,13 @@ private void initSalesChart() {
         bttnlaporan = new javax.swing.JButton();
         logout = new javax.swing.JButton();
         txdepan = new javax.swing.JButton();
+        jTextField1 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         tbexpired.setModel(new javax.swing.table.DefaultTableModel(
@@ -290,7 +398,7 @@ private void initSalesChart() {
         tbexpired.setSelectionBackground(new java.awt.Color(25, 25, 25));
         jScrollPane3.setViewportView(tbexpired);
 
-        getContentPane().add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 550, 250, 130));
+        getContentPane().add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 550, 250, 140));
 
         tbpenjualanterlaris.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -375,6 +483,19 @@ private void initSalesChart() {
         txdepan.setBorder(null);
         getContentPane().add(txdepan, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 450, 190, 30));
 
+        jTextField1.setFont(new java.awt.Font("Serif", 1, 24)); // NOI18N
+        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField1.setBorder(null);
+        jTextField1.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        jTextField1.setEnabled(false);
+        jTextField1.setSelectedTextColor(new java.awt.Color(0, 0, 0));
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 10, 220, 70));
+
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Dashboard kasir (2).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -20, 1372, 768));
 
@@ -398,8 +519,11 @@ private void initSalesChart() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       new restok().setVisible(true);
-        this.setVisible(false); 
+     restok dash = new restok();
+dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
+dash.setVisible(true);
+this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -411,26 +535,41 @@ private void initSalesChart() {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void bttnlaporanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttnlaporanActionPerformed
-      new laporanpenjualan().setVisible(true);
-        this.setVisible(false); 
+     laporanpenjualan dash = new laporanpenjualan();
+dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
+dash.setVisible(true);
+this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
+
     }//GEN-LAST:event_bttnlaporanActionPerformed
 
     private void bttntransaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttntransaksiActionPerformed
-       new transaksi().setVisible(true);
-        this.setVisible(false); 
-        dispose();
+      transaksi dash = new transaksi();
+dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
+dash.setVisible(true);
+this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
+
     }//GEN-LAST:event_bttntransaksiActionPerformed
 
     private void bttnkaryawanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttnkaryawanActionPerformed
-        new karyawan().setVisible(true);
-        this.setVisible(false); 
+      karyawan dash = new karyawan();
+dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
+dash.setVisible(true);
+this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
+
     }//GEN-LAST:event_bttnkaryawanActionPerformed
 
     private void logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutActionPerformed
         // TODO add your handling code here:
-          new login().setVisible(true);
-        this.setVisible(false); 
+          login dash = new login();
+dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
+dash.setVisible(true);
+this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
+
     }//GEN-LAST:event_logoutActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -483,6 +622,7 @@ private void initSalesChart() {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JButton logout;
     private javax.swing.JTable tbexpired;
     private javax.swing.JTable tbpenjualanterlaris;

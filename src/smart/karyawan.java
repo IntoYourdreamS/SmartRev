@@ -137,6 +137,7 @@ public class karyawan extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         tambah.setBorder(null);
@@ -240,27 +241,36 @@ public class karyawan extends javax.swing.JFrame {
     }//GEN-LAST:event_tambahActionPerformed
 
     private void dashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardActionPerformed
-        // TODO add your handling code here:
-          new dashboard().setVisible(true);
-        this.setVisible(false);   
+      dashboard dash = new dashboard();
+dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
+dash.setVisible(true);
+this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
+ 
     }//GEN-LAST:event_dashboardActionPerformed
 
     private void transaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transaksiActionPerformed
-        // TODO add your handling code here:
-          new transaksi().setVisible(true);
-        this.setVisible(false);   
+     transaksi dash = new transaksi();
+dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
+dash.setVisible(true);
+this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
+
     }//GEN-LAST:event_transaksiActionPerformed
 
     private void restockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restockActionPerformed
-        // TODO add your handling code here:
-          new restok().setVisible(true);
-        this.setVisible(false);   
+       restok dash = new restok();
+dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
+dash.setVisible(true);
+this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
+
     }//GEN-LAST:event_restockActionPerformed
 
     private void laporanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_laporanActionPerformed
         // TODO add your handling code here:
-          new laporanpenjualan().setVisible(true);
-        this.setVisible(false);   
+        laporanpenjualan dash = new laporanpenjualan();
+dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
+dash.setVisible(true);
+this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
+
     }//GEN-LAST:event_laporanActionPerformed
 
     private void ubahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ubahActionPerformed

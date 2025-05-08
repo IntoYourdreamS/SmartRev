@@ -34,6 +34,7 @@ public class returnbarang extends javax.swing.JFrame {
          alasan.setOpaque(false);
         alasan.setBackground(new Color(0, 0, 0, 0));
         harga_jual.setOpaque(false);
+          this.setBackground(new Color(0, 0, 0, 0));
         harga_jual.setBackground(new Color(0, 0, 0, 0));
           
 

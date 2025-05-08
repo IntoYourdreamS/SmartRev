@@ -14,6 +14,7 @@ import java.sql.Statement;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import smart.karyawan;
 import smart.restok;
 
@@ -39,7 +40,7 @@ public class tambahkaryawan extends javax.swing.JFrame {
           RFID.setOpaque(false);
         RFID.setBackground(new Color(0, 0, 0, 0));
         makeButtonTransparent(exit);
-          
+            this.setBackground(new Color(0, 0, 0, 0));
             makeButtonTransparent(tambah);
            
             
@@ -65,6 +66,7 @@ public class tambahkaryawan extends javax.swing.JFrame {
     }
 }
 
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -203,7 +205,7 @@ public class tambahkaryawan extends javax.swing.JFrame {
                 JOptionPane.YES_NO_OPTION);
 
         // Query untuk menambahkan data ke tabel karyawan
-        String query = "INSERT INTO karyawan (id_karyawan, nama_karyawan, no_telp, password, role, RFID,tanggal_masuk) VALUES (?, ?, ?, ?, ?,?, NOW())";
+        String query = "INSERT INTO karyawan (id_karyawan, nama_karyawan, no_telp, password, role, RFID,tg_buat_akun) VALUES (?, ?, ?, ?, ?,?, NOW())";
 
         // Menambahkan data ke database
         try (Connection conn = koneksi.getConnection(); PreparedStatement stat = conn.prepareStatement(query)) {

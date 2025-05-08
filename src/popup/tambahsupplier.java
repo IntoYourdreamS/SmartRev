@@ -49,6 +49,7 @@ public class tambahsupplier extends javax.swing.JFrame {
           makeButtonTransparent(ubah);
           makeButtonTransparent(tambah);
            makeButtonTransparent(hapus);
+             this.setBackground(new Color(0, 0, 0, 0));
             
 
     }

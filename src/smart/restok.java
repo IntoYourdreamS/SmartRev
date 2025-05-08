@@ -162,6 +162,7 @@ private void connectToDatabase() {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         dashboard.addActionListener(new java.awt.event.ActionListener() {
@@ -222,7 +223,7 @@ private void connectToDatabase() {
                 datasupplierActionPerformed(evt);
             }
         });
-        getContentPane().add(datasupplier, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 210, 160, 30));
+        getContentPane().add(datasupplier, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 200, 160, 40));
 
         dataexpired.setBorder(null);
         dataexpired.addActionListener(new java.awt.event.ActionListener() {
@@ -230,7 +231,7 @@ private void connectToDatabase() {
                 dataexpiredActionPerformed(evt);
             }
         });
-        getContentPane().add(dataexpired, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 420, 160, 30));
+        getContentPane().add(dataexpired, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 360, 160, 30));
 
         datareturn.setBorder(null);
         datareturn.addActionListener(new java.awt.event.ActionListener() {
@@ -238,9 +239,8 @@ private void connectToDatabase() {
                 datareturnActionPerformed(evt);
             }
         });
-        getContentPane().add(datareturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 690, 130, 30));
+        getContentPane().add(datareturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 540, 130, 30));
 
-        tablerestock.setForeground(new java.awt.Color(0, 0, 0));
         tablerestock.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},

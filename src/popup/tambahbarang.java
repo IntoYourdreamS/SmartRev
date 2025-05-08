@@ -22,7 +22,7 @@ public class tambahbarang extends javax.swing.JFrame {
     public tambahbarang() {
         initComponents();
 //          makeButtonTransparent(kembali);
-            
+              this.setBackground(new Color(0, 0, 0, 0));
 
     }
     

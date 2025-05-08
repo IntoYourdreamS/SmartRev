@@ -30,6 +30,7 @@ public class ubahkaryawan extends javax.swing.JFrame {
         initComponents();
           makeButtonTransparent(kembali);
             makeButtonTransparent(ubah);
+              this.setBackground(new Color(0, 0, 0, 0));
             
         no_karyawan.setBackground(new Color(0, 0, 0, 0));
         nama_karyawan.setOpaque(false);

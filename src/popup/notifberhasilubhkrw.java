@@ -35,6 +35,7 @@ public class notifberhasilubhkrw extends javax.swing.JFrame {
     public notifberhasilubhkrw() {
         initComponents();
         makeButtonTransparent(kembali);
+          this.setBackground(new Color(0, 0, 0, 0));
   // setUndecorated(true); // Hilangkan tombol X dan border
     }
 
