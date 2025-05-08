@@ -131,7 +131,7 @@ private void loadDataToTable()  {
     // Query SQL untuk ambil data penjualan terlaris
     String query = """
     SELECT detail_penjualan.id_produk, 
-           COALESCE(produk.nama_produk, 'Produk Tidak Ditemukan') AS nama_produk,
+           COALESCE(produk.nama_produk) AS nama_produk,
            SUM(detail_penjualan.jumlah) AS total_terjual,
            COALESCE(detail_penjualan.kategori, 'Tidak Diketahui') AS kategori
     FROM detail_penjualan
@@ -369,7 +369,6 @@ private void initSalesChart() {
         bttnlaporan = new javax.swing.JButton();
         logout = new javax.swing.JButton();
         txdepan = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -483,19 +482,6 @@ private void initSalesChart() {
         txdepan.setBorder(null);
         getContentPane().add(txdepan, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 450, 190, 30));
 
-        jTextField1.setFont(new java.awt.Font("Serif", 1, 24)); // NOI18N
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField1.setBorder(null);
-        jTextField1.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        jTextField1.setEnabled(false);
-        jTextField1.setSelectedTextColor(new java.awt.Color(0, 0, 0));
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 10, 220, 70));
-
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Dashboard kasir (2).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -20, 1372, 768));
 
@@ -567,10 +553,6 @@ this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
 
     }//GEN-LAST:event_logoutActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
     /**
      * @param args the command line arguments
      */
@@ -622,7 +604,6 @@ this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JButton logout;
     private javax.swing.JTable tbexpired;
     private javax.swing.JTable tbpenjualanterlaris;

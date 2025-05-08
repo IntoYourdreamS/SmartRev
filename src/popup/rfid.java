@@ -105,6 +105,15 @@ private Connection conn;
         getContentPane().add(kembali, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 10, 30, 20));
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/rfid.png"))); // NOI18N
+        jLabel2.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                jLabel2AncestorAdded(evt);
+            }
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 670, 290));
 
         RFIDInput.setUI(null);
@@ -116,9 +125,13 @@ private Connection conn;
 
     private void kembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kembaliActionPerformed
         // TODO add your handling code here:
-        new tambahkaryawan().setVisible(true);
+        new dashboard().setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_kembaliActionPerformed
+
+    private void jLabel2AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jLabel2AncestorAdded
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jLabel2AncestorAdded
 private void ambilData(String rfid) {
     // Validasi format RFID terlebih dahulu
     if (rfid == null || rfid.trim().isEmpty()) {

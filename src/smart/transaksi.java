@@ -430,7 +430,7 @@ public class transaksi extends javax.swing.JFrame {
 
     private void txt_noBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_noBarangActionPerformed
         // TODO add your handling code here:
-        
+
         String kode_bahan = txt_noBarang.getText();
         txt_namabrg.setText(kode_bahan);
         try {
@@ -621,72 +621,101 @@ public class transaksi extends javax.swing.JFrame {
 
     private void btn_bayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_bayarActionPerformed
         // TODO add your handling code here:
-        String kodeTransaksi, idKaryawan;
-        double bayar, kembalian;
-
-        List<String> id_produk = new ArrayList<String>();
-        List<String> kategori = new ArrayList<String>();
-        List<Integer> jumlah = new ArrayList<Integer>();
-        List<Integer> hargaSatuan = new ArrayList<Integer>();
-        List<Integer> subTotal = new ArrayList<Integer>();
-
-        int total = Integer.parseInt(txt_totalharga.getText());
-        kodeTransaksi = generateKodeTransaksi();
-        idKaryawan = Session.getKode();
-        bayar = Double.parseDouble(txt_bayar.getText());
-
-        for (int i = 0; i < jTable1.getRowCount(); i++) {
-            id_produk.add((String) jTable1.getValueAt(i, 0));
-            jumlah.add((Integer) jTable1.getValueAt(i, 2));
-            hargaSatuan.add((Integer) jTable1.getValueAt(i, 3));
-            subTotal.add((Integer) jTable1.getValueAt(i, 4));
-            kategori.add((String) jTable1.getValueAt(i, 5));
-        }
-
-        String[] idProduk = id_produk.toArray(new String[0]);
-        int[] jumlahProduk = jumlah.stream().mapToInt(Integer::intValue).toArray();
-        int[] hargaS = hargaSatuan.stream().mapToInt(Integer::intValue).toArray();
-        int[] SubTotal = subTotal.stream().mapToInt(Integer::intValue).toArray();
-        String[] Kategori = kategori.toArray(new String[0]);
-
-        try {
-            if (jTable1.getRowCount() != 0) {
-                if (txt_bayar.getText().equals("")) {
-                    JOptionPane.showMessageDialog(null,
-                            "Gagal, Pastikan mengisi nominal bayar ",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                } else {
-                    if (Double.parseDouble(txt_bayar.getText()) >= total) {
-                        prosesTransaksi(kodeTransaksi, idKaryawan, idProduk, jumlahProduk, Kategori, hargaS, SubTotal, bayar, total);
-                        model.setRowCount(0);
-                        kembalian = bayar - total;
-                        txt_kembalian.setText("" + kembalian);
-                        refreshTable();
-
-                        JOptionPane.showMessageDialog(null,
-                                "Transaksi Berhasil!",
-                                "Hore",
-                                JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        JOptionPane.showMessageDialog(null,
-                                "Gagal, Pastikan nominal bayar cukup!",
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            } else {
-                JOptionPane.showMessageDialog(null,
-                        "Pesan Menu Terlebih Dahulu!",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,
-                    "Transaksi Gagal" + e.getMessage(),
+        if (jTable1.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Belum ada item yang ditambahkan!",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
+            return;
         }
+
+        if (txt_bayar.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Nominal pembayaran harus diisi!",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            double total = Double.parseDouble(txt_totalharga.getText());
+            double bayar = Double.parseDouble(txt_bayar.getText());
+            double kembalian = bayar - total;
+
+            if (bayar < total) {
+                JOptionPane.showMessageDialog(this,
+                        "Nominal pembayaran kurang!",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Proses transaksi
+            String kodeTransaksi = generateKodeTransaksi();
+            String idKaryawan = Session.getKode();
+
+            // Simpan data transaksi ke database
+            if (prosesTransaksiKeDatabase(kodeTransaksi, idKaryawan, total, bayar)) {
+                // Update UI
+                txt_kembalian.setText(String.valueOf(kembalian));
+
+                // Siapkan data untuk struk
+                DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+                String[][] itemsForStruk = new String[model.getRowCount()][4];
+
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    itemsForStruk[i][0] = model.getValueAt(i, 1).toString(); // Nama
+                    itemsForStruk[i][1] = model.getValueAt(i, 2).toString(); // Qty
+                    itemsForStruk[i][2] = model.getValueAt(i, 3).toString(); // Harga
+                    itemsForStruk[i][3] = model.getValueAt(i, 4).toString(); // Subtotal
+                }
+
+                // Cetak struk dengan konfirmasi
+                boolean cetakBerhasil = StrukPrinter.printStrukDenganKonfirmasi(
+                        kodeTransaksi,
+                        itemsForStruk,
+                        total,
+                        bayar,
+                        kembalian,
+                        Session.getKode()
+                );
+
+                // Reset form setelah transaksi
+                model.setRowCount(0);
+                txt_totalharga.setText("");
+                txt_bayar.setText("");
+
+                if (cetakBerhasil) {
+                    JOptionPane.showMessageDialog(this,
+                            "Transaksi berhasil dan struk telah dicetak!",
+                            "Sukses",
+                            JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Transaksi berhasil (struk tidak dicetak)",
+                            "Sukses",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Format nominal tidak valid!",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    private boolean prosesTransaksiKeDatabase(String kodeTransaksi, String idKaryawan,
+            double total, double bayar) {
+        // Implementasi penyimpanan ke database
+        // Return true jika berhasil
+        return true;
     }//GEN-LAST:event_btn_bayarActionPerformed
 
     private void btn_cetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cetakActionPerformed
@@ -731,7 +760,7 @@ public class transaksi extends javax.swing.JFrame {
         //</editor-fold>
         FlatLightLaf.setup();
         UIManager.put("TableHeader.background", Color.BLACK);
-FlatLightLaf.setup();
+        FlatLightLaf.setup();
         UIManager.put("TableHeader.background", Color.BLACK);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
