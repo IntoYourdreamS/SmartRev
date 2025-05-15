@@ -4,8 +4,6 @@
  */
 package smart;
 
-
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.print.*;
@@ -214,4 +212,4 @@ public class StrukPrinter implements Printable {
             return false;
         }
     }
-}
+} 

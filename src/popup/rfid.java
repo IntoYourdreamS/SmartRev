@@ -114,7 +114,7 @@ private Connection conn;
             public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
             }
         });
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 670, 290));
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 680, 290));
 
         RFIDInput.setUI(null);
         getContentPane().add(RFIDInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 40, 10, 10));

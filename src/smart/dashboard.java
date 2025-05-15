@@ -282,8 +282,8 @@ private class SalesChartPanel extends JPanel {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
         // Draw chart border
-        g2d.setColor(Color.BLACK);
-        g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
+     //   g2d.setColor(Color.BLACK);
+      //  g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
         
         // Draw title with Segoe UI Semibold
         g2d.setFont(titleFont);
@@ -349,7 +349,7 @@ private class SalesChartPanel extends JPanel {
 private void initSalesChart() {
     SalesChartPanel chartPanel = new SalesChartPanel();
     chartPanel.setVisible(true);
-    getContentPane().add(chartPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(304, 250, 700, 220));
+    getContentPane().add(chartPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(304, 240, 700, 230));
     getContentPane().setComponentZOrder(chartPanel, 0);
     chartPanel.repaint();
 }

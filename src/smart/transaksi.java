@@ -329,7 +329,7 @@ public class transaksi extends javax.swing.JFrame {
                 txt_qtyKeyReleased(evt);
             }
         });
-        getContentPane().add(txt_qty, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 360, 320, 40));
+        getContentPane().add(txt_qty, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 370, 320, 30));
 
         laporan.setBorder(null);
         laporan.addActionListener(new java.awt.event.ActionListener() {
