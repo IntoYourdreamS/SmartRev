@@ -4,123 +4,105 @@
  */
 package smart;
 
-import javax.swing.*;
+// Include necessary imports above
 import java.awt.*;
 import java.awt.print.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.text.DecimalFormat;
+import java.util.List;
+
+
 
 public class StrukPrinter implements Printable {
-    // Konstanta untuk ukuran struk 80mm
-    private static final int PAPER_WIDTH = 226; // 80mm dalam points (1mm = 2.83 points)
-    private static final int PAPER_HEIGHT = 1000; // Panjang kertas
-    private static final int MARGIN = 5; // Reduced margin
-    private static final int LINE_HEIGHT = 12;
+    private static final int PAPER_WIDTH = (int) (80 * 72 / 25.4);
+    private static final int PAPER_HEIGHT = (int) (80 * 72 / 25.4);
+    private static final int MARGIN = 2;
+    private static final int LINE_HEIGHT = 10;
+    private final DecimalFormat currencyFormat = new DecimalFormat("Rp#,###");
+    private final DecimalFormat quantityFormat = new DecimalFormat("#");
     
-    private String noTransaksi;
-    private String tanggal;
-    private String[][] items;
-    private double total;
-    private double bayar;
-    private double kembalian;
-    private String namaKasir;
-    private String namaToko;
-    private String alamatToko;
-    private String teleponToko;
-
-    private static final DecimalFormat currencyFormat = new DecimalFormat("Rp#,###");
-    private static final DecimalFormat quantityFormat = new DecimalFormat("#,###");
-
-    public StrukPrinter(String noTransaksi, String[][] items, double total, 
-                      double bayar, double kembalian, String namaKasir) {
-        this.noTransaksi = noTransaksi;
-        this.tanggal = new SimpleDateFormat("dd/MM/yy HH:mm:ss").format(new Date());
-        this.items = items;
-        this.total = total;
-        this.bayar = bayar;
-        this.kembalian = kembalian;
-        this.namaKasir = namaKasir;
-        this.namaToko = "TOKO SEMBAKO BU SITI";
-        this.alamatToko = "Desa Bangunsari-Kecamatan Songgon";
-        this.teleponToko = "Telp: 081332053238";
-    }
+    private String namaToko, alamatToko, teleponToko, noTransaksi, tanggal, namaKasir;
+    private List<String[]> items;
+    private double total, bayar, kembalian;
 
     @Override
-    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
         if (pageIndex > 0) return NO_SUCH_PAGE;
 
         Graphics2D g = (Graphics2D) graphics;
         g.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
 
-        // Setup font
-        Font fontBold = new Font("Courier New", Font.BOLD, 9); // Reduced font size
+        Font fontBold = new Font("Courier New", Font.BOLD, 8);
         Font fontRegular = new Font("Courier New", Font.PLAIN, 8);
         Font fontSmall = new Font("Courier New", Font.PLAIN, 7);
-        
-        int y = MARGIN;
 
-        // Header Toko
+        int y = MARGIN + 10;
+
+        // Header
         g.setFont(fontBold);
         centerText(g, namaToko, y, PAPER_WIDTH);
         y += LINE_HEIGHT;
-        
         g.setFont(fontSmall);
         centerText(g, alamatToko, y, PAPER_WIDTH);
         y += LINE_HEIGHT;
         centerText(g, teleponToko, y, PAPER_WIDTH);
-        y += LINE_HEIGHT + 5;
+        y += LINE_HEIGHT + 2;
 
-        // Garis pemisah
         drawLine(g, y);
-        y += LINE_HEIGHT;
+        y += 5;
 
-        // Info Transaksi
+        // Transaction Info
         g.setFont(fontRegular);
         printLeftRight(g, "No. Transaksi", noTransaksi, y);
         y += LINE_HEIGHT;
         printLeftRight(g, "Tanggal", tanggal, y);
         y += LINE_HEIGHT;
         printLeftRight(g, "Kasir", namaKasir, y);
-        y += LINE_HEIGHT + 5;
+        y += LINE_HEIGHT + 2;
 
-        // Garis pemisah
         drawLine(g, y);
-        y += LINE_HEIGHT;
+        y += 5;
 
-        // Header Tabel Item
+        // Item Header
         g.setFont(fontBold);
-        String format = "%-18s %3s %8s %8s"; // Adjusted column widths
-        g.drawString(String.format(format, "NAMA BARANG", "QTY", "HARGA", "SUBTOTAL"), MARGIN, y);
-        y += LINE_HEIGHT;
-        
-        drawLine(g, y);
+        String header = "NAMA        QTY  HARGA   SUBTOTAL";
+        g.drawString(header, MARGIN, y);
         y += LINE_HEIGHT;
 
-        // Daftar Item
+       // drawLine(g, y);
+       // y += 5;
+
+        // Items
         g.setFont(fontRegular);
         for (String[] item : items) {
-            String nama = truncate(item[0], 18); // Adjusted truncation length
+            String nama = truncate(item[0], 10);
             String qty = quantityFormat.format(Integer.parseInt(item[1]));
-            String harga = currencyFormat.format(Double.parseDouble(item[2]));
-            String subtotal = currencyFormat.format(Double.parseDouble(item[3]));
-            
-            g.drawString(String.format(format, nama, qty, harga, subtotal), MARGIN, y);
+            String harga = formatCurrency(Double.parseDouble(item[2]));
+            String subtotal = formatCurrency(Double.parseDouble(item[3]));
+            String itemLine = String.format("%-10s %3s %6s %7s", nama, qty, harga, subtotal);
+            g.drawString(itemLine, MARGIN, y);
             y += LINE_HEIGHT;
         }
 
-        // Garis pemisah
         drawLine(g, y);
-        y += LINE_HEIGHT;
+        y += 5;
 
-        // Total Pembayaran
+        // Totals
         g.setFont(fontBold);
-        printLeftRight(g, "TOTAL", currencyFormat.format(total), y);
+        printLeftRight(g, "TOTAL", formatCurrency(total), y);
         y += LINE_HEIGHT;
-        printLeftRight(g, "TUNAI", currencyFormat.format(bayar), y);
+        printLeftRight(g, "TUNAI", formatCurrency(bayar), y);
         y += LINE_HEIGHT;
-        printLeftRight(g, "KEMBALI", currencyFormat.format(kembalian), y);
-        y += LINE_HEIGHT + 10;
+        printLeftRight(g, "KEMBALI", formatCurrency(kembalian), y);
+        y += LINE_HEIGHT + 5;
 
         // Footer
         g.setFont(fontSmall);
@@ -129,87 +111,169 @@ public class StrukPrinter implements Printable {
         centerText(g, "Barang yang sudah dibeli tidak dapat", y, PAPER_WIDTH);
         y += LINE_HEIGHT;
         centerText(g, "ditukar/dikembalikan", y, PAPER_WIDTH);
-        y += LINE_HEIGHT + 5;
-
-        // Add space at the end
-       // drawLine(g, y);
-       // y += LINE_HEIGHT;
-       // centerText(g, " ", y, PAPER_WIDTH);
 
         return PAGE_EXISTS;
     }
 
-    private void centerText(Graphics g, String text, int y, int width) {
-        FontMetrics fm = g.getFontMetrics();
-        int x = (width - fm.stringWidth(text)) / 2;
-        g.drawString(text, x, y);
+    private String formatCurrency(double amount) {
+        return currencyFormat.format(amount);
     }
 
-    private void printLeftRight(Graphics g, String left, String right, int y) {
+    private String truncate(String text, int maxLength) {
+        if (text.length() <= maxLength) return text;
+        return text.substring(0, maxLength - 2) + "..";
+    }
+
+    private void centerText(Graphics g, String text, int y, int width) {
         FontMetrics fm = g.getFontMetrics();
-        g.drawString(left, MARGIN, y);
-        g.drawString(right, PAPER_WIDTH - MARGIN - fm.stringWidth(right), y);
+        int textWidth = fm.stringWidth(text);
+        int x = (width - textWidth) / 2;
+        g.drawString(text, x, y);
     }
 
     private void drawLine(Graphics g, int y) {
         g.drawLine(MARGIN, y, PAPER_WIDTH - MARGIN, y);
     }
 
-    private String truncate(String text, int length) {
-        if (text.length() <= length) return text;
-        return text.substring(0, length - 3) + "...";
+    private void printLeftRight(Graphics g, String left, String right, int y) {
+        FontMetrics fm = g.getFontMetrics();
+        int rightWidth = fm.stringWidth(right);
+        g.drawString(left, MARGIN, y);
+        g.drawString(right, PAPER_WIDTH - MARGIN - rightWidth, y);
     }
 
-    // Cetak otomatis tanpa konfirmasi
-    public static void printStrukOtomatis(String noTransaksi, String[][] items, 
-                                        double total, double bayar, double kembalian, 
-                                        String namaKasir) {
-        try {
-            StrukPrinter struk = new StrukPrinter(noTransaksi, items, total, bayar, kembalian, namaKasir);
-            PrinterJob job = PrinterJob.getPrinterJob();
-            
-            PageFormat pf = job.defaultPage();
-            Paper paper = pf.getPaper();
-            paper.setSize(PAPER_WIDTH, PAPER_HEIGHT);
-            paper.setImageableArea(0, 0, PAPER_WIDTH, PAPER_HEIGHT);
-            pf.setPaper(paper);
-            
-            job.setPrintable(struk, pf);
-            job.print();
-            
-        } catch (PrinterException e) {
-            System.err.println("Gagal mencetak struk: " + e.getMessage());
-        }
+  
+
+
+    // Format mata uang dalam Rupiah, tanpa Rp supaya muat lebih baik
+    
+
+    // Setter methods
+    public void setNamaToko(String namaToko) {
+        this.namaToko = namaToko;
     }
 
-    // Cetak dengan dialog konfirmasi
-    public static boolean printStrukDenganKonfirmasi(String noTransaksi, String[][] items, 
-                                                   double total, double bayar, double kembalian,
-                                                   String namaKasir) {
+    public void setAlamatToko(String alamatToko) {
+        this.alamatToko = alamatToko;
+    }
+
+    public void setTeleponToko(String teleponToko) {
+        this.teleponToko = teleponToko;
+    }
+
+    public void setNoTransaksi(String noTransaksi) {
+        this.noTransaksi = noTransaksi;
+    }
+
+    public void setTanggal(String tanggal) {
+        this.tanggal = tanggal;
+    }
+
+    public void setNamaKasir(String namaKasir) {
+        this.namaKasir = namaKasir;
+    }
+
+    public void setItems(List<String[]> items) {
+        this.items = items;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public void setBayar(double bayar) {
+        this.bayar = bayar;
+    }
+
+    public void setKembalian(double kembalian) {
+        this.kembalian = kembalian;
+    }
+
+    /**
+     * Method static untuk mencetak struk dengan konfirmasi dialog
+     * Dipanggil dari halaman transaksi
+     *
+     * @param kodeTransaksi Kode transaksi yang sudah digenerate
+     * @param items Array items yang akan dicetak [nama, qty, harga, subtotal]
+     * @param total Total harga pembelian
+     * @param bayar Jumlah yang dibayarkan
+     * @param kembalian Jumlah kembalian
+     * @param idKasir ID kasir yang melakukan transaksi
+     * @return true jika struk berhasil dicetak, false jika tidak
+     */
+    public static boolean printStrukDenganKonfirmasi(String kodeTransaksi, String[][] items,
+            double total, double bayar, double kembalian, String idKasir) {
         try {
-            StrukPrinter struk = new StrukPrinter(noTransaksi, items, total, bayar, kembalian, namaKasir);
-            PrinterJob job = PrinterJob.getPrinterJob();
-            
-            PageFormat pf = job.defaultPage();
-            Paper paper = pf.getPaper();
-            paper.setSize(PAPER_WIDTH, PAPER_HEIGHT);
-            paper.setImageableArea(0, 0, PAPER_WIDTH, PAPER_HEIGHT);
-            pf.setPaper(paper);
-            
-            job.setPrintable(struk, pf);
-            
-            if (job.printDialog()) {
-                job.print();
-                return true;
+            // Buat instance printer
+            StrukPrinter printer = new StrukPrinter();
+
+            // Setup data toko (dari konfigurasi aplikasi/properties)
+            printer.setNamaToko("TOKO SEMBAKO BU SITI");
+            printer.setAlamatToko("Desa Bangunasri-Kecamatan Songgon");
+            printer.setTeleponToko("Telp: 081332053238");
+
+            // Setup data transaksi dari parameter
+            printer.setNoTransaksi(kodeTransaksi);
+
+            // Format tanggal saat ini
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yy HH:mm");
+            String tanggal = sdf.format(new java.util.Date());
+            printer.setTanggal(tanggal);
+
+            // Setup kasir
+            printer.setNamaKasir(idKasir);
+
+            // Konversi items dari array ke List
+            List<String[]> itemList = new java.util.ArrayList<>();
+            for (String[] item : items) {
+                itemList.add(item);
             }
+            printer.setItems(itemList);
+
+            // Set total, bayar, kembalian
+            printer.setTotal(total);
+            printer.setBayar(bayar);
+            printer.setKembalian(kembalian);
+
+            // Proses cetak
+            PrinterJob job = PrinterJob.getPrinterJob();
+
+            // Atur page format untuk thermal printer 80mm x 80mm
+            PageFormat pageFormat = job.defaultPage();
+            pageFormat.setOrientation(PageFormat.PORTRAIT);
+
+            Paper paper = new Paper();
+            double width = 80 * 72 / 25.4;  // 80mm dalam point
+            double height = 80 * 72 / 25.4; // 80mm dalam point
+            double margin = 0.0;
+            paper.setSize(width, height);
+            paper.setImageableArea(margin, margin, width - (2 * margin), height - (2 * margin));
+            pageFormat.setPaper(paper);
+
+            job.setPrintable(printer, pageFormat);
+
+            // Show print dialog (optional)
+            boolean doPrint = job.printDialog();
+
+            if (doPrint) {
+                System.out.println("Mencetak struk...");
+                job.print();
+                System.out.println("Pencetakan selesai!");
+                return true;
+            } else {
+                System.out.println("Pencetakan dibatalkan.");
+                return false;
+            }
+
+        } catch (PrinterException pe) {
+            System.err.println("Error saat mencetak: " + pe.getMessage());
+            pe.printStackTrace();
             return false;
-            
-        } catch (PrinterException e) {
-            JOptionPane.showMessageDialog(null, 
-                "Gagal mencetak struk:\n" + e.getMessage(), 
-                "Error Cetak", 
-                JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            System.err.println("Error umum: " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
-} 
+}
+    

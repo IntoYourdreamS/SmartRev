@@ -225,7 +225,7 @@ public class karyawan extends javax.swing.JFrame {
         });
         getContentPane().add(presensi, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 90, 160, 40));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/karyawan (2).png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/karyawan (1).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 720));
 
         pack();

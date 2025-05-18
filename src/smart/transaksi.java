@@ -45,7 +45,7 @@ public class transaksi extends javax.swing.JFrame {
         makeButtonTransparent(btn_simpan);
         makeButtonTransparent(btn_hapus);
         makeButtonTransparent(btn_bayar);
-        makeButtonTransparent(btn_cetak);
+       
         customizeTable();
         txt_qty.setOpaque(false);
         txt_qty.setBackground(new Color(0, 0, 0, 0));
@@ -59,6 +59,10 @@ public class transaksi extends javax.swing.JFrame {
         txt_kategori.setBackground(new Color(0, 0, 0, 0));
         txt_kembalian.setOpaque(false);
         txt_kembalian.setBackground(new Color(0, 0, 0, 0));
+         txt_totalharga.setOpaque(false);
+        txt_totalharga.setBackground(new Color(0, 0, 0, 0));
+          txt_bayar.setOpaque(false);
+        txt_bayar.setBackground(new Color(0, 0, 0, 0));
 
 //        No_nota.setText(generateNota());
     }
@@ -145,7 +149,6 @@ public class transaksi extends javax.swing.JFrame {
         bttndashboard = new javax.swing.JButton();
         txt_kategori = new javax.swing.JTextField();
         txt_namabrg = new javax.swing.JTextField();
-        btn_cetak = new javax.swing.JButton();
         btn_bayar = new javax.swing.JButton();
         btn_hapus = new javax.swing.JButton();
         txt_harga = new javax.swing.JTextField();
@@ -192,21 +195,13 @@ public class transaksi extends javax.swing.JFrame {
         });
         getContentPane().add(txt_namabrg, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 290, 320, 40));
 
-        btn_cetak.setBorder(null);
-        btn_cetak.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_cetakActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btn_cetak, new org.netbeans.lib.awtextra.AbsoluteConstraints(1140, 650, 170, 40));
-
         btn_bayar.setBorder(null);
         btn_bayar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_bayarActionPerformed(evt);
             }
         });
-        getContentPane().add(btn_bayar, new org.netbeans.lib.awtextra.AbsoluteConstraints(920, 650, 170, 40));
+        getContentPane().add(btn_bayar, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 650, 170, 40));
 
         btn_hapus.setBorder(null);
         btn_hapus.addActionListener(new java.awt.event.ActionListener() {
@@ -214,7 +209,7 @@ public class transaksi extends javax.swing.JFrame {
                 btn_hapusActionPerformed(evt);
             }
         });
-        getContentPane().add(btn_hapus, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 650, 170, 40));
+        getContentPane().add(btn_hapus, new org.netbeans.lib.awtextra.AbsoluteConstraints(1210, 650, 100, 40));
 
         txt_harga.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         txt_harga.setBorder(null);
@@ -231,7 +226,7 @@ public class transaksi extends javax.swing.JFrame {
                 btn_simpanActionPerformed(evt);
             }
         });
-        getContentPane().add(btn_simpan, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 650, 400, 40));
+        getContentPane().add(btn_simpan, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 650, 400, 40));
 
         txt_kembalian.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         txt_kembalian.setBorder(null);
@@ -240,7 +235,7 @@ public class transaksi extends javax.swing.JFrame {
                 txt_kembalianActionPerformed(evt);
             }
         });
-        getContentPane().add(txt_kembalian, new org.netbeans.lib.awtextra.AbsoluteConstraints(1140, 580, 170, 30));
+        getContentPane().add(txt_kembalian, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 650, 280, 40));
 
         txt_bayar.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         txt_bayar.setBorder(null);
@@ -249,7 +244,7 @@ public class transaksi extends javax.swing.JFrame {
                 txt_bayarActionPerformed(evt);
             }
         });
-        getContentPane().add(txt_bayar, new org.netbeans.lib.awtextra.AbsoluteConstraints(920, 580, 170, 30));
+        getContentPane().add(txt_bayar, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 570, 290, 40));
 
         txt_noBarang.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         txt_noBarang.setBorder(null);
@@ -267,7 +262,7 @@ public class transaksi extends javax.swing.JFrame {
                 txt_totalhargaActionPerformed(evt);
             }
         });
-        getContentPane().add(txt_totalharga, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 580, 170, 30));
+        getContentPane().add(txt_totalharga, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 570, 280, 40));
 
         jTable1.setForeground(new java.awt.Color(51, 51, 51));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -354,7 +349,7 @@ public class transaksi extends javax.swing.JFrame {
         });
         getContentPane().add(karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 460, 170, 40));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Transaksi (5).png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Transaksiiiiiiiii.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
@@ -718,10 +713,6 @@ public class transaksi extends javax.swing.JFrame {
         return true;
     }//GEN-LAST:event_btn_bayarActionPerformed
 
-    private void btn_cetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cetakActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_cetakActionPerformed
-
     private void txt_qtyKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_qtyKeyReleased
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_qtyKeyReleased
@@ -772,7 +763,6 @@ public class transaksi extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_bayar;
-    private javax.swing.JButton btn_cetak;
     private javax.swing.JButton btn_hapus;
     private javax.swing.JButton btn_simpan;
     private javax.swing.JButton bttndashboard;
