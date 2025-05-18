@@ -201,7 +201,7 @@ public class transaksi extends javax.swing.JFrame {
                 btn_bayarActionPerformed(evt);
             }
         });
-        getContentPane().add(btn_bayar, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 650, 170, 40));
+        getContentPane().add(btn_bayar, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 640, 180, 50));
 
         btn_hapus.setBorder(null);
         btn_hapus.addActionListener(new java.awt.event.ActionListener() {
