@@ -65,7 +65,7 @@ public class StrukPrinter implements Printable {
 
         // Transaction Info - Adjusted for narrower paper
         g.setFont(fontRegular);
-        printLeftRight(g, "NO. TRANSAKSI", noTransaksi, y);
+        printLeftRight(g, "No. Transaksi", noTransaksi, y);
         y += LINE_HEIGHT;
         printLeftRight(g, "Tanggal", tanggal, y);
         y += LINE_HEIGHT;
@@ -196,7 +196,7 @@ public class StrukPrinter implements Printable {
 
             // Set store info
             printer.setNamaToko("TOKO SEMBAKO BU SITI");
-            printer.setAlamatToko("Desa Bangunasri-Kec. Songgon");
+            printer.setAlamatToko("Desa Bangunsari-Kec. Songgon");
             printer.setTeleponToko("Telp: 081332053238");
 
             // Set transaction info

@@ -91,22 +91,22 @@ public class login extends JFrame {
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         show_pasword.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        show_pasword.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-eye-48 (1).png"))); // NOI18N
+        show_pasword.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eye.png"))); // NOI18N
         show_pasword.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 show_paswordMouseClicked(evt);
             }
         });
-        getContentPane().add(show_pasword, new org.netbeans.lib.awtextra.AbsoluteConstraints(1140, 430, 50, 50));
+        getContentPane().add(show_pasword, new org.netbeans.lib.awtextra.AbsoluteConstraints(1130, 410, 50, 50));
 
         hide_pasword1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        hide_pasword1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-eye-48 (2).png"))); // NOI18N
+        hide_pasword1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eye-slash.png"))); // NOI18N
         hide_pasword1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 hide_pasword1MouseClicked(evt);
             }
         });
-        getContentPane().add(hide_pasword1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1140, 430, 50, 50));
+        getContentPane().add(hide_pasword1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1130, 410, 50, 50));
 
         FieldUsername.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         FieldUsername.setBorder(null);
@@ -151,7 +151,7 @@ public class login extends JFrame {
         });
         getContentPane().add(rfid, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 480, 300, 30));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Log In (2).png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/loginn.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -70, 1370, 870));
 
         RFIDInput.setUI(null);

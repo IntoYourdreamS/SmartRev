@@ -175,7 +175,7 @@ public class transaksi extends javax.swing.JFrame {
                 bttndashboardActionPerformed(evt);
             }
         });
-        getContentPane().add(bttndashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 140, 160, 30));
+        getContentPane().add(bttndashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 140, 180, 40));
 
         txt_kategori.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         txt_kategori.setBorder(null);
@@ -339,7 +339,7 @@ public class transaksi extends javax.swing.JFrame {
                 restokActionPerformed(evt);
             }
         });
-        getContentPane().add(restok, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 300, 150, 40));
+        getContentPane().add(restok, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 300, 170, 50));
 
         karyawan.setBorder(null);
         karyawan.addActionListener(new java.awt.event.ActionListener() {

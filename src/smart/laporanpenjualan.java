@@ -17,6 +17,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
@@ -62,7 +63,7 @@ public class laporanpenjualan extends javax.swing.JFrame {
         e.printStackTrace();
     }
     }
-  private void loadDataPenjualan() {
+private void loadDataPenjualan() {
     DefaultTableModel model = new DefaultTableModel();
     model.addColumn("No Nota");
     model.addColumn("Nama Produk");
@@ -73,24 +74,26 @@ public class laporanpenjualan extends javax.swing.JFrame {
     model.addColumn("Nama Karyawan");
     model.addColumn("Tanggal");
 
+    // Create DecimalFormat for currency formatting
+    DecimalFormat rupiahFormat = new DecimalFormat("Rp #,###.00");
+
     String sql = "SELECT " +
-                 "p.id_penjualan, " +
-                 "pr.nama_produk, " +
-                 "dp.jumlah, " +
-                 "dp.harga_satuan, " +
-                 "dp.subtotal, " +
-                 "dp.kategori, " +
-                 "k.nama_karyawan, " +
-                 "p.tanggal " +
-                 "FROM detail_penjualan dp " +
-                 "JOIN penjualan p ON dp.id_penjualan = p.id_penjualan " +
-                 "LEFT JOIN produk pr ON dp.id_produk = pr.id_produk " +
-                 "LEFT JOIN karyawan k ON p.id_karyawan = k.id_karyawan";
+             "p.id_penjualan, " +
+             "pr.nama_produk, " +
+             "dp.jumlah, " +
+             "dp.harga_satuan, " +
+             "dp.subtotal, " +
+             "dp.kategori, " +
+             "k.nama_karyawan, " +
+             "p.tanggal " +
+             "FROM detail_penjualan dp " +
+             "JOIN penjualan p ON dp.id_penjualan = p.id_penjualan " +
+             "LEFT JOIN produk pr ON dp.id_produk = pr.id_produk " +
+             "LEFT JOIN karyawan k ON p.id_karyawan = k.id_karyawan";
 
-     java.sql.Connection conn = null;
-        java.sql.PreparedStatement ps = null;
-        java.sql.ResultSet rs = null;
-
+    java.sql.Connection conn = null;
+    java.sql.PreparedStatement ps = null;
+    java.sql.ResultSet rs = null;
 
     try {
         conn = koneksi.getConnection();
@@ -102,8 +105,8 @@ public class laporanpenjualan extends javax.swing.JFrame {
                 rs.getString("id_penjualan"),
                 rs.getString("nama_produk"),
                 rs.getInt("jumlah"),
-                rs.getDouble("harga_satuan"),
-                rs.getDouble("subtotal"),
+                rupiahFormat.format(rs.getDouble("harga_satuan")), // Formatted
+                rupiahFormat.format(rs.getDouble("subtotal")),      // Formatted
                 rs.getString("kategori"),
                 rs.getString("nama_karyawan"),
                 rs.getDate("tanggal")
@@ -125,8 +128,7 @@ public class laporanpenjualan extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-}
-    
+}    
     private void makeButtonTransparent(JButton button) {
         button.setOpaque(false);
         button.setContentAreaFilled(false);
@@ -233,6 +235,7 @@ public class laporanpenjualan extends javax.swing.JFrame {
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void transaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transaksiActionPerformed

@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -55,59 +56,60 @@ public class laporanpembelian extends javax.swing.JFrame {
             
     }
     
-   private void loadDataPembelian() {
-        DefaultTableModel model = (DefaultTableModel) tbpembelian.getModel();
-        model.setRowCount(0); // Clear existing data
+  private void loadDataPembelian() {
+    DefaultTableModel model = (DefaultTableModel) tbpembelian.getModel();
+    model.setRowCount(0); // Clear existing data
 
-        Connection conn = null;
-        PreparedStatement pst = null;
-        ResultSet rs = null;
+    // Create DecimalFormat for Indonesian Rupiah currency
+    DecimalFormat rupiahFormat = new DecimalFormat("Rp #,###");
 
+    Connection conn = null;
+    PreparedStatement pst = null;
+    ResultSet rs = null;
+
+    try {
+        conn = koneksi.getConnection();
+        
+        String query = "SELECT p.id_pembelian, pr.nama_produk, dp.jumlah, dp.harga_beli, " +
+                     "(dp.jumlah * dp.harga_beli) as total, pr.kategori, " +
+                     "k.nama_karyawan, p.tanggal " +
+                     "FROM pembelian p " +
+                     "JOIN detail_pembelian dp ON p.id_pembelian = dp.id_pembelian " +
+                     "JOIN produk pr ON dp.id_produk = pr.id_produk " +
+                     "LEFT JOIN karyawan k ON p.id_karyawan = k.id_karyawan " +
+                     "ORDER BY p.tanggal DESC";
+        
+        pst = conn.prepareStatement(query);
+        rs = pst.executeQuery();
+        
+        while (rs.next()) {
+            model.addRow(new Object[]{
+                rs.getString("id_pembelian"),
+                rs.getString("nama_produk"),
+                rs.getInt("jumlah"),
+                rupiahFormat.format(rs.getInt("harga_beli")),  // Formatted
+                rupiahFormat.format(rs.getInt("total")),       // Formatted
+                rs.getString("kategori"),
+                rs.getString("nama_karyawan"),
+                rs.getDate("tanggal")
+            });
+        }
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, 
+                "Gagal memuat data pembelian: " + e.getMessage(),
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    } finally {
         try {
-            // Dapatkan koneksi dari class koneksi
-            conn = koneksi.getConnection();
-            
-            String query = "SELECT p.id_pembelian, pr.nama_produk, dp.jumlah, dp.harga_beli, " +
-                         "(dp.jumlah * dp.harga_beli) as total, pr.kategori, " +
-                         "k.nama_karyawan, p.tanggal " +
-                         "FROM pembelian p " +
-                         "JOIN detail_pembelian dp ON p.id_pembelian = dp.id_pembelian " +
-                         "JOIN produk pr ON dp.id_produk = pr.id_produk " +
-                         "LEFT JOIN karyawan k ON p.id_karyawan = k.id_karyawan " +
-                         "ORDER BY p.tanggal DESC";
-            
-            pst = conn.prepareStatement(query);
-            rs = pst.executeQuery();
-            
-            while (rs.next()) {
-                model.addRow(new Object[]{
-                    rs.getString("id_pembelian"),
-                    rs.getString("nama_produk"),
-                    rs.getInt("jumlah"),
-                    rs.getInt("harga_beli"),
-                    rs.getInt("total"),
-                    rs.getString("kategori"),
-                    rs.getString("nama_karyawan"),
-                    rs.getDate("tanggal")
-                });
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, 
-                    "Gagal memuat data pembelian: " + e.getMessage(),
-                    "Error", 
-                    JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        } finally {
-            // Tutup resources
-            try {
-                if (rs != null) rs.close();
-                if (pst != null) pst.close();
-                if (conn != null) conn.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            if (rs != null) rs.close();
+            if (pst != null) pst.close();
+            if (conn != null) conn.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
+}
     private void makeButtonTransparent(JButton button) {
         button.setOpaque(false);
         button.setContentAreaFilled(false);
@@ -179,6 +181,7 @@ public class laporanpembelian extends javax.swing.JFrame {
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1380, 720));
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void penjualanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_penjualanActionPerformed

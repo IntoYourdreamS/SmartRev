@@ -207,7 +207,7 @@ private void connectToDatabase() {
                 inputbarangActionPerformed(evt);
             }
         });
-        getContentPane().add(inputbarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 90, 120, 30));
+        getContentPane().add(inputbarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(890, 80, 120, 30));
 
         inputreturn.setBorder(null);
         inputreturn.addActionListener(new java.awt.event.ActionListener() {
@@ -215,7 +215,7 @@ private void connectToDatabase() {
                 inputreturnActionPerformed(evt);
             }
         });
-        getContentPane().add(inputreturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 90, 120, 30));
+        getContentPane().add(inputreturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 30, 120, 30));
 
         datasupplier.setBorder(null);
         datasupplier.addActionListener(new java.awt.event.ActionListener() {
@@ -239,7 +239,7 @@ private void connectToDatabase() {
                 datareturnActionPerformed(evt);
             }
         });
-        getContentPane().add(datareturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 540, 130, 30));
+        getContentPane().add(datareturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 530, 130, 40));
 
         tablerestock.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -254,9 +254,9 @@ private void connectToDatabase() {
         ));
         jScrollPane1.setViewportView(tablerestock);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 150, 720, -1));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 150, 750, -1));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Restock (2).png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Restock (3).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1380, -1));
 
         pack();
