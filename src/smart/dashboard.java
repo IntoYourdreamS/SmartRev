@@ -5,6 +5,7 @@
 package smart;
 
 import Config.Session;
+import Config.koneksi;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
 import javax.swing.table.DefaultTableModel;
@@ -26,6 +27,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import javax.swing.JOptionPane;
 
@@ -35,6 +37,8 @@ public class dashboard extends javax.swing.JFrame {
         initComponents();
         loadDataToTable();
         loadData();
+        tampilkanTotalHarga();
+        tampilkanPendapatanBersih();
 
         customizeTable();
         makeButtonTransparent(jButton1);
@@ -169,6 +173,68 @@ private void loadDataToTable()  {
         e.printStackTrace();
     }
 }
+  
+  private void tampilkanTotalHarga() {
+    try {
+        Connection conn = koneksi.getConnection();
+        if (conn != null) {
+            // Query untuk menghitung total subtotal dari detail_penjualan
+            String query = "SELECT SUM(subtotal) AS total_harga FROM detail_penjualan";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            if (rs.next()) {
+                // Ambil total harga
+                double totalHarga = rs.getDouble("total_harga");
+                
+                // Format ke Rupiah
+                DecimalFormat df = new DecimalFormat("Rp #,##0.00");
+                
+                // Tampilkan ke jTextField1
+                jTextField2.setText(rs.wasNull() ? "Rp.0" : df.format(totalHarga));
+            } else {
+                JOptionPane.showMessageDialog(this, "Data tidak ditemukan!");
+            }
+
+            // Tutup koneksi
+            rs.close();
+            stmt.close();
+            conn.close();
+        } else {
+            JOptionPane.showMessageDialog(this, "Koneksi ke database gagal!");
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+    }
+}
+  
+  private void tampilkanPendapatanBersih() {
+    try {
+        Connection conn = koneksi.getConnection();
+        if (conn != null) {
+            String query = "SELECT SUM(subtotal) AS total_harga FROM detail_penjualan";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            if (rs.next()) {
+                double totalHarga = rs.getDouble("total_harga");
+                double pendapatanBersih = totalHarga * 0.35;
+                
+                DecimalFormat df = new DecimalFormat("Rp #,##0.00");
+                jTextField4.setText(rs.wasNull() ? "Rp 0" : df.format(pendapatanBersih));
+            }
+            
+            rs.close();
+            stmt.close();
+            conn.close();
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+    }
+}
+  
 
     private void customizeTable() {
         JTableHeader header = jTable1.getTableHeader();
@@ -369,6 +435,9 @@ private void initSalesChart() {
         bttnlaporan = new javax.swing.JButton();
         logout = new javax.swing.JButton();
         txdepan = new javax.swing.JButton();
+        jTextField2 = new javax.swing.JTextField();
+        jTextField3 = new javax.swing.JTextField();
+        jTextField4 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -482,7 +551,27 @@ private void initSalesChart() {
         txdepan.setBorder(null);
         getContentPane().add(txdepan, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 450, 190, 30));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Dashboard kasir (3).png"))); // NOI18N
+        jTextField2.setEditable(false);
+        jTextField2.setBackground(new java.awt.Color(255, 255, 255));
+        jTextField2.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        jTextField2.setBorder(null);
+        jTextField2.setEnabled(false);
+        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 130, 320, 50));
+
+        jTextField3.setEditable(false);
+        jTextField3.setBackground(new java.awt.Color(255, 255, 255));
+        jTextField3.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        jTextField3.setBorder(null);
+        getContentPane().add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(990, 130, 320, 50));
+
+        jTextField4.setEditable(false);
+        jTextField4.setBackground(new java.awt.Color(255, 255, 255));
+        jTextField4.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        jTextField4.setBorder(null);
+        jTextField4.setEnabled(false);
+        getContentPane().add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 130, 310, 50));
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Dashboard kasir (4).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -20, 1372, 768));
 
         jButton2.setBackground(new java.awt.Color(85, 85, 85));
@@ -604,6 +693,9 @@ this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
     private javax.swing.JButton logout;
     private javax.swing.JTable tbexpired;
     private javax.swing.JTable tbpenjualanterlaris;
