@@ -16,6 +16,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +33,6 @@ public class transaksi extends javax.swing.JFrame {
     private static int counter = 1;
     private PreparedStatement stat;
     private ResultSet rs;
-    Connection conn = koneksi.getConnection();
     private DefaultTableModel model = null;
 
     public transaksi() {
@@ -45,7 +46,11 @@ public class transaksi extends javax.swing.JFrame {
         makeButtonTransparent(btn_simpan);
         makeButtonTransparent(btn_hapus);
         makeButtonTransparent(btn_bayar);
-       
+        txt_bayar.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                formatBayarField();
+            }
+        });
         customizeTable();
         txt_qty.setOpaque(false);
         txt_qty.setBackground(new Color(0, 0, 0, 0));
@@ -59,9 +64,9 @@ public class transaksi extends javax.swing.JFrame {
         txt_kategori.setBackground(new Color(0, 0, 0, 0));
         txt_kembalian.setOpaque(false);
         txt_kembalian.setBackground(new Color(0, 0, 0, 0));
-         txt_totalharga.setOpaque(false);
+        txt_totalharga.setOpaque(false);
         txt_totalharga.setBackground(new Color(0, 0, 0, 0));
-          txt_bayar.setOpaque(false);
+        txt_bayar.setOpaque(false);
         txt_bayar.setBackground(new Color(0, 0, 0, 0));
 
 //        No_nota.setText(generateNota());
@@ -101,6 +106,14 @@ public class transaksi extends javax.swing.JFrame {
             }
         }
         return kodeTransaksi;
+    }
+
+    private double parseFormattedNumber(String formattedNumber) {
+        try {
+            return Double.parseDouble(formattedNumber.replace(".", ""));
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
     }
 
     public void refreshTable() {
@@ -358,16 +371,17 @@ public class transaksi extends javax.swing.JFrame {
 
     private void txt_qtyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_qtyActionPerformed
         // TODO add your handling code here:
-        btn_simpan.doClick();
+
     }//GEN-LAST:event_txt_qtyActionPerformed
 
     private void prosesTransaksi(String kodeTransaksi, String idKaryawan, String[] idProduk, int[] jumlahProduk, String[] Kategori, int[] hargaS, int[] SubTotal, Double bayar, int total) throws SQLException {
-        Connection conn = koneksi.getConnection();
-        if (conn != null) {
+        try (Connection conn = koneksi.getConnection()) {
+            conn.setAutoCommit(false); // Start transaction
+
             try {
-//              Insert Transaksi
+                // Insert into penjualan
                 String insertTransaksi = "INSERT INTO penjualan VALUES (?, ?, NOW(), ?, ?)";
-                try (PreparedStatement ps = koneksi.getConnection().prepareStatement(insertTransaksi)) {
+                try (PreparedStatement ps = conn.prepareStatement(insertTransaksi)) {
                     ps.setString(1, kodeTransaksi);
                     ps.setString(2, idKaryawan);
                     ps.setInt(3, total);
@@ -375,10 +389,10 @@ public class transaksi extends javax.swing.JFrame {
                     ps.executeUpdate();
                 }
 
+                // Insert into detail_penjualan and update stok
                 for (int j = 0; j < idProduk.length; j++) {
-//                      insert detail transaksi
                     String insertDetailTransaksi = "INSERT INTO detail_penjualan VALUES (?, ?, ?, ?, ?, ?)";
-                    try (PreparedStatement DTps = koneksi.getConnection().prepareStatement(insertDetailTransaksi)) {
+                    try (PreparedStatement DTps = conn.prepareStatement(insertDetailTransaksi)) {
                         DTps.setString(1, kodeTransaksi);
                         DTps.setString(2, idProduk[j]);
                         DTps.setString(3, Kategori[j]);
@@ -388,27 +402,29 @@ public class transaksi extends javax.swing.JFrame {
                         DTps.executeUpdate();
                     }
 
-                    String getStokMn = "SELECT id_produk, stok FROM produk WHERE id_produk = ?";
-                    try (PreparedStatement SMps = koneksi.getConnection().prepareStatement(getStokMn)) {
-                        SMps.setString(1, idProduk[j]);
-                        ResultSet rs = SMps.executeQuery();
-                        while (rs.next()) {
-                            String idPrk = rs.getString(1);
-
-                            String updateStokMenu = "UPDATE produk SET stok = stok - ? WHERE id_produk = ?";
-                            try (PreparedStatement updateSM = koneksi.getConnection().prepareStatement(updateStokMenu)) {
-                                updateSM.setInt(1, jumlahProduk[j]);
-                                updateSM.setString(2, idPrk);
-                                updateSM.executeUpdate();
-                            }
-                        }
+                    // Update stok
+                    String updateStokMenu = "UPDATE produk SET stok = stok - ? WHERE id_produk = ?";
+                    try (PreparedStatement updateSM = conn.prepareStatement(updateStokMenu)) {
+                        updateSM.setInt(1, jumlahProduk[j]);
+                        updateSM.setString(2, idProduk[j]);
+                        updateSM.executeUpdate();
                     }
                 }
-            } catch (Exception e) {
+
+                conn.commit(); // Commit transaction
+            } catch (SQLException e) {
+                conn.rollback(); // Rollback on error
                 throw e;
-            } finally {
             }
         }
+    }
+
+    private String formatNumber(double number) {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator('.');
+        DecimalFormat formatter = new DecimalFormat("#,###", symbols);
+        formatter.setGroupingUsed(true);
+        return formatter.format(number);
     }
 
     private void hitungTotalHarga() {
@@ -416,11 +432,23 @@ public class transaksi extends javax.swing.JFrame {
 
         if (model != null) {
             for (int i = 0; i < model.getRowCount(); i++) {
-                totalHarga += Integer.parseInt(model.getValueAt(i, 4).toString()); // Ambil kolom total harga
+                totalHarga += Integer.parseInt(model.getValueAt(i, 4).toString().replace(".", ""));
             }
         }
+        txt_totalharga.setText(formatNumber(totalHarga));
+    }
 
-        txt_totalharga.setText(String.valueOf(totalHarga));
+    private void formatBayarField() {
+        String input = txt_bayar.getText().trim().replace(".", "");
+        if (!input.isEmpty()) {
+            try {
+                double nilai = Double.parseDouble(input);
+                txt_bayar.setText(formatNumber(nilai));
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Input tidak valid!", "Error", JOptionPane.ERROR_MESSAGE);
+                txt_bayar.requestFocus();
+            }
+        }
     }
 
     private void txt_noBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_noBarangActionPerformed
@@ -428,9 +456,7 @@ public class transaksi extends javax.swing.JFrame {
 
         String kode_bahan = txt_noBarang.getText();
         txt_namabrg.setText(kode_bahan);
-        try {
-            Connection conn = koneksi.getConnection();
-            PreparedStatement pst = conn.prepareStatement("SELECT * FROM produk WHERE barcode = ?");
+        try (Connection conn = koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement("SELECT * FROM produk WHERE barcode = ?")) {
             pst.setString(1, txt_noBarang.getText());
             ResultSet rs = pst.executeQuery();
 
@@ -438,16 +464,19 @@ public class transaksi extends javax.swing.JFrame {
                 String namaProduk = rs.getString("nama_produk");
                 String harga = rs.getString("harga");
                 String kategori = rs.getString("kategori");
+                String stok = rs.getString("stok");
 
                 txt_namabrg.setText(namaProduk);
                 txt_harga.setText(harga);
                 txt_kategori.setText(kategori);
-                txt_qty.requestFocus();
+                txt_qty.setText("1");
+                btn_simpan.doClick();
             } else {
                 JOptionPane.showMessageDialog(this, "Kode bahan tidak ditemukan", "Kesalahan", JOptionPane.ERROR_MESSAGE);
                 txt_namabrg.setText("");
                 txt_harga.setText("");
-                txt_kategori.setText(""); // Kosongkan satuan
+                txt_kategori.setText("");
+                txt_qty.setText("");
             }
 
         } catch (SQLException e) {
@@ -531,7 +560,8 @@ public class transaksi extends javax.swing.JFrame {
             }
 
             String checkStockSQL = "SELECT stok FROM produk WHERE barcode = ?";
-            try (PreparedStatement ps = conn.prepareStatement(checkStockSQL)) {
+            try (Connection conn = koneksi.getConnection(); PreparedStatement ps = conn.prepareStatement(checkStockSQL)) {
+
                 ps.setString(1, txt_noBarang.getText().trim());
                 ResultSet rs = ps.executeQuery();
 
@@ -633,9 +663,10 @@ public class transaksi extends javax.swing.JFrame {
         }
 
         try {
-            double total = Double.parseDouble(txt_totalharga.getText());
-            double bayar = Double.parseDouble(txt_bayar.getText());
+            double total = parseFormattedNumber(txt_totalharga.getText());
+            double bayar = parseFormattedNumber(txt_bayar.getText());
             double kembalian = bayar - total;
+            int integerKembalian = (int) Math.ceil(kembalian);
 
             if (bayar < total) {
                 JOptionPane.showMessageDialog(this,
@@ -652,7 +683,7 @@ public class transaksi extends javax.swing.JFrame {
             // Simpan data transaksi ke database
             if (prosesTransaksiKeDatabase(kodeTransaksi, idKaryawan, total, bayar)) {
                 // Update UI
-                txt_kembalian.setText(String.valueOf(kembalian));
+                txt_kembalian.setText(formatNumber(kembalian));
 
                 // Siapkan data untuk struk
                 DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
