@@ -30,9 +30,27 @@ public class tambahbarang extends javax.swing.JFrame {
         initComponents();
         id_barang.setText(generateCode());
         conn = koneksi.getConnection();
-//          makeButtonTransparent(kembali);
-            
-
+        makeButtonTransparent(kembali);
+         makeButtonTransparent(tambah);
+         makeButtonTransparent(ubah);
+         makeButtonTransparent(hapus);
+        id_barang.setOpaque(false);
+        id_barang.setBackground(new Color(0, 0, 0, 0));
+        nama_barang.setOpaque(false);
+        nama_barang.setBackground(new Color(0, 0, 0, 0));
+        harga_jual.setOpaque(false);
+        harga_jual.setBackground(new Color(0, 0, 0, 0));
+        harga_beli.setOpaque(false);
+        harga_beli.setBackground(new Color(0, 0, 0, 0));
+        jumlah.setOpaque(false);
+        jumlah.setBackground(new Color(0, 0, 0, 0));
+        kategori.setOpaque(false);
+        kategori.setBackground(new Color(0, 0, 0, 0));
+        id_supplier.setOpaque(false);
+        id_supplier.setBackground(new Color(0, 0, 0, 0));
+        barcode.setOpaque(false);
+        barcode.setBackground(new Color(0, 0, 0, 0));
+     
     }
     
     

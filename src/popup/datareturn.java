@@ -19,7 +19,9 @@ public class datareturn extends javax.swing.JFrame {
     public datareturn() {
         initComponents();
             
-             makeButtonTransparent(jButton1);
+            
+         makeButtonTransparent(jButton1);
+          makeButtonTransparent(inputreturn);
     }
     
     private void makeButtonTransparent(JButton button) {
@@ -39,6 +41,9 @@ public class datareturn extends javax.swing.JFrame {
     private void initComponents() {
 
         jButton1 = new javax.swing.JButton();
+        inputreturn = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tbkaryawan = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -52,6 +57,29 @@ public class datareturn extends javax.swing.JFrame {
         });
         getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1110, 660, 130, 30));
 
+        inputreturn.setBorder(null);
+        inputreturn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inputreturnActionPerformed(evt);
+            }
+        });
+        getContentPane().add(inputreturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 650, 180, 40));
+
+        tbkaryawan.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "No Supplier", "Nama Supplier", "No Hp", "Alamat"
+            }
+        ));
+        jScrollPane2.setViewportView(tbkaryawan);
+
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 100, 1120, 500));
+
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Data return (1).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 1390, 740));
 
@@ -63,6 +91,11 @@ public class datareturn extends javax.swing.JFrame {
          new restok().setVisible(true);
         this.setVisible(false);  
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void inputreturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputreturnActionPerformed
+        returnbarang popup = new returnbarang();
+        popup.setVisible(true);
+    }//GEN-LAST:event_inputreturnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -131,7 +164,10 @@ public class datareturn extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton inputreturn;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable tbkaryawan;
     // End of variables declaration//GEN-END:variables
 }

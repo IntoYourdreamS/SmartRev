@@ -49,6 +49,7 @@ public class datasupplier extends javax.swing.JFrame {
             }
         });
              makeButtonTransparent(kembali);
+             makeButtonTransparent(suplier);
              loadDataToTable();
     }
     
@@ -115,6 +116,7 @@ public class datasupplier extends javax.swing.JFrame {
         kembali = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tbkaryawan = new javax.swing.JTable();
+        suplier = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -143,7 +145,15 @@ public class datasupplier extends javax.swing.JFrame {
 
         getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 100, 1120, 500));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Data Supplier (1).png"))); // NOI18N
+        suplier.setBorder(null);
+        suplier.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                suplierActionPerformed(evt);
+            }
+        });
+        getContentPane().add(suplier, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 660, 240, 30));
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Data Supplier s.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
@@ -154,6 +164,12 @@ public class datasupplier extends javax.swing.JFrame {
          new restok().setVisible(true);
         this.setVisible(false);  
     }//GEN-LAST:event_kembaliActionPerformed
+
+    private void suplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suplierActionPerformed
+        // TODO add your handling code here:
+        tambahsupplier popup = new tambahsupplier();
+        popup.setVisible(true);
+    }//GEN-LAST:event_suplierActionPerformed
 
     /**
      * @param args the command line arguments
@@ -209,6 +225,7 @@ public class datasupplier extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton kembali;
+    private javax.swing.JButton suplier;
     private javax.swing.JTable tbkaryawan;
     // End of variables declaration//GEN-END:variables
 }

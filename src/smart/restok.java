@@ -63,12 +63,12 @@ public class restok extends javax.swing.JFrame {
         makeButtonTransparent(transaksi);
         makeButtonTransparent(laporan);
         makeButtonTransparent(karyawan);
-        makeButtonTransparent(suplier);
+       
         makeButtonTransparent(inputbarang);
-        makeButtonTransparent(inputreturn);
+      
         makeButtonTransparent(datasupplier);
         makeButtonTransparent(dataexpired);
-        makeButtonTransparent(datareturn);
+     
         
         // Koneksi database dan load data
         connectToDatabase();
@@ -151,9 +151,7 @@ private void connectToDatabase() {
         transaksi = new javax.swing.JButton();
         laporan = new javax.swing.JButton();
         karyawan = new javax.swing.JButton();
-        suplier = new javax.swing.JButton();
         inputbarang = new javax.swing.JButton();
-        inputreturn = new javax.swing.JButton();
         datasupplier = new javax.swing.JButton();
         dataexpired = new javax.swing.JButton();
         datareturn = new javax.swing.JButton();
@@ -194,28 +192,12 @@ private void connectToDatabase() {
         });
         getContentPane().add(karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 450, 140, 40));
 
-        suplier.setBorder(null);
-        suplier.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                suplierActionPerformed(evt);
-            }
-        });
-        getContentPane().add(suplier, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 90, 120, 30));
-
         inputbarang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inputbarangActionPerformed(evt);
             }
         });
         getContentPane().add(inputbarang, new org.netbeans.lib.awtextra.AbsoluteConstraints(890, 80, 120, 30));
-
-        inputreturn.setBorder(null);
-        inputreturn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                inputreturnActionPerformed(evt);
-            }
-        });
-        getContentPane().add(inputreturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 30, 120, 30));
 
         datasupplier.setBorder(null);
         datasupplier.addActionListener(new java.awt.event.ActionListener() {
@@ -231,7 +213,7 @@ private void connectToDatabase() {
                 dataexpiredActionPerformed(evt);
             }
         });
-        getContentPane().add(dataexpired, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 360, 160, 30));
+        getContentPane().add(dataexpired, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 530, 160, 60));
 
         datareturn.setBorder(null);
         datareturn.addActionListener(new java.awt.event.ActionListener() {
@@ -239,7 +221,7 @@ private void connectToDatabase() {
                 datareturnActionPerformed(evt);
             }
         });
-        getContentPane().add(datareturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 530, 130, 40));
+        getContentPane().add(datareturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 360, 130, 40));
 
         tablerestock.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -285,17 +267,6 @@ private void connectToDatabase() {
           new karyawan().setVisible(true);
         this.setVisible(false);  
     }//GEN-LAST:event_karyawanActionPerformed
-
-    private void inputreturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputreturnActionPerformed
-       returnbarang popup = new returnbarang();
-                popup.setVisible(true);
-    }//GEN-LAST:event_inputreturnActionPerformed
-
-    private void suplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suplierActionPerformed
-        // TODO add your handling code here:
-        tambahsupplier popup = new tambahsupplier();
-                popup.setVisible(true);
-    }//GEN-LAST:event_suplierActionPerformed
 
     private void inputbarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputbarangActionPerformed
         tambahbarang popup = new tambahbarang();
@@ -363,12 +334,10 @@ FlatLightLaf.setup();
     private javax.swing.JButton datareturn;
     private javax.swing.JButton datasupplier;
     private javax.swing.JButton inputbarang;
-    private javax.swing.JButton inputreturn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton karyawan;
     private javax.swing.JButton laporan;
-    private javax.swing.JButton suplier;
     private javax.swing.JTable tablerestock;
     private javax.swing.JButton transaksi;
     // End of variables declaration//GEN-END:variables

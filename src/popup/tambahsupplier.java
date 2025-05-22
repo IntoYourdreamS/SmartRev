@@ -228,7 +228,7 @@ int confirm = JOptionPane.showConfirmDialog(this,
         JOptionPane.YES_NO_OPTION);
 
 if (confirm == JOptionPane.YES_OPTION) {
-    String query = "INSERT INTO supplier (id_supplier, nama_supplier, no_telp, alamat, create_at) VALUES (?, ?, ?, ?, NOW())";
+    String query = "INSERT INTO supplier (id_supplier, nama_supplier, telepon, alamat, create_at) VALUES (?, ?, ?, ?, NOW())";
 
     try (Connection conn = koneksi.getConnection();
          PreparedStatement stat = conn.prepareStatement(query)) {
@@ -265,7 +265,7 @@ String Alamat = alamat.getText();
 
 try {
     Connection conn = koneksi.getConnection();
-    String sql = "UPDATE supplier SET nama_supplier = ?, no_telp = ?, alamat = ? WHERE id_supplier = ?";
+    String sql = "UPDATE supplier SET nama_supplier = ?, telepon = ?, alamat = ? WHERE id_supplier = ?";
     PreparedStatement pst = conn.prepareStatement(sql);
 
     pst.setString(1, namaSupplier);

@@ -6,14 +6,33 @@ package smart;
 
 import Config.koneksi;
 import com.formdev.flatlaf.FlatLightLaf;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.security.Timestamp;
 import java.sql.Connection;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.text.SimpleDateFormat;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -24,6 +43,14 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import popup.notifberhasilkrw;
 import popup.tambahkaryawan;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import popup.ubahkaryawan;
 import popup.tambahkaryawan;
 
@@ -58,8 +85,10 @@ public class karyawan2 extends javax.swing.JFrame {
             makeButtonTransparent(restock);
              makeButtonTransparent(laporan);
           
-              makeButtonTransparent(hapus);
+              makeButtonTransparent(cetak);
     }
+    
+    
     
     private void makeButtonTransparent(JButton button) {
         button.setOpaque(false);
@@ -148,7 +177,7 @@ private void loadDataToTable() {
         restock = new javax.swing.JButton();
         transaksi = new javax.swing.JButton();
         dashboard = new javax.swing.JButton();
-        hapus = new javax.swing.JButton();
+        cetak = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tbkaryawan2 = new javax.swing.JTable();
         karyawan = new javax.swing.JButton();
@@ -190,13 +219,13 @@ private void loadDataToTable() {
         });
         getContentPane().add(dashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 140, 160, 40));
 
-        hapus.setBorder(null);
-        hapus.addActionListener(new java.awt.event.ActionListener() {
+        cetak.setBorder(null);
+        cetak.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                hapusActionPerformed(evt);
+                cetakActionPerformed(evt);
             }
         });
-        getContentPane().add(hapus, new org.netbeans.lib.awtextra.AbsoluteConstraints(1240, 90, 90, 40));
+        getContentPane().add(cetak, new org.netbeans.lib.awtextra.AbsoluteConstraints(1240, 90, 90, 40));
 
         tbkaryawan2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -227,7 +256,7 @@ private void loadDataToTable() {
         });
         getContentPane().add(karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 90, 180, 40));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/presensi.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/presensi1.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 720));
 
         pack();
@@ -257,47 +286,86 @@ private void loadDataToTable() {
         this.setVisible(false);   
     }//GEN-LAST:event_laporanActionPerformed
 
-    private void hapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hapusActionPerformed
-     // TODO add your handling code here:
-int selectedRow = tbkaryawan2.getSelectedRow();
-if (selectedRow == -1) {
-    JOptionPane.showMessageDialog(this, "Pilih data yang akan dihapus!", "Peringatan", JOptionPane.WARNING_MESSAGE);
-    return;
-}
-
-String idKaryawan = tbkaryawan2.getValueAt(selectedRow, 0).toString(); 
-
-int confirm = JOptionPane.showConfirmDialog(this,
-        "Apakah Anda yakin ingin menghapus data ini?",
-        "Konfirmasi Hapus",
-        JOptionPane.YES_NO_OPTION);
-
-if (confirm == JOptionPane.YES_OPTION) {
-    String query = "DELETE FROM karyawan WHERE id_karyawan=?";
-
-    try (Connection conn = koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement(query)) {
-        pst.setString(1, idKaryawan);
-
-        int rowsAffected = pst.executeUpdate();
-
-        if (rowsAffected > 0) {
-            JOptionPane.showMessageDialog(this, "Data berhasil dihapus!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-            
-            DefaultTableModel model = (DefaultTableModel) tbkaryawan2.getModel();
-            model.removeRow(selectedRow);
-
-            
-        } else {
-            JOptionPane.showMessageDialog(this, "Gagal menghapus data.", "Error", JOptionPane.ERROR_MESSAGE);
+    private void cetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cetakActionPerformed
+        
+    // Create a file chooser
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setDialogTitle("Simpan sebagai Excel");
+    
+    // Set default file name with current date
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    String defaultFileName = "Laporan_Karyawan_" + dateFormat.format(new java.util.Date()) + ".xlsx";
+    fileChooser.setSelectedFile(new File(defaultFileName));
+    
+    // Filter for Excel files
+    FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel Files", "xlsx");
+    fileChooser.setFileFilter(filter);
+    
+    // Show save dialog
+    int userSelection = fileChooser.showSaveDialog(this);
+    
+    if (userSelection == JFileChooser.APPROVE_OPTION) {
+        File fileToSave = fileChooser.getSelectedFile();
+        // Ensure the file has .xlsx extension
+        if (!fileToSave.getName().endsWith(".xlsx")) {
+            fileToSave = new File(fileToSave.getAbsolutePath() + ".xlsx");
         }
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
-    }
-}
-
-
-    }//GEN-LAST:event_hapusActionPerformed
+        
+        try {
+            // Create Excel workbook
+            Workbook workbook = new XSSFWorkbook();
+            Sheet sheet = workbook.createSheet("Data Karyawan");
+            
+            // Get table model
+            DefaultTableModel model = (DefaultTableModel) tbkaryawan2.getModel();
+            
+            // Create header row
+            Row headerRow = sheet.createRow(0);
+            for (int col = 0; col < model.getColumnCount(); col++) {
+                Cell cell = headerRow.createCell(col);
+                cell.setCellValue(model.getColumnName(col));
+            }
+            
+            // Create data rows
+            for (int row = 0; row < model.getRowCount(); row++) {
+                Row dataRow = sheet.createRow(row + 1);
+                for (int col = 0; col < model.getColumnCount(); col++) {
+                    Cell cell = dataRow.createCell(col);
+                    Object value = model.getValueAt(row, col);
+                    if (value != null) {
+                        cell.setCellValue(value.toString());
+                    } else {
+                        cell.setCellValue("");
+                    }
+                }
+            }
+            
+            // Auto-size columns
+            for (int col = 0; col < model.getColumnCount(); col++) {
+                sheet.autoSizeColumn(col);
+            }
+            
+            // Write to file
+            try (FileOutputStream outputStream = new FileOutputStream(fileToSave)) {
+                workbook.write(outputStream);
+                workbook.close();
+                
+                // Show success message
+                JOptionPane.showMessageDialog(this,
+                    "Data berhasil diekspor ke Excel!",
+                    "Sukses",
+                    JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this,
+                "Gagal mengekspor data: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    
+}                                    
+    }//GEN-LAST:event_cetakActionPerformed
 
     private void karyawanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_karyawanActionPerformed
         // TODO add your handling code here:
@@ -347,8 +415,8 @@ FlatLightLaf.setup();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton cetak;
     private javax.swing.JButton dashboard;
-    private javax.swing.JButton hapus;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton karyawan;

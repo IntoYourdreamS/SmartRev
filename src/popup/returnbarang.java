@@ -99,7 +99,7 @@ public class returnbarang extends javax.swing.JFrame {
 
         harga_jual.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
         harga_jual.setBorder(null);
-        getContentPane().add(harga_jual, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 240, 260, 20));
+        getContentPane().add(harga_jual, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 230, 260, 30));
 
         id_supplier.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
         id_supplier.setBorder(null);

@@ -555,8 +555,9 @@ private void initSalesChart() {
         jTextField2.setBackground(new java.awt.Color(255, 255, 255));
         jTextField2.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         jTextField2.setBorder(null);
+        jTextField2.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         jTextField2.setEnabled(false);
-        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 130, 320, 50));
+        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 120, 320, 50));
 
         jTextField3.setEditable(false);
         jTextField3.setBackground(new java.awt.Color(255, 255, 255));
@@ -568,11 +569,12 @@ private void initSalesChart() {
         jTextField4.setBackground(new java.awt.Color(255, 255, 255));
         jTextField4.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         jTextField4.setBorder(null);
+        jTextField4.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         jTextField4.setEnabled(false);
-        getContentPane().add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 130, 310, 50));
+        getContentPane().add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 120, 310, 50));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Dashboard kasir (4).png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -20, 1372, 768));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -30, 1372, 768));
 
         jButton2.setBackground(new java.awt.Color(85, 85, 85));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
