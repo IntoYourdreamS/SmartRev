@@ -636,12 +636,47 @@ this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
     }//GEN-LAST:event_bttnkaryawanActionPerformed
 
     private void logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutActionPerformed
-        // TODO add your handling code here:
-          login dash = new login();
-dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
-dash.setVisible(true);
-this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
+try {
+    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart", "root", "");
+    String idKaryawan = Session.getKode();
+    
+    if(!idKaryawan.isEmpty()) {
+        // Query untuk update record terakhir yang belum memiliki tanggal_keluar
+        String query = "UPDATE detail_karyawan SET tanggal_keluar = CURRENT_TIMESTAMP() " +
+                      "WHERE id_karyawan = ? AND tanggal_masuk = (" +
+                      "   SELECT max_masuk FROM (" +
+                      "       SELECT MAX(tanggal_masuk) AS max_masuk " +
+                      "       FROM detail_karyawan " +
+                      "       WHERE id_karyawan = ? AND tanggal_keluar IS NULL" +
+                      "   ) AS temp" +
+                      ")";
+        
+        PreparedStatement pstmt = conn.prepareStatement(query);
+        pstmt.setString(1, idKaryawan);
+        pstmt.setString(2, idKaryawan);
+        int rowsAffected = pstmt.executeUpdate();
+        
+        if(rowsAffected > 0) {
+            System.out.println("Logout time updated successfully");
+        } else {
+            System.out.println("No record found to update");
+        }
+        
+        // Reset session
+       // Session.clear();
+    //    pstmt.close();
+    }
+    conn.close();
+} catch (SQLException e) {
+    JOptionPane.showMessageDialog(null, "Error updating logout time: " + e.getMessage());
+}
 
+
+// Tampilkan form login
+login dash = new login();
+dash.setLocationRelativeTo(null);
+dash.setVisible(true);
+this.dispose();
     }//GEN-LAST:event_logoutActionPerformed
 
     /**

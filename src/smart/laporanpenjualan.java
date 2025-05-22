@@ -56,6 +56,7 @@ public class laporanpenjualan extends javax.swing.JFrame {
         makeButtonTransparent(restok);
         makeButtonTransparent(karyawan);
         makeButtonTransparent(pembelian);
+         
         loadDataPenjualan();
     } catch (Exception e) {
         JOptionPane.showMessageDialog(this, "Error inisialisasi: " + e.getMessage(), 

@@ -46,6 +46,7 @@ public class transaksi extends javax.swing.JFrame {
         makeButtonTransparent(btn_simpan);
         makeButtonTransparent(btn_hapus);
         makeButtonTransparent(btn_bayar);
+        
         txt_bayar.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 formatBayarField();

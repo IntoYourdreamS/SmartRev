@@ -6,10 +6,11 @@ package smart;
 
 import Config.koneksi;
 import com.formdev.flatlaf.FlatLightLaf;
+import java.sql.Timestamp;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.security.Timestamp;
+//import java.security.Timestamp;
 import java.sql.Connection;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -114,7 +115,7 @@ public class karyawan2 extends javax.swing.JFrame {
 private void loadDataToTable() {
     // Model tabel dengan kolom yang diinginkan
     DefaultTableModel model = new DefaultTableModel(
-        new Object[]{"No Karyawan", "Nama Karyawan", "No HP", "Role", "Jam Masuk"}, 
+        new Object[]{"No Karyawan", "Nama Karyawan", "No HP", "Role", "Jam Masuk", "Jam Keluar", "Keterangan"}, 
         0
     ) {
         @Override
@@ -122,35 +123,64 @@ private void loadDataToTable() {
             return false; // Membuat tabel tidak bisa di-edit
         }
     };
-    
+
     tbkaryawan2.setModel(model);
 
     try (Connection conn = koneksi.getConnection()) {
-        // Query untuk mendapatkan semua data karyawan beserta semua jam masuk
+        // Query untuk mendapatkan semua data karyawan beserta jam masuk dan keluar
         String query = "SELECT k.id_karyawan, k.nama_karyawan, k.no_telp, k.role, " +
-                     "dk.tanggal_masuk as jam_masuk " +
+                     "dk.tanggal_masuk, dk.tanggal_keluar " +
                      "FROM karyawan k " +
                      "LEFT JOIN detail_karyawan dk ON k.id_karyawan = dk.id_karyawan " +
-                     "ORDER BY k.id_karyawan, dk.tanggal_masuk DESC"; // Urutkan berdasarkan id dan jam masuk terbaru
+                     "ORDER BY k.id_karyawan, dk.tanggal_masuk DESC";
 
         try (PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             
             while (rs.next()) {
-                // Format tanggal
-                String jamMasukFormatted = "Belum ada data";
-                java.sql.Timestamp jamMasuk = rs.getTimestamp("jam_masuk");
-                if (jamMasuk != null && !rs.wasNull()) {
-                    jamMasukFormatted = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(jamMasuk);
+                // Ambil timestamp jam masuk dan keluar
+                java.sql.Timestamp jamMasuk = rs.getTimestamp("tanggal_masuk");
+                java.sql.Timestamp jamKeluar = rs.getTimestamp("tanggal_keluar");
+
+                // Lewati baris jika tidak ada data jam masuk dan keluar
+                if (jamMasuk == null && jamKeluar == null) {
+                    continue;
                 }
-                
-                // Tambahkan semua baris tanpa peduli duplikat id_karyawan
+
+                // Format tanggal masuk
+                String jamMasukFormatted = (jamMasuk != null) ? new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(jamMasuk) : "Belum ada data";
+                // Format tanggal keluar
+                String jamKeluarFormatted = (jamKeluar != null) ? new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(jamKeluar) : "Belum keluar";
+
+                // Tentukan keterangan berdasarkan timestamp
+                String keterangan = "Tepat Waktu"; // Default
+
+                if (jamMasuk != null && jamKeluar != null) {
+                    // Buat batas jam masuk dan keluar (09:00 dan 17:00)
+                    String tanggalMasukStr = new SimpleDateFormat("yyyy-MM-dd").format(jamMasuk) + " 09:00:00";
+                    String tanggalKeluarStr = new SimpleDateFormat("yyyy-MM-dd").format(jamKeluar) + " 17:00:00";
+
+                    Timestamp batasJamMasuk = Timestamp.valueOf(tanggalMasukStr);
+                    Timestamp batasJamKeluar = Timestamp.valueOf(tanggalKeluarStr);
+
+                    // Logika untuk menentukan keterangan
+                    if (jamMasuk.after(batasJamMasuk)) {
+                        keterangan = "Telat";
+                    }
+                    if (jamKeluar.before(batasJamKeluar)) {
+                        keterangan = "Pulang Dulu";
+                    }
+                }
+
+                // Tambahkan baris ke model
                 model.addRow(new Object[]{
                     rs.getString("id_karyawan"),
                     rs.getString("nama_karyawan"),
                     rs.getString("no_telp"),
                     rs.getString("role"),
-                    jamMasukFormatted
+                    jamMasukFormatted,
+                    jamKeluarFormatted,
+                    keterangan
                 });
             }
         }
@@ -160,8 +190,17 @@ private void loadDataToTable() {
             "Error",
             JOptionPane.ERROR_MESSAGE);
         e.printStackTrace();
-    
-}
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this,
+            "Terjadi kesalahan: " + e.getMessage(),
+            "Error",
+            JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    }
+
+
+
+
 }
 
     /**
@@ -229,19 +268,19 @@ private void loadDataToTable() {
 
         tbkaryawan2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "No karyawan", "Nama karyawan", "No hp", "Role", "Jam  masuk"
+                "No karyawan", "Nama karyawan", "No hp", "Role", "Jam  masuk", "Jam keluar", "Keterangan"
             }
         ));
         jScrollPane2.setViewportView(tbkaryawan2);

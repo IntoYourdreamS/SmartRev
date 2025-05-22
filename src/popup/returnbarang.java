@@ -76,6 +76,7 @@ public class returnbarang extends javax.swing.JFrame {
         id_supplier = new javax.swing.JTextField();
         id_barang = new javax.swing.JTextField();
         alasan = new javax.swing.JTextField();
+        tgl_return = new com.toedter.calendar.JDateChooser();
         jLabel2 = new javax.swing.JLabel();
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -91,15 +92,15 @@ public class returnbarang extends javax.swing.JFrame {
                 nama_produkActionPerformed(evt);
             }
         });
-        getContentPane().add(nama_produk, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 190, 260, 20));
+        getContentPane().add(nama_produk, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 200, 260, 30));
 
         id_pembelian.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
         id_pembelian.setBorder(null);
-        getContentPane().add(id_pembelian, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 140, 260, 20));
+        getContentPane().add(id_pembelian, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 100, 260, 40));
 
         harga_jual.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
         harga_jual.setBorder(null);
-        getContentPane().add(harga_jual, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 230, 260, 30));
+        getContentPane().add(harga_jual, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 400, 260, 30));
 
         id_supplier.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
         id_supplier.setBorder(null);
@@ -108,17 +109,27 @@ public class returnbarang extends javax.swing.JFrame {
                 id_supplierActionPerformed(evt);
             }
         });
-        getContentPane().add(id_supplier, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 280, 260, 30));
+        getContentPane().add(id_supplier, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 240, 260, 50));
 
         id_barang.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
         id_barang.setBorder(null);
-        getContentPane().add(id_barang, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 90, 260, 30));
+        id_barang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                id_barangActionPerformed(evt);
+            }
+        });
+        getContentPane().add(id_barang, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 150, 260, 40));
 
         alasan.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
         alasan.setBorder(null);
-        getContentPane().add(alasan, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 330, 300, 30));
+        getContentPane().add(alasan, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 340, 300, 40));
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/return barang v2.png"))); // NOI18N
+        tgl_return.setBackground(new java.awt.Color(164, 107, 9));
+        tgl_return.setForeground(new java.awt.Color(116, 77, 6));
+        tgl_return.setFont(new java.awt.Font("Futura Md BT", 0, 16)); // NOI18N
+        getContentPane().add(tgl_return, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 290, 320, 40));
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/return_barang_paling_terbaru.png"))); // NOI18N
         jLabel2.setText("jLabel2");
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 820, -1));
 
@@ -133,6 +144,10 @@ public class returnbarang extends javax.swing.JFrame {
     private void nama_produkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nama_produkActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_nama_produkActionPerformed
+
+    private void id_barangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_id_barangActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_id_barangActionPerformed
 
     /**
      * @param args the command line arguments
@@ -179,5 +194,6 @@ public class returnbarang extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JTextField nama_produk;
+    private com.toedter.calendar.JDateChooser tgl_return;
     // End of variables declaration//GEN-END:variables
 }

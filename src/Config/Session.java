@@ -25,4 +25,8 @@ public class Session {
     public static void setRole(String roles){
         Session.role= roles;
     }
+
+    public static void clear() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

@@ -4,6 +4,7 @@
  */
 package smart;
 
+import Config.Session;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
 import java.awt.Component;
@@ -63,7 +64,7 @@ public class restok extends javax.swing.JFrame {
         makeButtonTransparent(transaksi);
         makeButtonTransparent(laporan);
         makeButtonTransparent(karyawan);
-       
+     
         makeButtonTransparent(inputbarang);
       
         makeButtonTransparent(datasupplier);

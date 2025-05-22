@@ -318,7 +318,7 @@ private void populateSupplierComboBox() {
         tgl_exp.setBackground(new java.awt.Color(164, 107, 9));
         tgl_exp.setForeground(new java.awt.Color(116, 77, 6));
         tgl_exp.setFont(new java.awt.Font("Futura Md BT", 0, 16)); // NOI18N
-        getContentPane().add(tgl_exp, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 310, 170, 20));
+        getContentPane().add(tgl_exp, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 300, 190, 40));
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
@@ -328,7 +328,7 @@ private void populateSupplierComboBox() {
         });
         getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 252, 190, 40));
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Tambah Barang (2).png"))); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Tambah Barang (5).png"))); // NOI18N
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         id_supplier.setFont(new java.awt.Font("Segoe UI Semibold", 1, 14)); // NOI18N
