@@ -67,6 +67,7 @@ public class restok extends javax.swing.JFrame {
         makeButtonTransparent(inputbarang);
       
         makeButtonTransparent(datasupplier);
+        makeButtonTransparent(datareturn);
         makeButtonTransparent(dataexpired);
      
         
