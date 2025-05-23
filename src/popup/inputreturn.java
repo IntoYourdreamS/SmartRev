@@ -16,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import java.sql.DriverManager;
+import java.sql.Statement;
 
 /**
  *
@@ -42,50 +43,26 @@ public class inputreturn extends javax.swing.JFrame {
         alasantext.setBackground(new Color(0, 0, 0, 0));
         namaproduk.setOpaque(false);
         namaproduk.setBackground(new Color(0, 0, 0, 0));
+         this.setBackground(new Color(0, 0, 0, 0));
 
         // Make buttons transparent
         makeButtonTransparent(tambah);
         makeButtonTransparent(ubah);
         makeButtonTransparent(btnkembali);
         
-        tanggal_return.setDate(new java.util.Date());
+       
         id_pembelian.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
-            fillFieldsFromPembelian();
+           
         }
     });
     }
     
-    private void fillFieldsFromPembelian() {
-    String idPembelian = id_pembelian.getText().trim();
-    if (idPembelian.isEmpty()) {
-        return;
-    }
-
-    try {
-        Connection conn = koneksi.getConnection();
-        String query = "SELECT p.id_supplier, dp.id_produk FROM pembelian p " +
-                       "JOIN detail_pembelian dp ON p.id_pembelian = dp.id_pembelian " +
-                       "WHERE p.id_pembelian = ? LIMIT 1";
-        
-        PreparedStatement ps = conn.prepareStatement(query);
-        ps.setString(1, idPembelian);
-        ResultSet rs = ps.executeQuery();
-
-        if (rs.next()) {
-            id_supplier.setText(rs.getString("id_supplier"));
-            id_produk.setText(rs.getString("id_produk"));
-        } else {
-            JOptionPane.showMessageDialog(this, "Data pembelian tidak ditemukan", "Peringatan", JOptionPane.WARNING_MESSAGE);
-        }
-    } catch (SQLException ex) {
-        JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }
-}
+  
     
     private void clearFields() {
         id_pembelian.setText("");
-        tanggal_return.setDate(null);
+        
         alasantext.setText("");
     }
 
@@ -114,8 +91,8 @@ public class inputreturn extends javax.swing.JFrame {
         btnkembali = new javax.swing.JButton();
         ubah = new javax.swing.JButton();
         tambah = new javax.swing.JButton();
-        tanggal_return = new com.toedter.calendar.JDateChooser();
         namaproduk = new javax.swing.JTextField();
+        jumlah = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -187,7 +164,6 @@ public class inputreturn extends javax.swing.JFrame {
             }
         });
         getContentPane().add(tambah, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 400, 180, 40));
-        getContentPane().add(tanggal_return, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 300, 170, 40));
 
         namaproduk.setFont(new java.awt.Font("Segoe UI Semibold", 0, 12)); // NOI18N
         namaproduk.setBorder(null);
@@ -198,13 +174,51 @@ public class inputreturn extends javax.swing.JFrame {
         });
         getContentPane().add(namaproduk, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 160, 190, 30));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/return barang final.png"))); // NOI18N
+        jumlah.setFont(new java.awt.Font("Segoe UI Semibold", 0, 12)); // NOI18N
+        jumlah.setBorder(null);
+        jumlah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jumlahActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jumlah, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 300, 180, 40));
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/return barang final (1).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+private String generateCode() {
+        String kodeMenu = "RT001";
+        try (Connection conn = koneksi.getConnection()) {
+            if (conn != null) {
+                try {
+//                Statement st = conn.createStatement();
+                    Statement statem = conn.createStatement();
+                    String query = "SELECT id_retur_penjualan FROM retur_penjualan ORDER BY id_retur_penjualan DESC LIMIT 1";
+                    ResultSet resultSet = statem.executeQuery(query);
 
+                    if (resultSet.next()) {
+                        String lastKode = resultSet.getString("id_retur_penjualan");
+                        int kodeNum = Integer.parseInt(lastKode.substring(2)) + 1;
+                        kodeMenu = String.format("RT%03d", kodeNum);
+                    }
+
+                    resultSet.close();
+                    statem.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return kodeMenu;
+    }
     private void id_supplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_id_supplierActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_id_supplierActionPerformed
@@ -278,71 +292,15 @@ String barcodeValue = barcode.getText().trim();
     }//GEN-LAST:event_barcodeActionPerformed
 
     private void tambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahActionPerformed
-        // TODO add your handling code here:
-        String barcodeValue = barcode.getText().trim();
-        
-        if (barcodeValue.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Barcode tidak boleh kosong");
-            return;
-        }
-
-        try (Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/smart", "root", "")) {
-            
-            // 1. Cari produk berdasarkan barcode
-            String produkQuery = "SELECT id_produk, id_supplier FROM produk WHERE barcode = ?";
-            try (PreparedStatement pstProduk = conn.prepareStatement(produkQuery)) {
-                pstProduk.setString(1, barcodeValue);
-                ResultSet rsProduk = pstProduk.executeQuery();
-
-                if (rsProduk.next()) {
-                    String idProduk = rsProduk.getString("id_produk");
-                    String idSupplier = rsProduk.getString("id_supplier");
-
-                    id_produk.setText(idProduk);
-                    id_supplier.setText(idSupplier != null ? idSupplier : "");
-
-                    // 2. Cari pembelian terakhir untuk produk ini (QUERY YANG DIPERBAIKI)
-                    String pembelianQuery = "SELECT p.id_pembelian " +
-                                         "FROM pembelian p " +
-                                         "JOIN detail_pembelian dp ON p.id_pembelian = dp.id_pembelian " +
-                                         "WHERE dp.id_produk = ? " +
-                                         "ORDER BY p.tanggal DESC LIMIT 1";
-                    
-                    try (PreparedStatement pstPembelian = conn.prepareStatement(pembelianQuery)) {
-                        pstPembelian.setString(1, idProduk);
-                        ResultSet rsPembelian = pstPembelian.executeQuery();
-
-                        if (rsPembelian.next()) {
-                            id_pembelian.setText(rsPembelian.getString("id_pembelian"));
-                        } else {
-                            id_pembelian.setText("");
-                            System.out.println("Debug: Tidak ditemukan pembelian untuk produk " + idProduk);
-                        }
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Barcode tidak ditemukan");
-                    clearFields();
-                }
-            }
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error database: " + ex.getMessage());
-            ex.printStackTrace();
-        }
-    
-    }//GEN-LAST:event_tambahActionPerformed
-
-    private void ubahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ubahActionPerformed
-        // TODO add your handling code here:
-      try {
+   try {
     // 1. Ambil nilai dari form
     String barcodeValue = barcode.getText().trim();
     String alasanText = alasantext.getText().trim();
-    String tanggal_retur = ((JTextField) tanggal_return.getDateEditor().getUiComponent()).getText().trim();
-    
+    int jumlahRetur = Integer.parseInt(jumlah.getText().trim());
+
     // 2. Validasi input
-    if (barcodeValue.isEmpty() || alasanText.isEmpty() || tanggal_retur.isEmpty()) {
-        JOptionPane.showMessageDialog(null, "Semua field harus diisi!");
+    if (barcodeValue.isEmpty() || alasanText.isEmpty() || jumlahRetur <= 0) {
+        JOptionPane.showMessageDialog(null, "Barcode, alasan, dan jumlah harus diisi!\nJumlah harus lebih dari 0!");
         return;
     }
 
@@ -350,74 +308,110 @@ String barcodeValue = barcode.getText().trim();
     String idProduk = "";
     String namaProduk = "";
     String idSupplier = "";
-    
+    int stokSekarang = 0;
+
     try (Connection conn1 = koneksi.getConnection();
          PreparedStatement ps1 = conn1.prepareStatement(
-             "SELECT id_produk, nama_produk, id_supplier FROM produk WHERE barcode = ?")) {
-        
+             "SELECT id_produk, nama_produk, id_supplier, stok FROM produk WHERE barcode = ? FOR UPDATE")) {
+
         ps1.setString(1, barcodeValue);
         ResultSet rs = ps1.executeQuery();
-        
+
         if (rs.next()) {
             idProduk = rs.getString("id_produk");
             namaProduk = rs.getString("nama_produk");
             idSupplier = rs.getString("id_supplier");
+            stokSekarang = rs.getInt("stok");
+
+            if (stokSekarang < jumlahRetur) {
+                JOptionPane.showMessageDialog(null, "Stok tidak mencukupi! Stok tersedia: " + stokSekarang);
+                return;
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Produk dengan barcode tersebut tidak ditemukan!");
             return;
         }
     }
 
-    // 4. Generate ID retur baru (format: RT-tahunbulantang-xxx)
-    String idRetur = "RT-" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + "-001";
-    
-    // 5. Cari ID pembelian terakhir untuk produk ini
-    String idPembelian = "";
-    try (Connection conn2 = koneksi.getConnection();
-         PreparedStatement ps2 = conn2.prepareStatement(
-             "SELECT p.id_pembelian FROM pembelian p " +
-             "JOIN detail_pembelian dp ON p.id_pembelian = dp.id_pembelian " +
-             "WHERE dp.id_produk = ? ORDER BY p.tanggal DESC LIMIT 1")) {
-        
-        ps2.setString(1, idProduk);
-        ResultSet rs = ps2.executeQuery();
-        if (rs.next()) {
-            idPembelian = rs.getString("id_pembelian");
-        }
-    }
+    // 4. Generate ID retur menggunakan method generateCode()
+    String idRetur = generateCode();
 
-    // 6. Simpan data retur penjualan
-    String query = "INSERT INTO retur_penjualan " +
-                 "(id_retur_penjualan, id_penjualan, tanggal_retur, alasan, " +
-                 "id_produk, barcode, nama_produk, id_pembelian, id_supplier) " +
-                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    
-    try (Connection conn3 = koneksi.getConnection();
-         PreparedStatement ps3 = conn3.prepareStatement(query)) {
-        
-        // Set parameter untuk query INSERT
-        ps3.setString(1, idRetur);
-        ps3.setString(2, ""); // id_penjualan kosong jika tidak ada
-        ps3.setString(3, tanggal_retur);
-        ps3.setString(4, alasanText);
-        ps3.setString(5, idProduk);
-        ps3.setString(6, barcodeValue);
-        ps3.setString(7, namaProduk);
-        ps3.setString(8, idPembelian);
-        ps3.setString(9, idSupplier);
-        
-        int rowsAffected = ps3.executeUpdate();
-        if (rowsAffected > 0) {
-            JOptionPane.showMessageDialog(null, "Data retur berhasil ditambahkan dengan ID: " + idRetur);
-            clearFields();
-        } else {
-            JOptionPane.showMessageDialog(null, "Gagal menambahkan data retur");
+    // 5. Mulai transaksi database
+    Connection conn = null;
+    try {
+        conn = koneksi.getConnection();
+        conn.setAutoCommit(false); // Mulai transaksi
+
+        // 6. Simpan data retur penjualan
+        String queryRetur = "INSERT INTO retur_penjualan " +
+                            "(id_retur_penjualan, id_penjualan, tanggal_retur, alasan, " +
+                            "id_produk, barcode, nama_produk, id_supplier) " +
+                            "VALUES (?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement psRetur = conn.prepareStatement(queryRetur)) {
+            psRetur.setString(1, idRetur);
+            psRetur.setString(2, ""); // id_penjualan kosong jika tidak ada
+            psRetur.setString(3, alasanText);
+            psRetur.setString(4, idProduk);
+            psRetur.setString(5, barcodeValue);
+            psRetur.setString(6, namaProduk);
+            psRetur.setString(7, idSupplier);
+
+            psRetur.executeUpdate();
+        }
+
+        // 7. Update stok produk (kurangi stok)
+        String queryUpdateStok = "UPDATE produk SET stok = stok - ? WHERE id_produk = ?";
+        try (PreparedStatement psUpdate = conn.prepareStatement(queryUpdateStok)) {
+            psUpdate.setInt(1, jumlahRetur);
+            psUpdate.setString(2, idProduk);
+            int updated = psUpdate.executeUpdate();
+
+            if (updated == 0) {
+                throw new SQLException("Gagal mengupdate stok produk");
+            }
+        }
+
+        // Commit transaksi jika semua berhasil
+        conn.commit();
+        JOptionPane.showMessageDialog(null, "Data retur berhasil ditambahkan dengan ID: " + idRetur
+                                   + "\nStok produk berkurang sebanyak " + jumlahRetur);
+        clearFields();
+
+    } catch (SQLException ex) {
+        // Rollback jika terjadi error
+        if (conn != null) {
+            try {
+                conn.rollback();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Error rollback: " + e.getMessage());
+            }
+        }
+        JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
+        ex.printStackTrace();
+    } finally {
+        if (conn != null) {
+            try {
+                conn.setAutoCommit(true); // Kembalikan ke mode auto-commit
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
-} catch (SQLException ex) {
+} catch (NumberFormatException ex) {
+    JOptionPane.showMessageDialog(null, "Jumlah harus berupa angka!");
+} catch (Exception ex) {
     JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
     ex.printStackTrace();
 }
+
+
+    }//GEN-LAST:event_tambahActionPerformed
+
+    private void ubahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ubahActionPerformed
+        // TODO add your handling code here:
+  
     }//GEN-LAST:event_ubahActionPerformed
 
     private void btnkembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnkembaliActionPerformed
@@ -427,6 +421,10 @@ String barcodeValue = barcode.getText().trim();
     private void namaprodukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_namaprodukActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_namaprodukActionPerformed
+
+    private void jumlahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jumlahActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jumlahActionPerformed
 
     /**
      * @param args the command line arguments
@@ -471,9 +469,9 @@ String barcodeValue = barcode.getText().trim();
     private javax.swing.JTextField id_produk;
     private javax.swing.JTextField id_supplier;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JTextField jumlah;
     private javax.swing.JTextField namaproduk;
     private javax.swing.JButton tambah;
-    private com.toedter.calendar.JDateChooser tanggal_return;
     private javax.swing.JButton ubah;
     // End of variables declaration//GEN-END:variables
 }

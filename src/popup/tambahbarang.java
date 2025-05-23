@@ -125,6 +125,33 @@ private void populateSupplierComboBox() {
         return newCode;
     }
     
+        private String generateCode1() {
+        String prefix = "PB";
+        String query = "SELECT id_pembelian FROM detail_pembelian ORDER BY id_pembelian DESC LIMIT 1";
+        String newCode = "";
+
+        try (Connection conn = koneksi.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            if (rs.next()) {
+                String lastId = rs.getString("id_pembelian");
+                int number = Integer.parseInt(lastId.substring(2));
+                number++;
+                newCode = prefix + String.format("%03d", number);
+            } else {
+                newCode = prefix + "001";
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Gagal membuat ID produk baru: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+
+        return newCode;
+    }
+    
     private boolean validateInput() {
         // Validasi field tidak kosong
          if (nama_barang.getText().trim().isEmpty()) {
@@ -213,6 +240,7 @@ private void populateSupplierComboBox() {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        ubah = new javax.swing.JButton();
         id_barang = new javax.swing.JTextField();
         nama_barang = new javax.swing.JTextField();
         harga_jual = new javax.swing.JTextField();
@@ -220,7 +248,6 @@ private void populateSupplierComboBox() {
         jumlah = new javax.swing.JTextField();
         kategori = new javax.swing.JTextField();
         tambah = new javax.swing.JButton();
-        ubah = new javax.swing.JButton();
         hapus = new javax.swing.JButton();
         barcode = new javax.swing.JTextField();
         kembali = new javax.swing.JButton();
@@ -228,6 +255,13 @@ private void populateSupplierComboBox() {
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         id_supplier = new javax.swing.JTextField();
+
+        ubah.setBorder(null);
+        ubah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ubahActionPerformed(evt);
+            }
+        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -287,14 +321,6 @@ private void populateSupplierComboBox() {
             }
         });
         getContentPane().add(tambah, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 380, 160, 40));
-
-        ubah.setBorder(null);
-        ubah.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ubahActionPerformed(evt);
-            }
-        });
-        getContentPane().add(ubah, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 390, 160, 40));
 
         hapus.setBorder(null);
         hapus.addActionListener(new java.awt.event.ActionListener() {
@@ -356,77 +382,165 @@ private void populateSupplierComboBox() {
     }//GEN-LAST:event_id_barangActionPerformed
 
     private void tambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahActionPerformed
-        // TODO add your handling code here:
- // if (!validateInput()) return;
-    Connection conn = null;
-    conn = koneksi.getConnection();
+   Connection conn = null;
+PreparedStatement statProduk = null;
+PreparedStatement statDetail = null;
 
-    String kode = id_barang.getText();
-    String namaBarang = nama_barang.getText();
-    String Hargajual = harga_jual.getText();
-    String Hargabeli = harga_beli.getText();
-    String Jumlah = jumlah.getText();
-    String Kategori = kategori.getText();
-    String selectedSupplier = (String) jComboBox1.getSelectedItem();
-    String Nosupplier = selectedSupplier.split(" - ")[0]; // Extract ID from combo box
-    String barcodeManual = barcode.getText();
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    String tanggalExp = sdf.format(tgl_exp.getDate());
+try {
+    // Validasi input terlebih dahulu
+    if (id_barang.getText().trim().isEmpty() || 
+        nama_barang.getText().trim().isEmpty() || 
+        harga_jual.getText().trim().isEmpty() || 
+        harga_beli.getText().trim().isEmpty() || 
+        jumlah.getText().trim().isEmpty() || 
+        kategori.getText().trim().isEmpty() ||
+        jComboBox1.getSelectedItem() == null ||
+        tgl_exp.getDate() == null) {
+        JOptionPane.showMessageDialog(this, "Semua field harus diisi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
 
+    // Konfirmasi sebelum membuat koneksi
     int confirm = JOptionPane.showConfirmDialog(this,
         "Apakah Anda yakin ingin menambah data?",
         "Konfirmasi",
         JOptionPane.YES_NO_OPTION);
     if (confirm != JOptionPane.YES_OPTION) return;
 
-    String queryProduk = "INSERT INTO produk (id_produk, nama_produk, harga, stok, barcode, kategori, id_supplier, tgl_expired) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    String queryDetailPembelian = "INSERT INTO detail_pembelian (id_produk, harga_beli, jumlah, kategori) VALUES (?, ?, ?, ?)";
+    // Ambil nilai dari form
+    String kode = id_barang.getText().trim();
+    String namaBarang = nama_barang.getText().trim();
+    String Hargajual = harga_jual.getText().trim();
+    String Hargabeli = harga_beli.getText().trim();
+    String Jumlah = jumlah.getText().trim();
+    String Kategori = kategori.getText().trim();
+    String selectedSupplier = (String) jComboBox1.getSelectedItem();
+    String Nosupplier = selectedSupplier.split(" - ")[0];
+    String barcodeManual = barcode.getText().trim();
+    
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    String tanggalExp = sdf.format(tgl_exp.getDate());
+    String idPembelian = generateCode1(); // Buat ID pembelian baru
 
+    // Validasi format angka
+    int hargaJualInt, hargaBeliInt, jumlahInt;
     try {
-        // Insert ke produk
-        try (PreparedStatement statProduk = conn.prepareStatement(queryProduk)) {
-            statProduk.setString(1, kode);
-            statProduk.setString(2, namaBarang);
-            statProduk.setInt(3, Integer.parseInt(Hargajual));
-            statProduk.setInt(4, Integer.parseInt(Jumlah));
-            statProduk.setString(5, barcodeManual);
-            statProduk.setString(6, Kategori);
-            statProduk.setString(7, Nosupplier);
-            statProduk.setString(8, tanggalExp);
-            statProduk.executeUpdate();
-        }
+        hargaJualInt = Integer.parseInt(Hargajual);
+        hargaBeliInt = Integer.parseInt(Hargabeli);
+        jumlahInt = Integer.parseInt(Jumlah);
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Harga dan jumlah harus berupa angka!", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
 
-        // Insert ke detail_pembelian
-        try (PreparedStatement statDetail = conn.prepareStatement(queryDetailPembelian)) {
-            statDetail.setString(1, kode);
-            statDetail.setInt(2, Integer.parseInt(Hargabeli));
-            statDetail.setInt(3, Integer.parseInt(Jumlah));
-            statDetail.setString(4, Kategori);
-            statDetail.executeUpdate();
-        }
+    // Buat koneksi database
+    conn = koneksi.getConnection();
+    if (conn == null || conn.isClosed()) {
+        throw new SQLException("Gagal membuat koneksi database");
+    }
+    
+    conn.setAutoCommit(false); // Mulai transaksi
 
-        JOptionPane.showMessageDialog(this, "Data berhasil ditambahkan!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-        resetForm();
-        id_barang.setText(generateCode()); // Generate new ID after successful insert
-
-    } catch (SQLException e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this,
-            "Terjadi kesalahan saat menyimpan data: " + e.getMessage(),
-            "Error",
-            JOptionPane.ERROR_MESSAGE);
-        try {
-            if (conn != null) conn.rollback();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    } finally {
-        try {
-            if (conn != null) conn.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+    // Cek apakah ID produk sudah ada
+    String checkQuery = "SELECT COUNT(*) FROM produk WHERE id_produk = ?";
+    try (PreparedStatement checkStat = conn.prepareStatement(checkQuery)) {
+        checkStat.setString(1, kode);
+        ResultSet rs = checkStat.executeQuery();
+        if (rs.next() && rs.getInt(1) > 0) {
+            JOptionPane.showMessageDialog(this, "ID Produk sudah ada! Gunakan ID yang berbeda.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
     }
+
+    // Simpan ke tabel produk
+    String queryProduk = "INSERT INTO produk (id_produk, nama_produk, harga, stok, barcode, kategori, id_supplier, tgl_expired) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    statProduk = conn.prepareStatement(queryProduk);
+    statProduk.setString(1, kode);
+    statProduk.setString(2, namaBarang);
+    statProduk.setInt(3, hargaJualInt);
+    statProduk.setInt(4, jumlahInt);
+    statProduk.setString(5, barcodeManual);
+    statProduk.setString(6, Kategori);
+    statProduk.setString(7, Nosupplier);
+    statProduk.setString(8, tanggalExp);
+    
+    int resultProduk = statProduk.executeUpdate();
+    if (resultProduk == 0) {
+        throw new SQLException("Gagal menyimpan data produk");
+    }
+
+    // Simpan ke tabel detail_pembelian
+    String queryDetailPembelian = "INSERT INTO detail_pembelian (id_pembelian, id_produk, harga_beli, jumlah, kategori) VALUES (?, ?, ?, ?, ?)";
+    statDetail = conn.prepareStatement(queryDetailPembelian);
+    statDetail.setString(1, idPembelian);
+    statDetail.setString(2, kode);
+    statDetail.setInt(3, hargaBeliInt);
+    statDetail.setInt(4, jumlahInt);
+    statDetail.setString(5, Kategori);
+    
+    int resultDetail = statDetail.executeUpdate();
+    if (resultDetail == 0) {
+        throw new SQLException("Gagal menyimpan data detail pembelian");
+    }
+
+    // Commit transaksi jika semua berhasil
+    conn.commit();
+    JOptionPane.showMessageDialog(this, "Data berhasil ditambahkan!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+    
+    // Reset form dan generate ID baru
+    resetForm();
+    id_barang.setText(generateCode());
+
+} catch (SQLException e) {
+    // Rollback jika terjadi error
+    if (conn != null) {
+        try {
+            conn.rollback();
+            System.out.println("Transaksi di-rollback karena error: " + e.getMessage());
+        } catch (SQLException rollbackEx) {
+            System.err.println("Error saat rollback: " + rollbackEx.getMessage());
+            rollbackEx.printStackTrace();
+        }
+    }
+    e.printStackTrace();
+    JOptionPane.showMessageDialog(this, 
+        "Terjadi kesalahan saat menyimpan data: " + e.getMessage(), 
+        "Error", 
+        JOptionPane.ERROR_MESSAGE);
+        
+} catch (Exception e) {
+    // Handle error lainnya
+    if (conn != null) {
+        try {
+            conn.rollback();
+        } catch (SQLException rollbackEx) {
+            rollbackEx.printStackTrace();
+        }
+    }
+    e.printStackTrace();
+    JOptionPane.showMessageDialog(this, 
+        "Terjadi kesalahan: " + e.getMessage(), 
+        "Error", 
+        JOptionPane.ERROR_MESSAGE);
+        
+} finally {
+    // Tutup semua resource dengan urutan yang benar
+    try {
+        if (statDetail != null) {
+            statDetail.close();
+        }
+        if (statProduk != null) {
+            statProduk.close();
+        }
+        if (conn != null && !conn.isClosed()) {
+            conn.setAutoCommit(true); // Reset autocommit
+            conn.close();
+        }
+    } catch (SQLException ex) {
+        System.err.println("Error saat menutup koneksi: " + ex.getMessage());
+        ex.printStackTrace();
+    }
+}
     }//GEN-LAST:event_tambahActionPerformed
 
     private void ubahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ubahActionPerformed
