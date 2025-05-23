@@ -41,15 +41,16 @@ public class datareturn extends javax.swing.JFrame {
         button.setBorderPainted(false);
     }
     
-   private void loadTableRetur() {
+  private void loadTableRetur() {
     DefaultTableModel model = new DefaultTableModel();
-    model.addColumn("ID Retur");
-    model.addColumn("ID Penjualan");
-    model.addColumn("Tanggal Retur");
+    model.addColumn("No retur");
+    model.addColumn("No Barang");
+    model.addColumn("Nama");
+    model.addColumn("Tanggal retur");
     model.addColumn("Alasan");
 
     try {
-        String sql = "SELECT * FROM retur_penjualan";
+        String sql = "SELECT id_retur_penjualan, id_produk, nama_produk, tanggal_retur, alasan FROM retur_penjualan";
         Connection conn = koneksi.getConnection();
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery(sql);
@@ -57,17 +58,19 @@ public class datareturn extends javax.swing.JFrame {
         while (rs.next()) {
             model.addRow(new Object[]{
                 rs.getString("id_retur_penjualan"),
-                rs.getString("id_penjualan"),
+                rs.getString("id_produk"),
+                rs.getString("nama_produk"),
                 rs.getString("tanggal_retur"),
                 rs.getString("alasan")
             });
         }
 
-        tbldatareturn.setModel(model); // ← nama JTable kamu
+        tbldatareturn.setModel(model); // nama JTable kamu
     } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "Gagal menampilkan data: " + e.getMessage());
     }
 }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -96,16 +99,19 @@ public class datareturn extends javax.swing.JFrame {
 
         tbldatareturn.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "No", "Id Barang", "Nama", "Tanggal return", "Kategori", "Alasan"
+                "No retur", "No Barang", "Nama", "Tanggal return", "Alasan"
             }
         ));
         jScrollPane1.setViewportView(tbldatareturn);
+        if (tbldatareturn.getColumnModel().getColumnCount() > 0) {
+            tbldatareturn.getColumnModel().getColumn(1).setResizable(false);
+        }
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 110, 1100, 480));
 
