@@ -384,14 +384,14 @@ private void populateSupplierComboBox() {
     }//GEN-LAST:event_id_barangActionPerformed
 
     private void tambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahActionPerformed
- Connection conn = null;
+Connection conn = null;
 PreparedStatement statProduk = null;
 PreparedStatement statDetail = null;
 PreparedStatement statPembelian = null;
 PreparedStatement statBarcode = null;
 
 try {
-    // Validasi input wajib
+    // Validasi input wajib (tgl_exp tetap wajib diisi karena dibutuhkan untuk barcode)
     if (id_barang.getText().trim().isEmpty() || 
         nama_barang.getText().trim().isEmpty() || 
         harga_jual.getText().trim().isEmpty() || 
@@ -414,20 +414,17 @@ try {
     String selectedSupplier = (String) jComboBox1.getSelectedItem();
     String Nosupplier = selectedSupplier.split(" - ")[0];
     String barcodeManual = barcode.getText().trim();
-    
+
     // Validasi barcode hanya angka
     if (!barcodeManual.matches("\\d+")) {
-        JOptionPane.showMessageDialog(this, 
-            "Barcode hanya boleh berisi angka!", 
-            "Error", 
-            JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Barcode hanya boleh berisi angka!", "Error", JOptionPane.ERROR_MESSAGE);
         return;
     }
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     String tanggalExp = sdf.format(tgl_exp.getDate());
     String idPembelian = generateCode1(); // Generate ID pembelian baru
-    String idKaryawan = "KR001"; // Ganti dengan ID karyawan yang login
+    String idKaryawan = "KR001"; // Ganti sesuai karyawan login
 
     // Validasi format angka untuk harga dan jumlah
     int hargaJualInt, hargaBeliInt, jumlahInt;
@@ -447,7 +444,7 @@ try {
         return;
     }
 
-    // 1. Cek apakah ID produk sudah ada atau barcode sudah digunakan
+    // Cek apakah ID produk sudah ada
     String checkQuery = "SELECT COUNT(*) FROM produk WHERE id_produk = ?";
     try (PreparedStatement checkStat = conn.prepareStatement(checkQuery)) {
         checkStat.setString(1, kode);
@@ -458,7 +455,7 @@ try {
         }
     }
 
-    // Cek barcode di tabel barcode
+    // Cek apakah barcode sudah ada
     String checkBarcodeQuery = "SELECT COUNT(*) FROM barcode WHERE kode_barcode = ?";
     try (PreparedStatement checkBarcode = conn.prepareStatement(checkBarcodeQuery)) {
         checkBarcode.setString(1, barcodeManual);
@@ -469,21 +466,20 @@ try {
         }
     }
 
-    // 2. Simpan ke tabel PEMBELIAN
+    // Simpan ke tabel PEMBELIAN
     String queryPembelian = "INSERT INTO pembelian (id_pembelian, id_karyawan, id_supplier, tanggal) VALUES (?, ?, ?, CURDATE())";
     statPembelian = conn.prepareStatement(queryPembelian);
     statPembelian.setString(1, idPembelian);
     statPembelian.setString(2, idKaryawan);
     statPembelian.setString(3, Nosupplier);
-    
     int resultPembelian = statPembelian.executeUpdate();
     if (resultPembelian == 0) {
         JOptionPane.showMessageDialog(this, "Gagal menyimpan data pembelian", "Error", JOptionPane.ERROR_MESSAGE);
         return;
     }
 
-    // 3. Simpan ke tabel PRODUK (tanpa barcode)
-    String queryProduk = "INSERT INTO produk (id_produk, nama_produk, harga, stok, kategori, id_supplier, tgl_expired) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    // Simpan ke tabel PRODUK (tanpa tgl_expired)
+    String queryProduk = "INSERT INTO produk (id_produk, nama_produk, harga, stok, kategori, id_supplier) VALUES (?, ?, ?, ?, ?, ?)";
     statProduk = conn.prepareStatement(queryProduk);
     statProduk.setString(1, kode);
     statProduk.setString(2, namaBarang);
@@ -491,27 +487,25 @@ try {
     statProduk.setInt(4, jumlahInt);
     statProduk.setString(5, Kategori);
     statProduk.setString(6, Nosupplier);
-    statProduk.setString(7, tanggalExp);
-    
     int resultProduk = statProduk.executeUpdate();
     if (resultProduk == 0) {
         JOptionPane.showMessageDialog(this, "Gagal menyimpan data produk", "Error", JOptionPane.ERROR_MESSAGE);
         return;
     }
 
-    // 4. Simpan ke tabel BARCODE
-    String queryBarcode = "INSERT INTO barcode (id_produk, kode_barcode) VALUES (?, ?)";
+    // Simpan ke tabel BARCODE (tgl_expired disimpan di sini saja)
+    String queryBarcode = "INSERT INTO barcode (id_produk, kode_barcode, tgl_expired) VALUES (?, ?, ?)";
     statBarcode = conn.prepareStatement(queryBarcode);
     statBarcode.setString(1, kode);
     statBarcode.setString(2, barcodeManual);
-    
+    statBarcode.setString(3, tanggalExp);
     int resultBarcode = statBarcode.executeUpdate();
     if (resultBarcode == 0) {
         JOptionPane.showMessageDialog(this, "Gagal menyimpan data barcode", "Error", JOptionPane.ERROR_MESSAGE);
         return;
     }
 
-    // 5. Simpan ke tabel DETAIL_PEMBELIAN
+    // Simpan ke tabel DETAIL_PEMBELIAN
     String queryDetailPembelian = "INSERT INTO detail_pembelian (id_pembelian, id_produk, jumlah, sub_total, harga_beli, kategori) VALUES (?, ?, ?, ?, ?, ?)";
     statDetail = conn.prepareStatement(queryDetailPembelian);
     statDetail.setString(1, idPembelian);
@@ -520,161 +514,37 @@ try {
     statDetail.setInt(4, hargaBeliInt * jumlahInt);
     statDetail.setInt(5, hargaBeliInt);
     statDetail.setString(6, Kategori);
-    
     int resultDetail = statDetail.executeUpdate();
     if (resultDetail == 0) {
         JOptionPane.showMessageDialog(this, "Gagal menyimpan detail pembelian", "Error", JOptionPane.ERROR_MESSAGE);
         return;
     }
 
-    // Jika semua berhasil
+    // Sukses
     JOptionPane.showMessageDialog(this, "Data berhasil ditambahkan!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
     resetForm();
     id_barang.setText(generateCode());
 
 } catch (SQLException e) {
     e.printStackTrace();
-    JOptionPane.showMessageDialog(this, 
-        "Terjadi kesalahan database: " + e.getMessage(), 
-        "Error", 
-        JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(this, "Terjadi kesalahan database: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 } catch (Exception e) {
     e.printStackTrace();
-    JOptionPane.showMessageDialog(this, 
-        "Terjadi kesalahan: " + e.getMessage(), 
-        "Error", 
-        JOptionPane.ERROR_MESSAGE);
-} finally {
-    try {
-        if (statDetail != null) statDetail.close();
-        if (statProduk != null) statProduk.close();
-        if (statPembelian != null) statPembelian.close();
-        if (statBarcode != null) statBarcode.close();
-        if (conn != null && !conn.isClosed()) conn.close();
-    } catch (SQLException ex) {
-        System.err.println("Error saat menutup koneksi: " + ex.getMessage());
+    JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
     }
-}
+
+
 
     }//GEN-LAST:event_tambahActionPerformed
 
     private void ubahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ubahActionPerformed
-    //if (!validateInput()) return;
-     String kode = id_barang.getText();
-    String namaBarang = nama_barang.getText();
-    String Hargajual = harga_jual.getText();
-    String Hargabeli = harga_beli.getText();
-    String Jumlah = jumlah.getText();
-    String Kategori = kategori.getText();
-    String selectedSupplier = (String) jComboBox1.getSelectedItem();
-    String Nosupplier = selectedSupplier.split(" - ")[0]; // Extract ID from combo box
-    String barcodeManual = barcode.getText();
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    String tanggalExp = sdf.format(tgl_exp.getDate());
-
-    int confirm = JOptionPane.showConfirmDialog(this,
-        "Apakah Anda yakin ingin mengubah data?",
-        "Konfirmasi",
-        JOptionPane.YES_NO_OPTION);
-    if (confirm != JOptionPane.YES_OPTION) return;
-
-    String queryProduk = "UPDATE produk SET nama_produk=?, harga=?, stok=?, barcode=?, kategori=?, id_supplier=?, tgl_expired=? WHERE id_produk=?";
-    String queryDetailPembelian = "UPDATE detail_pembelian SET harga_beli=?, jumlah=? WHERE id_produk=?";
-
-    try (Connection conn = koneksi.getConnection()) {
-        conn.setAutoCommit(false);
-
-        // Update produk
-        try (PreparedStatement statProduk = conn.prepareStatement(queryProduk)) {
-            statProduk.setString(1, namaBarang);
-            statProduk.setInt(2, Integer.parseInt(Hargajual));
-            statProduk.setInt(3, Integer.parseInt(Jumlah));
-            statProduk.setString(4, barcodeManual);
-            statProduk.setString(5, Kategori);
-            statProduk.setString(6, Nosupplier);
-            statProduk.setString(7, tanggalExp);
-            statProduk.setString(8, kode);
-            int updatedRows = statProduk.executeUpdate();
-            
-            if (updatedRows == 0) {
-                JOptionPane.showMessageDialog(this, "Data produk tidak ditemukan", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-        }
-
-        // Update detail_pembelian
-        try (PreparedStatement statDetail = conn.prepareStatement(queryDetailPembelian)) {
-            statDetail.setInt(1, Integer.parseInt(Hargabeli));
-            statDetail.setInt(2, Integer.parseInt(Jumlah));
-            statDetail.setString(3, kode);
-            statDetail.executeUpdate();
-        }
-
-        conn.commit();
-        JOptionPane.showMessageDialog(this, "Data berhasil diubah!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-
-    } catch (SQLException e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat mengubah data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        try {
-            if (conn != null) conn.rollback();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
+  
     }//GEN-LAST:event_ubahActionPerformed
 
     private void hapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hapusActionPerformed
         // TODO add your handling code here:
-        String idProduk = id_barang.getText();
-
-        if (idProduk.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "ID Produk harus diisi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        int confirm = JOptionPane.showConfirmDialog(this,
-            "Apakah Anda yakin ingin menghapus data produk ini?",
-            "Konfirmasi Hapus",
-            JOptionPane.YES_NO_OPTION);
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            String queryProduk = "DELETE FROM produk WHERE id_produk = ?";
-            String queryDetailPembelian = "DELETE FROM detail_pembelian WHERE id_produk = ?";
-
-            try (Connection conn = koneksi.getConnection()) {
-                conn.setAutoCommit(false);
-
-                // Hapus dari detail_pembelian terlebih dahulu karena constraint foreign key
-                try (PreparedStatement statDetail = conn.prepareStatement(queryDetailPembelian)) {
-                    statDetail.setString(1, idProduk);
-                    statDetail.executeUpdate();
-                }
-
-                // Hapus dari produk
-                try (PreparedStatement statProduk = conn.prepareStatement(queryProduk)) {
-                    statProduk.setString(1, idProduk);
-                    int deletedRows = statProduk.executeUpdate();
-
-                    if (deletedRows > 0) {
-                        conn.commit();
-                        JOptionPane.showMessageDialog(this, "Data berhasil dihapus!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-                        resetForm();
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Data produk tidak ditemukan atau gagal dihapus.", "Gagal", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-
-            }  catch (SQLException e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat mengubah data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        try {
-            if (conn != null) conn.rollback();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-            }
-        }
+    
     }//GEN-LAST:event_hapusActionPerformed
 
     private void kembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kembaliActionPerformed
