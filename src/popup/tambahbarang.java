@@ -51,6 +51,7 @@ public class tambahbarang extends javax.swing.JFrame {
         id_supplier.setBackground(new Color(0, 0, 0, 0));
         barcode.setOpaque(false);
         barcode.setBackground(new Color(0, 0, 0, 0));
+        this.setBackground(new Color(0, 0, 0, 0));
      
     }
 

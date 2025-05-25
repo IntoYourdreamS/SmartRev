@@ -36,7 +36,7 @@ public class tambahstok extends javax.swing.JFrame {
          makeButtonTransparent(tambah);
          makeButtonTransparent(ubah);
         //isiFieldProdukBerdasarkanNama();
-       
+       this.setBackground(new Color(0, 0, 0, 0));
         nama_barang.setOpaque(false);
         nama_barang.setBackground(new Color(0, 0, 0, 0));
         harga_jual.setOpaque(false);

@@ -29,6 +29,7 @@ import popup.tambahbarang;
 import popup.tambahsupplier;
 import popup.inputreturn;
 import popup.tambahkaryawan;
+import popup.validasitambahbarang;
 
 /**
  *
@@ -271,7 +272,7 @@ private void connectToDatabase() {
     }//GEN-LAST:event_karyawanActionPerformed
 
     private void inputbarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputbarangActionPerformed
-        tambahbarang popup = new tambahbarang();
+        validasitambahbarang popup = new validasitambahbarang();
                 popup.setVisible(true);  
     }//GEN-LAST:event_inputbarangActionPerformed
 
