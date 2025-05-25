@@ -30,6 +30,7 @@ import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
 public class dashboard extends javax.swing.JFrame {
 
@@ -39,7 +40,9 @@ public class dashboard extends javax.swing.JFrame {
         loadData();
         tampilkanTotalHarga();
         tampilkanPendapatanBersih();
-
+        displayLoggedInEmployeeName();
+ jTextField5.setOpaque(false);
+    jTextField5.setBackground(new Color(0, 0, 0, 0));
         customizeTable();
         makeButtonTransparent(jButton1);
         makeButtonTransparent(bttnlaporan);
@@ -234,6 +237,72 @@ private void loadDataToTable()  {
         JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
     }
 }
+  
+  private Timer greetingTimer;
+private String namaKaryawan;
+
+private void displayLoggedInEmployeeName() {
+    try {
+        String idKaryawan = Session.getKode();
+        
+        if (idKaryawan != null && !idKaryawan.isEmpty()) {
+            Connection conn = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/smart", 
+                "root", 
+                "");
+            
+            String sql = "SELECT nama_karyawan FROM karyawan WHERE id_karyawan = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, idKaryawan);
+            
+            ResultSet rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                namaKaryawan = rs.getString("nama_karyawan");
+                startGreetingCycle();
+            } else {
+                jTextField5.setText("Halo Karyawan!");
+            }
+            
+            rs.close();
+            pstmt.close();
+            conn.close();
+        } else {
+            jTextField5.setText("Halo Pengguna!");
+        }
+    } catch (Exception e) {
+        jTextField5.setText("Halo!");
+        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+    }
+}
+
+private void startGreetingCycle() {
+    // Hentikan timer sebelumnya jika ada
+    if (greetingTimer != null && greetingTimer.isRunning()) {
+        greetingTimer.stop();
+    }
+    
+    // Buat timer baru
+    greetingTimer = new Timer(3000, e -> {
+        String currentText = jTextField5.getText();
+        
+        if (currentText.startsWith("Halo")) {
+            // Ganti ke "Selamat bertransaksi!" selama 5 detik
+            jTextField5.setText("Selamat bekerja!");
+            greetingTimer.setDelay(5000);
+        } else {
+            // Ganti kembali ke "Halo [Nama]" selama 3 detik
+            jTextField5.setText("Halo " + namaKaryawan + "!");
+            greetingTimer.setDelay(3000);
+        }
+    });
+    
+    // Mulai dengan menampilkan sapaan
+    jTextField5.setText("Halo " + namaKaryawan + "!");
+    greetingTimer.setRepeats(true);
+    greetingTimer.start();
+}
+
   
 
     private void customizeTable() {
@@ -438,6 +507,7 @@ private void initSalesChart() {
         jTextField2 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
         jTextField4 = new javax.swing.JTextField();
+        jTextField5 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -571,9 +641,27 @@ private void initSalesChart() {
         jTextField4.setBorder(null);
         jTextField4.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         jTextField4.setEnabled(false);
+        jTextField4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField4ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 120, 310, 50));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Dashboard kasir (4).png"))); // NOI18N
+        jTextField5.setBackground(new java.awt.Color(255, 255, 255));
+        jTextField5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jTextField5.setForeground(new java.awt.Color(255, 255, 255));
+        jTextField5.setBorder(null);
+        jTextField5.setDisabledTextColor(new java.awt.Color(255, 255, 255));
+        jTextField5.setEnabled(false);
+        jTextField5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField5ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 20, 160, 30));
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Dashboard kasirrr.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -30, 1372, 768));
 
         jButton2.setBackground(new java.awt.Color(85, 85, 85));
@@ -679,6 +767,14 @@ dash.setVisible(true);
 this.dispose();
     }//GEN-LAST:event_logoutActionPerformed
 
+    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField4ActionPerformed
+
+    private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField5ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -733,6 +829,7 @@ this.dispose();
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField jTextField5;
     private javax.swing.JButton logout;
     private javax.swing.JTable tbexpired;
     private javax.swing.JTable tbpenjualanterlaris;

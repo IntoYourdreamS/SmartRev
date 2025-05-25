@@ -4,27 +4,20 @@
  */
 package smart;
 
-// Include necessary imports above
+import Config.Session;
+import static Config.Session.getKode;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.print.*;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.print.PageFormat;
-import java.awt.print.Paper;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
+import java.sql.*;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
-
-
-
-
+import java.util.ArrayList;
+import java.util.Date;
 
 public class StrukPrinter implements Printable {
-    private static final int PAPER_WIDTH = (int) (70 * 72 / 25.4); // Changed to 70mm
+    private static final int PAPER_WIDTH = (int) (70 * 72 / 25.4); // 70mm width
     private static final int PAPER_HEIGHT = (int) (200 * 72 / 25.4);
     private static final int MARGIN = 5;
     private static final int LINE_HEIGHT = 12;
@@ -42,14 +35,14 @@ public class StrukPrinter implements Printable {
         Graphics2D g = (Graphics2D) graphics;
         g.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
 
-        // Slightly smaller fonts for narrower paper
+        // Font settings
         Font fontBold = new Font("Courier New", Font.BOLD, 9);
         Font fontRegular = new Font("Courier New", Font.PLAIN, 9);
         Font fontSmall = new Font("Courier New", Font.PLAIN, 8);
 
         int y = MARGIN;
 
-        // Header - Centered but with narrower width
+        // Header
         g.setFont(fontBold);
         centerText(g, namaToko, y, PAPER_WIDTH);
         y += LINE_HEIGHT;
@@ -63,31 +56,28 @@ public class StrukPrinter implements Printable {
         drawLine(g, y);
         y += 10;
 
-        // Transaction Info - Adjusted for narrower paper
+        // Transaction Info
         g.setFont(fontRegular);
         printLeftRight(g, "No. Transaksi", noTransaksi, y);
         y += LINE_HEIGHT;
         printLeftRight(g, "Tanggal", tanggal, y);
         y += LINE_HEIGHT;
-        printLeftRight(g, "Kasir", namaKasir, y);
+        printLeftRight(g, "Kasir", namaKasir, y); // Now shows employee name
         y += LINE_HEIGHT + 5;
 
         drawLine(g, y);
         y += 10;
 
-        // Item Header - Adjusted column widths
+        // Item Header
         g.setFont(fontBold);
         String header = String.format("%-12s %2s %8s %9s", "NAMA", "QTY", "HARGA", "SUBTOTAL");
         g.drawString(header, MARGIN, y);
         y += LINE_HEIGHT;
 
-       // drawLine(g, y);
-        //y += 5;
-
-        // Items - Narrower columns
+        // Items
         g.setFont(fontRegular);
         for (String[] item : items) {
-            String nama = truncate(item[0], 12); // Shorter name field
+            String nama = truncate(item[0], 12);
             String qty = quantityFormat.format(Integer.parseInt(item[1]));
             String harga = formatCurrency(Double.parseDouble(item[2]));
             String subtotal = formatCurrency(Double.parseDouble(item[3]));
@@ -109,7 +99,7 @@ public class StrukPrinter implements Printable {
         printLeftRight(g, "KEMBALI", formatCurrency(kembalian), y);
         y += LINE_HEIGHT + 10;
 
-        // Footer - Center aligned within 70mm
+        // Footer
         g.setFont(fontSmall);
         centerText(g, "Terima kasih atas kunjungan Anda", y, PAPER_WIDTH);
         y += LINE_HEIGHT;
@@ -189,24 +179,26 @@ public class StrukPrinter implements Printable {
         this.kembalian = kembalian;
     }
 
- public static boolean printStrukDenganKonfirmasi(String kodeTransaksi, String[][] items,
+    public static boolean printStrukDenganKonfirmasi(String kodeTransaksi, String[][] items,
             double total, double bayar, double kembalian, String idKasir) {
         try {
             StrukPrinter printer = new StrukPrinter();
-
+            
+            // Get employee name from database
+            String namaKasir = getEmployeeName(idKasir);
+            
             // Set store info
             printer.setNamaToko("TOKO SEMBAKO BU SITI");
             printer.setAlamatToko("Desa Bangunsari-Kec. Songgon");
             printer.setTeleponToko("Telp: 081332053238");
 
-            // Set transaction info
+            // Set transaction info with employee name
             printer.setNoTransaksi(kodeTransaksi);
-            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yy HH:mm");
-            printer.setTanggal(sdf.format(new java.util.Date()));
-            printer.setNamaKasir(idKasir);
+            printer.setTanggal(new SimpleDateFormat("dd/MM/yy HH:mm").format(new Date()));
+            printer.setNamaKasir(namaKasir);
 
             // Convert items
-            List<String[]> itemList = new java.util.ArrayList<>();
+            List<String[]> itemList = new ArrayList<>();
             for (String[] item : items) {
                 itemList.add(item);
             }
@@ -222,10 +214,8 @@ public class StrukPrinter implements Printable {
             pageFormat.setOrientation(PageFormat.PORTRAIT);
 
             Paper paper = new Paper();
-            double width = 70 * 72 / 25.4; // 70mm width
-            double height = 200 * 72 / 25.4;
-            paper.setSize(width, height);
-            paper.setImageableArea(0, 0, width, height);
+            paper.setSize(PAPER_WIDTH, PAPER_HEIGHT);
+            paper.setImageableArea(0, 0, PAPER_WIDTH, PAPER_HEIGHT);
             pageFormat.setPaper(paper);
 
             job.setPrintable(printer, pageFormat);
@@ -238,7 +228,35 @@ public class StrukPrinter implements Printable {
 
         } catch (Exception e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, 
+                "Error saat mencetak struk: " + e.getMessage(), 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
             return false;
         }
+    }
+
+    private static String getEmployeeName(String employeeId) {
+        String employeeName = Session.getKode(); // Default to ID if query fails
+        
+        try (Connection conn = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/smart", "root", "");
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT nama_karyawan FROM karyawan WHERE id_karyawan = ?")) {
+            
+            stmt.setString(1, employeeId);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                employeeName = rs.getString("nama_karyawan");
+            } else {
+                System.err.println("Employee with ID " + employeeId + " not found");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error getting employee name:");
+            e.printStackTrace();
+        }
+        
+        return employeeName;
     }
 }

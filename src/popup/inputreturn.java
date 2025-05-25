@@ -242,57 +242,64 @@ private String generateCode() {
     private void barcodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_barcodeActionPerformed
 String barcodeValue = barcode.getText().trim();
         
-        if (barcodeValue.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Barcode tidak boleh kosong");
-            return;
-        }
+if (barcodeValue.isEmpty()) {
+    JOptionPane.showMessageDialog(null, "Barcode tidak boleh kosong");
+    return;
+}
 
-        try (Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/smart", "root", "")) {
+try (Connection conn = DriverManager.getConnection(
+        "jdbc:mysql://localhost:3306/smart", "root", "")) {
+    
+    // 1. Find product by barcode (case insensitive)
+    String produkQuery = "SELECT id_produk, nama_produk, id_supplier FROM produk WHERE barcode = ?";
+    try (PreparedStatement pstProduk = conn.prepareStatement(produkQuery)) {
+        pstProduk.setString(1, barcodeValue);
+        ResultSet rsProduk = pstProduk.executeQuery();
+
+        if (rsProduk.next()) {
+            String idProduk = rsProduk.getString("id_produk");
+            String namaProduk = rsProduk.getString("nama_produk");
+            String idSupplier = rsProduk.getString("id_supplier");
+
+            // Fill all fields
+            id_produk.setText(idProduk);
+            namaproduk.setText(namaProduk);
+            id_supplier.setText(idSupplier != null ? idSupplier : "");
+
+            // 2. Find the most recent purchase for this product
+            // This query handles both PR and PB prefixes and excludes NULL purchases
+            String pembelianQuery = "SELECT dp.id_pembelian " +
+                                   "FROM detail_pembelian dp " +
+                                   "JOIN pembelian p ON dp.id_pembelian = p.id_pembelian " +
+                                   "WHERE (dp.id_produk = ? OR dp.id_produk = REPLACE(?, 'PR', 'PB')) " +
+                                   "AND dp.id_pembelian IS NOT NULL " +
+                                   "ORDER BY p.tanggal DESC LIMIT 1";
             
-            // 1. Cari produk berdasarkan barcode (ditambah nama_produk)
-            String produkQuery = "SELECT id_produk, nama_produk, id_supplier FROM produk WHERE barcode = ?";
-            try (PreparedStatement pstProduk = conn.prepareStatement(produkQuery)) {
-                pstProduk.setString(1, barcodeValue);
-                ResultSet rsProduk = pstProduk.executeQuery();
+            try (PreparedStatement pstPembelian = conn.prepareStatement(pembelianQuery)) {
+                pstPembelian.setString(1, idProduk);
+                pstPembelian.setString(2, idProduk);
+                ResultSet rsPembelian = pstPembelian.executeQuery();
 
-                if (rsProduk.next()) {
-                    String idProduk = rsProduk.getString("id_produk");
-                    String namaProduk = rsProduk.getString("nama_produk");
-                    String idSupplier = rsProduk.getString("id_supplier");
-
-                    // Isi semua field termasuk nama produk
-                    id_produk.setText(idProduk);
-                    namaproduk.setText(namaProduk); // Mengisi field nama produk
-                    id_supplier.setText(idSupplier != null ? idSupplier : "");
-
-                    // 2. Cari pembelian terakhir untuk produk ini
-                    String pembelianQuery = "SELECT p.id_pembelian " +
-                                         "FROM pembelian p " +
-                                         "JOIN detail_pembelian dp ON p.id_pembelian = dp.id_pembelian " +
-                                         "WHERE dp.id_produk = ? " +
-                                         "ORDER BY p.tanggal DESC LIMIT 1";
-                    
-                    try (PreparedStatement pstPembelian = conn.prepareStatement(pembelianQuery)) {
-                        pstPembelian.setString(1, idProduk);
-                        ResultSet rsPembelian = pstPembelian.executeQuery();
-
-                        if (rsPembelian.next()) {
-                            id_pembelian.setText(rsPembelian.getString("id_pembelian"));
-                        } else {
-                            id_pembelian.setText("");
-                            System.out.println("Debug: Tidak ditemukan pembelian untuk produk " + idProduk);
-                        }
-                    }
+                if (rsPembelian.next()) {
+                    id_pembelian.setText(rsPembelian.getString("id_pembelian"));
                 } else {
-                    JOptionPane.showMessageDialog(null, "Barcode tidak ditemukan");
-                    clearFields();
+                    // Debug information
+                    System.out.println("Debug: Product ID: " + idProduk);
+                    System.out.println("Debug: Alternative ID: " + idProduk.replace("PR", "PB"));
+                    
+                    id_pembelian.setText("");
+                    JOptionPane.showMessageDialog(null, "Tidak ditemukan pembelian valid untuk produk ini");
                 }
             }
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error database: " + ex.getMessage());
-            ex.printStackTrace();
+        } else {
+            JOptionPane.showMessageDialog(null, "Barcode tidak ditemukan");
+            clearFields();
         }
+    }
+} catch (SQLException ex) {
+    JOptionPane.showMessageDialog(null, "Error database: " + ex.getMessage());
+    ex.printStackTrace();
+}
        }//GEN-LAST:event_barcodeActionPerformed
 
     private void tambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahActionPerformed
