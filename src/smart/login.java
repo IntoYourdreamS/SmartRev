@@ -241,7 +241,8 @@ PreparedStatement pstmtInsert = null;
 ResultSet rs = null;
 
 try {
-    conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart", "root","");
+    conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart", "root", "");
+    
     // Cek login di tabel karyawan
     String sql = "SELECT * FROM karyawan WHERE nama_karyawan = ? AND password = ?";
     pstmt = conn.prepareStatement(sql);
@@ -267,9 +268,17 @@ try {
         pstmtInsert.setString(2, rfid);
         pstmtInsert.executeUpdate();
 
-        // Tampilkan sukses
+        // Tampilkan sukses dan arahkan berdasarkan role
         JOptionPane.showMessageDialog(this, "Login berhasil sebagai " + role + "!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-        new dashboard().setVisible(true);
+
+        if ("Owner".equalsIgnoreCase(role)) {
+            new dashboard().setVisible(true);
+        } else if ("Karyawan".equalsIgnoreCase(role)) {
+            new dbkasir().setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Peran tidak dikenal: " + role, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
         this.setVisible(false);
     } else {
         JOptionPane.showMessageDialog(this, "Login gagal. Username atau password salah.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -288,6 +297,7 @@ try {
         ex.printStackTrace();
     }
 }
+
 
     }//GEN-LAST:event_loginActionPerformed
 
