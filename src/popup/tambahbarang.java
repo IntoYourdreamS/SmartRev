@@ -387,9 +387,10 @@ private void populateSupplierComboBox() {
 PreparedStatement statProduk = null;
 PreparedStatement statDetail = null;
 PreparedStatement statPembelian = null;
+PreparedStatement statBarcode = null;
 
 try {
-    // Validasi input
+    // Validasi input wajib
     if (id_barang.getText().trim().isEmpty() || 
         nama_barang.getText().trim().isEmpty() || 
         harga_jual.getText().trim().isEmpty() || 
@@ -413,12 +414,21 @@ try {
     String Nosupplier = selectedSupplier.split(" - ")[0];
     String barcodeManual = barcode.getText().trim();
     
+    // Validasi barcode hanya angka
+    if (!barcodeManual.matches("\\d+")) {
+        JOptionPane.showMessageDialog(this, 
+            "Barcode hanya boleh berisi angka!", 
+            "Error", 
+            JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     String tanggalExp = sdf.format(tgl_exp.getDate());
     String idPembelian = generateCode1(); // Generate ID pembelian baru
     String idKaryawan = "KR001"; // Ganti dengan ID karyawan yang login
 
-    // Validasi format angka
+    // Validasi format angka untuk harga dan jumlah
     int hargaJualInt, hargaBeliInt, jumlahInt;
     try {
         hargaJualInt = Integer.parseInt(Hargajual);
@@ -436,19 +446,29 @@ try {
         return;
     }
 
-    // 1. Cek apakah ID produk atau barcode sudah ada
-    String checkQuery = "SELECT COUNT(*) FROM produk WHERE id_produk = ? OR barcode = ?";
+    // 1. Cek apakah ID produk sudah ada atau barcode sudah digunakan
+    String checkQuery = "SELECT COUNT(*) FROM produk WHERE id_produk = ?";
     try (PreparedStatement checkStat = conn.prepareStatement(checkQuery)) {
         checkStat.setString(1, kode);
-        checkStat.setString(2, barcodeManual);
         ResultSet rs = checkStat.executeQuery();
         if (rs.next() && rs.getInt(1) > 0) {
-            JOptionPane.showMessageDialog(this, "ID Produk atau Barcode sudah ada!", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "ID Produk sudah ada!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
     }
 
-    // 2. Simpan ke tabel PEMBELIAN (4 kolom: id_pembelian, id_karyawan, id_supplier, tanggal)
+    // Cek barcode di tabel barcode
+    String checkBarcodeQuery = "SELECT COUNT(*) FROM barcode WHERE kode_barcode = ?";
+    try (PreparedStatement checkBarcode = conn.prepareStatement(checkBarcodeQuery)) {
+        checkBarcode.setString(1, barcodeManual);
+        ResultSet rs = checkBarcode.executeQuery();
+        if (rs.next() && rs.getInt(1) > 0) {
+            JOptionPane.showMessageDialog(this, "Barcode sudah terdaftar!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+    }
+
+    // 2. Simpan ke tabel PEMBELIAN
     String queryPembelian = "INSERT INTO pembelian (id_pembelian, id_karyawan, id_supplier, tanggal) VALUES (?, ?, ?, CURDATE())";
     statPembelian = conn.prepareStatement(queryPembelian);
     statPembelian.setString(1, idPembelian);
@@ -461,17 +481,16 @@ try {
         return;
     }
 
-    // 3. Simpan ke tabel PRODUK
-    String queryProduk = "INSERT INTO produk (id_produk, nama_produk, harga, stok, barcode, kategori, id_supplier, tgl_expired) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    // 3. Simpan ke tabel PRODUK (tanpa barcode)
+    String queryProduk = "INSERT INTO produk (id_produk, nama_produk, harga, stok, kategori, id_supplier, tgl_expired) VALUES (?, ?, ?, ?, ?, ?, ?)";
     statProduk = conn.prepareStatement(queryProduk);
     statProduk.setString(1, kode);
     statProduk.setString(2, namaBarang);
     statProduk.setInt(3, hargaJualInt);
     statProduk.setInt(4, jumlahInt);
-    statProduk.setString(5, barcodeManual);
-    statProduk.setString(6, Kategori);
-    statProduk.setString(7, Nosupplier);
-    statProduk.setString(8, tanggalExp);
+    statProduk.setString(5, Kategori);
+    statProduk.setString(6, Nosupplier);
+    statProduk.setString(7, tanggalExp);
     
     int resultProduk = statProduk.executeUpdate();
     if (resultProduk == 0) {
@@ -479,13 +498,25 @@ try {
         return;
     }
 
-    // 4. Simpan ke tabel DETAIL_PEMBELIAN
+    // 4. Simpan ke tabel BARCODE
+    String queryBarcode = "INSERT INTO barcode (id_produk, kode_barcode) VALUES (?, ?)";
+    statBarcode = conn.prepareStatement(queryBarcode);
+    statBarcode.setString(1, kode);
+    statBarcode.setString(2, barcodeManual);
+    
+    int resultBarcode = statBarcode.executeUpdate();
+    if (resultBarcode == 0) {
+        JOptionPane.showMessageDialog(this, "Gagal menyimpan data barcode", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // 5. Simpan ke tabel DETAIL_PEMBELIAN
     String queryDetailPembelian = "INSERT INTO detail_pembelian (id_pembelian, id_produk, jumlah, sub_total, harga_beli, kategori) VALUES (?, ?, ?, ?, ?, ?)";
     statDetail = conn.prepareStatement(queryDetailPembelian);
     statDetail.setString(1, idPembelian);
     statDetail.setString(2, kode);
     statDetail.setInt(3, jumlahInt);
-    statDetail.setInt(4, hargaBeliInt * jumlahInt); // Hitung sub_total
+    statDetail.setInt(4, hargaBeliInt * jumlahInt);
     statDetail.setInt(5, hargaBeliInt);
     statDetail.setString(6, Kategori);
     
@@ -496,7 +527,7 @@ try {
     }
 
     // Jika semua berhasil
-    JOptionPane.showMessageDialog(this, "Data berhasil ditambahkan ke semua tabel!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+    JOptionPane.showMessageDialog(this, "Data berhasil ditambahkan!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
     resetForm();
     id_barang.setText(generateCode());
 
@@ -513,16 +544,17 @@ try {
         "Error", 
         JOptionPane.ERROR_MESSAGE);
 } finally {
-    // Tutup koneksi
     try {
         if (statDetail != null) statDetail.close();
         if (statProduk != null) statProduk.close();
         if (statPembelian != null) statPembelian.close();
+        if (statBarcode != null) statBarcode.close();
         if (conn != null && !conn.isClosed()) conn.close();
     } catch (SQLException ex) {
         System.err.println("Error saat menutup koneksi: " + ex.getMessage());
     }
 }
+
     }//GEN-LAST:event_tambahActionPerformed
 
     private void ubahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ubahActionPerformed

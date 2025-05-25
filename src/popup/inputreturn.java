@@ -89,13 +89,13 @@ public class inputreturn extends javax.swing.JFrame {
         barcode = new javax.swing.JTextField();
         id_pembelian = new javax.swing.JTextField();
         id_produk = new javax.swing.JTextField();
+        namaproduk = new javax.swing.JTextField();
+        jumlah = new javax.swing.JTextField();
         id_supplier = new javax.swing.JTextField();
         alasantext = new javax.swing.JTextField();
         btnkembali = new javax.swing.JButton();
         ubah = new javax.swing.JButton();
         tambah = new javax.swing.JButton();
-        namaproduk = new javax.swing.JTextField();
-        jumlah = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -127,6 +127,24 @@ public class inputreturn extends javax.swing.JFrame {
             }
         });
         getContentPane().add(id_produk, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 200, 180, 40));
+
+        namaproduk.setFont(new java.awt.Font("Segoe UI Semibold", 0, 12)); // NOI18N
+        namaproduk.setBorder(null);
+        namaproduk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                namaprodukActionPerformed(evt);
+            }
+        });
+        getContentPane().add(namaproduk, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 160, 190, 30));
+
+        jumlah.setFont(new java.awt.Font("Segoe UI Semibold", 0, 12)); // NOI18N
+        jumlah.setBorder(null);
+        jumlah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jumlahActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jumlah, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 300, 180, 40));
 
         id_supplier.setFont(new java.awt.Font("Segoe UI Semibold", 0, 12)); // NOI18N
         id_supplier.setBorder(null);
@@ -168,24 +186,6 @@ public class inputreturn extends javax.swing.JFrame {
             }
         });
         getContentPane().add(tambah, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 380, 180, 40));
-
-        namaproduk.setFont(new java.awt.Font("Segoe UI Semibold", 0, 12)); // NOI18N
-        namaproduk.setBorder(null);
-        namaproduk.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                namaprodukActionPerformed(evt);
-            }
-        });
-        getContentPane().add(namaproduk, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 160, 190, 30));
-
-        jumlah.setFont(new java.awt.Font("Segoe UI Semibold", 0, 12)); // NOI18N
-        jumlah.setBorder(null);
-        jumlah.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jumlahActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jumlah, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 300, 180, 40));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/return barang final (1).png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
@@ -241,7 +241,6 @@ private String generateCode() {
 
     private void barcodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_barcodeActionPerformed
 String barcodeValue = barcode.getText().trim();
-        
 if (barcodeValue.isEmpty()) {
     JOptionPane.showMessageDialog(null, "Barcode tidak boleh kosong");
     return;
@@ -250,43 +249,43 @@ if (barcodeValue.isEmpty()) {
 try (Connection conn = DriverManager.getConnection(
         "jdbc:mysql://localhost:3306/smart", "root", "")) {
     
-    // 1. Find product by barcode (case insensitive)
-    String produkQuery = "SELECT id_produk, nama_produk, id_supplier FROM produk WHERE barcode = ?";
+    // 1. Find product by barcode using JOIN between barcode and produk tables
+    String produkQuery = "SELECT p.id_produk, p.nama_produk, p.id_supplier " +
+                        "FROM barcode b " +
+                        "JOIN produk p ON b.id_produk = p.id_produk " +
+                        "WHERE b.kode_barcode = ?";
+    
     try (PreparedStatement pstProduk = conn.prepareStatement(produkQuery)) {
         pstProduk.setString(1, barcodeValue);
         ResultSet rsProduk = pstProduk.executeQuery();
-
+        
         if (rsProduk.next()) {
             String idProduk = rsProduk.getString("id_produk");
             String namaProduk = rsProduk.getString("nama_produk");
             String idSupplier = rsProduk.getString("id_supplier");
-
+            
             // Fill all fields
             id_produk.setText(idProduk);
             namaproduk.setText(namaProduk);
             id_supplier.setText(idSupplier != null ? idSupplier : "");
-
+            
             // 2. Find the most recent purchase for this product
-            // This query handles both PR and PB prefixes and excludes NULL purchases
             String pembelianQuery = "SELECT dp.id_pembelian " +
-                                   "FROM detail_pembelian dp " +
-                                   "JOIN pembelian p ON dp.id_pembelian = p.id_pembelian " +
-                                   "WHERE (dp.id_produk = ? OR dp.id_produk = REPLACE(?, 'PR', 'PB')) " +
-                                   "AND dp.id_pembelian IS NOT NULL " +
-                                   "ORDER BY p.tanggal DESC LIMIT 1";
+                                  "FROM detail_pembelian dp " +
+                                  "JOIN pembelian p ON dp.id_pembelian = p.id_pembelian " +
+                                  "WHERE dp.id_produk = ? " +
+                                  "AND dp.id_pembelian IS NOT NULL " +
+                                  "ORDER BY p.tanggal DESC LIMIT 1";
             
             try (PreparedStatement pstPembelian = conn.prepareStatement(pembelianQuery)) {
                 pstPembelian.setString(1, idProduk);
-                pstPembelian.setString(2, idProduk);
                 ResultSet rsPembelian = pstPembelian.executeQuery();
-
+                
                 if (rsPembelian.next()) {
                     id_pembelian.setText(rsPembelian.getString("id_pembelian"));
                 } else {
                     // Debug information
                     System.out.println("Debug: Product ID: " + idProduk);
-                    System.out.println("Debug: Alternative ID: " + idProduk.replace("PR", "PB"));
-                    
                     id_pembelian.setText("");
                     JOptionPane.showMessageDialog(null, "Tidak ditemukan pembelian valid untuk produk ini");
                 }
@@ -300,6 +299,7 @@ try (Connection conn = DriverManager.getConnection(
     JOptionPane.showMessageDialog(null, "Error database: " + ex.getMessage());
     ex.printStackTrace();
 }
+
        }//GEN-LAST:event_barcodeActionPerformed
 
     private void tambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahActionPerformed
@@ -315,13 +315,16 @@ try (Connection conn = DriverManager.getConnection(
         return;
     }
 
-    // 3. Dapatkan data produk dari barcode
+    // 3. Dapatkan data produk dari barcode menggunakan JOIN dengan tabel barcode
     String idProduk = "", namaProduk = "", idSupplier = "", idPembelian = "";
     int stokSekarang = 0;
 
     try (Connection conn1 = koneksi.getConnection();
          PreparedStatement ps1 = conn1.prepareStatement(
-             "SELECT id_produk, nama_produk, id_supplier, stok FROM produk WHERE barcode = ? FOR UPDATE")) {
+             "SELECT p.id_produk, p.nama_produk, p.id_supplier, p.stok " +
+             "FROM barcode b " +
+             "JOIN produk p ON b.id_produk = p.id_produk " +
+             "WHERE b.kode_barcode = ? FOR UPDATE")) {
 
         ps1.setString(1, barcodeValue);
         ResultSet rs = ps1.executeQuery();
@@ -341,8 +344,13 @@ try (Connection conn = DriverManager.getConnection(
             return;
         }
 
-        // 4. Ambil id_pembelian dari detail_pembelian
-        String pembelianQuery = "SELECT id_pembelian FROM detail_pembelian WHERE id_produk = ? ORDER BY id_pembelian DESC LIMIT 1";
+        // 4. Ambil id_pembelian dari detail_pembelian berdasarkan tanggal terbaru
+        String pembelianQuery = "SELECT dp.id_pembelian " +
+                               "FROM detail_pembelian dp " +
+                               "JOIN pembelian p ON dp.id_pembelian = p.id_pembelian " +
+                               "WHERE dp.id_produk = ? " +
+                               "AND dp.id_pembelian IS NOT NULL " +
+                               "ORDER BY p.tanggal DESC LIMIT 1";
         try (PreparedStatement ps2 = conn1.prepareStatement(pembelianQuery)) {
             ps2.setString(1, idProduk);
             ResultSet rs2 = ps2.executeQuery();
@@ -366,14 +374,13 @@ try (Connection conn = DriverManager.getConnection(
 
         // 7. Simpan ke tabel retur_penjualan termasuk id_pembelian
         String queryRetur = "INSERT INTO retur_penjualan " +
-                "(id_retur_penjualan,  id_pembelian, tanggal_retur, alasan, " +
+                "(id_retur_penjualan, id_pembelian, tanggal_retur, alasan, " +
                 "id_produk, barcode, nama_produk, id_supplier) " +
-                "VALUES (?,  ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)";
+                "VALUES (?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement psRetur = conn.prepareStatement(queryRetur)) {
             psRetur.setString(1, idRetur);
-           // psRetur.setString(2, ""); // id_penjualan belum tersedia
-            psRetur.setString(2, idPembelian); // ← input ke field id_pembelian
+            psRetur.setString(2, idPembelian); // id_pembelian dari query sebelumnya
             psRetur.setString(3, alasanText);
             psRetur.setString(4, idProduk);
             psRetur.setString(5, barcodeValue);

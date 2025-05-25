@@ -453,41 +453,48 @@ public class transaksi extends javax.swing.JFrame {
     }
 
     private void txt_noBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_noBarangActionPerformed
-        // TODO add your handling code here:
+    // TODO add your handling code here:
 
-        String kode_bahan = txt_noBarang.getText();
-        txt_namabrg.setText(kode_bahan);
-        try (Connection conn = koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement("SELECT * FROM produk WHERE barcode = ?")) {
-            pst.setString(1, txt_noBarang.getText());
-            ResultSet rs = pst.executeQuery();
+String kode_bahan = txt_noBarang.getText().trim();
+txt_namabrg.setText(kode_bahan);
 
-            if (rs.next()) {
-                String namaProduk = rs.getString("nama_produk");
-                String harga = rs.getString("harga");
-                String kategori = rs.getString("kategori");
-                String stok = rs.getString("stok");
+try (Connection conn = koneksi.getConnection();
+     PreparedStatement pst = conn.prepareStatement(
+         "SELECT p.nama_produk, p.harga, p.kategori, p.stok " +
+         "FROM barcode b JOIN produk p ON b.id_produk = p.id_produk " +
+         "WHERE b.kode_barcode = ?")) {
 
-                txt_namabrg.setText(namaProduk);
-                txt_harga.setText(harga);
-                txt_kategori.setText(kategori);
-                txt_qty.setText("1");
-                btn_simpan.doClick();
-            } else {
-                JOptionPane.showMessageDialog(this, "Kode bahan tidak ditemukan", "Kesalahan", JOptionPane.ERROR_MESSAGE);
-                txt_namabrg.setText("");
-                txt_harga.setText("");
-                txt_kategori.setText("");
-                txt_qty.setText("");
-            }
+    pst.setString(1, kode_bahan);
+    ResultSet rs = pst.executeQuery();
 
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,
-                    "Kesalahan: " + e.getMessage(),
-                    "Kesalahan Database",
-                    JOptionPane.ERROR_MESSAGE
-            );
-            e.printStackTrace(); // Cetak error untuk debugging
-        }
+    if (rs.next()) {
+        String namaProduk = rs.getString("nama_produk");
+        String harga = rs.getString("harga");
+        String kategori = rs.getString("kategori");
+        String stok = rs.getString("stok");
+
+        txt_namabrg.setText(namaProduk);
+        txt_harga.setText(harga);
+        txt_kategori.setText(kategori);
+        txt_qty.setText("1");
+        btn_simpan.doClick();
+    } else {
+        JOptionPane.showMessageDialog(this, "Kode barcode tidak ditemukan", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+        txt_namabrg.setText("");
+        txt_harga.setText("");
+        txt_kategori.setText("");
+        txt_qty.setText("");
+    }
+
+} catch (SQLException e) {
+    JOptionPane.showMessageDialog(null,
+            "Kesalahan: " + e.getMessage(),
+            "Kesalahan Database",
+            JOptionPane.ERROR_MESSAGE
+    );
+    e.printStackTrace();
+}
+
     }//GEN-LAST:event_txt_noBarangActionPerformed
 
     private void txt_namabrgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_namabrgActionPerformed
