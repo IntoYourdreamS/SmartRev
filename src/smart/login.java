@@ -120,7 +120,7 @@ public class login extends JFrame {
                 FieldUsernameKeyTyped(evt);
             }
         });
-        getContentPane().add(FieldUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 320, 290, 40));
+        getContentPane().add(FieldUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 310, 290, 40));
 
         Password.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         Password.setBorder(null);
@@ -134,14 +134,14 @@ public class login extends JFrame {
                 PasswordActionPerformed(evt);
             }
         });
-        getContentPane().add(Password, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 410, 290, 40));
+        getContentPane().add(Password, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 410, 290, 40));
 
         login.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loginActionPerformed(evt);
             }
         });
-        getContentPane().add(login, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 540, 340, 50));
+        getContentPane().add(login, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 530, 340, 50));
 
         rfid.setBorder(null);
         rfid.addActionListener(new java.awt.event.ActionListener() {
@@ -152,7 +152,7 @@ public class login extends JFrame {
         getContentPane().add(rfid, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 480, 300, 30));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/loginn.png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -70, 1370, 870));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1370, 720));
 
         RFIDInput.setUI(null);
         getContentPane().add(RFIDInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 260, -1, -1));

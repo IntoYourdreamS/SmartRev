@@ -8,6 +8,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.sun.jdi.connect.spi.Connection;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.io.IOException;
 import javax.swing.BorderFactory;
@@ -24,6 +25,23 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
+import java.util.Calendar;
+import java.util.Date;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import javax.swing.JFileChooser;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 
 /**
  *
@@ -63,7 +81,174 @@ public class laporanpenjualan extends javax.swing.JFrame {
             "Error", JOptionPane.ERROR_MESSAGE);
         e.printStackTrace();
     }
+     // Tambahkan action listener untuk tanggal
+    tanggal_awal.addPropertyChangeListener("date", evt -> filterDataByDate());
+    tanggal_akhir.addPropertyChangeListener("date", evt -> filterDataByDate());
+
+    // Tambahkan action listener untuk tombol reset
+    reset.addActionListener(this::resetActionPerformed);
+
+    reset.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+        resetActionPerformed(evt);
+            }
+        });
     }
+    
+    private void exportToExcel() {
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setDialogTitle("Simpan sebagai Excel");
+    fileChooser.setFileFilter(new FileNameExtensionFilter("Excel Files (*.xlsx)", "xlsx"));
+    fileChooser.setSelectedFile(new File("Laporan_Penjualan.xlsx"));
+    
+    int userSelection = fileChooser.showSaveDialog(this);
+    
+    if (userSelection == JFileChooser.APPROVE_OPTION) {
+        File fileToSave = fileChooser.getSelectedFile();
+        String filePath = fileToSave.getAbsolutePath();
+        
+        if (!filePath.endsWith(".xlsx")) {
+            filePath += ".xlsx";
+        }
+        
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Laporan Pembelian");
+            
+            // Create header row
+            Row headerRow = sheet.createRow(0);
+            for (int i = 0; i < tbpenjualan.getColumnCount(); i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(tbpenjualan.getColumnName(i));
+            }
+            
+            // Create data rows
+            for (int i = 0; i < tbpenjualan.getRowCount(); i++) {
+                Row row = sheet.createRow(i + 1);
+                for (int j = 0; j < tbpenjualan.getColumnCount(); j++) {
+                    Cell cell = row.createCell(j);
+                    Object value = tbpenjualan.getValueAt(i, j);
+                    if (value != null) {
+                        cell.setCellValue(value.toString());
+                    }
+                }
+            }
+            
+            // Auto size columns
+            for (int i = 0; i < tbpenjualan.getColumnCount(); i++) {
+                sheet.autoSizeColumn(i);
+            }
+            
+            // Write to file
+            try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
+                workbook.write(outputStream);
+                JOptionPane.showMessageDialog(this, "Data berhasil diexport ke Excel!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Gagal export ke Excel: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+}
+    
+    private void filterDataByDate() {
+    Date startDate = tanggal_awal.getDate();
+    Date endDate = tanggal_akhir.getDate();
+    
+    if (startDate != null && endDate != null) {
+        if (startDate.after(endDate)) {
+            JOptionPane.showMessageDialog(this, 
+                "Tanggal awal tidak boleh lebih besar dari tanggal akhir", 
+                "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Tambahkan 1 hari ke endDate untuk mencakup seluruh hari terakhir
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(endDate);
+        cal.add(Calendar.DATE, 1);
+        Date adjustedEndDate = cal.getTime();
+        
+        loadDataPenjualanByDate(startDate, adjustedEndDate);
+    } else if (startDate != null || endDate != null) {
+        JOptionPane.showMessageDialog(this, 
+            "Harap pilih kedua tanggal untuk filter", 
+            "Peringatan", JOptionPane.WARNING_MESSAGE);
+    }
+}
+    
+//    private void loadDataPenjualan() {
+//    loadDataPenjualanByDate(null, null);
+//}
+    
+    private void loadDataPenjualanByDate(Date startDate, Date endDate) {
+    DefaultTableModel model = new DefaultTableModel();
+    model.addColumn("No Nota");
+    model.addColumn("Nama Produk");
+    model.addColumn("Jumlah");
+    model.addColumn("Harga");
+    model.addColumn("Total");
+    model.addColumn("Kategori");
+    model.addColumn("Nama Karyawan");
+    model.addColumn("Tanggal");
+
+    DecimalFormat rupiahFormat = new DecimalFormat("Rp #,###.00");
+
+    String sql = "SELECT " +
+         "p.id_penjualan, " +
+         "pr.nama_produk, " +
+         "dp.jumlah, " +
+         "dp.harga_satuan, " +
+         "dp.subtotal, " +
+         "dp.kategori, " +
+         "k.nama_karyawan, " +
+         "p.tanggal " +
+         "FROM detail_penjualan dp " +
+         "JOIN penjualan p ON dp.id_penjualan = p.id_penjualan " +
+         "LEFT JOIN produk pr ON dp.id_produk = pr.id_produk " +
+         "LEFT JOIN karyawan k ON p.id_karyawan = k.id_karyawan " +
+         "WHERE p.tanggal BETWEEN ? AND ?";
+
+    java.sql.Connection conn = null;
+    java.sql.PreparedStatement ps = null;
+    java.sql.ResultSet rs = null;
+
+    try {
+        conn = koneksi.getConnection();
+        ps = conn.prepareStatement(sql);
+        ps.setDate(1, new java.sql.Date(startDate.getTime()));
+        ps.setDate(2, new java.sql.Date(endDate.getTime()));
+        rs = ps.executeQuery();
+
+        while (rs.next()) {
+            model.addRow(new Object[]{
+                rs.getString("id_penjualan"),
+                rs.getString("nama_produk"),
+                rs.getInt("jumlah"),
+                rupiahFormat.format(rs.getDouble("harga_satuan")),
+                rupiahFormat.format(rs.getDouble("subtotal")),
+                rs.getString("kategori"),
+                rs.getString("nama_karyawan"),
+                rs.getDate("tanggal")
+            });
+        }
+
+        tbpenjualan.setModel(model);
+
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, "Gagal load data penjualan:\n" + e.getMessage(), 
+            "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+    
 private void loadDataPenjualan() {
     DefaultTableModel model = new DefaultTableModel();
     model.addColumn("No Nota");
@@ -148,6 +333,8 @@ private void loadDataPenjualan() {
             tbpenjualan.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
      }
+     
+     
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -158,6 +345,10 @@ private void loadDataPenjualan() {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        export = new javax.swing.JButton();
+        reset = new javax.swing.JButton();
+        tanggal_awal = new com.toedter.calendar.JDateChooser();
+        tanggal_akhir = new com.toedter.calendar.JDateChooser();
         dashboard = new javax.swing.JButton();
         transaksi = new javax.swing.JButton();
         restok = new javax.swing.JButton();
@@ -170,6 +361,22 @@ private void loadDataPenjualan() {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        export.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportActionPerformed(evt);
+            }
+        });
+        getContentPane().add(export, new org.netbeans.lib.awtextra.AbsoluteConstraints(1270, 80, 50, 50));
+
+        reset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetActionPerformed(evt);
+            }
+        });
+        getContentPane().add(reset, new org.netbeans.lib.awtextra.AbsoluteConstraints(1220, 80, 40, 50));
+        getContentPane().add(tanggal_awal, new org.netbeans.lib.awtextra.AbsoluteConstraints(758, 90, 210, 30));
+        getContentPane().add(tanggal_akhir, new org.netbeans.lib.awtextra.AbsoluteConstraints(998, 90, 210, 30));
 
         dashboard.setBorder(null);
         dashboard.addActionListener(new java.awt.event.ActionListener() {
@@ -269,6 +476,39 @@ private void loadDataPenjualan() {
         this.setVisible(false); 
     }//GEN-LAST:event_pembelianActionPerformed
 
+    private void resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetActionPerformed
+        // TODO add your handling code here:
+        tanggal_awal.setDate(null);
+    tanggal_akhir.setDate(null);
+    
+    // Load semua data tanpa filter
+    loadDataPenjualan();
+    }//GEN-LAST:event_resetActionPerformed
+
+    private void exportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportActionPerformed
+        // TODO add your handling code here:
+        // Buat dialog pilihan export
+    Object[] options = {"Export ke Excel",  "Batal"};
+    int choice = JOptionPane.showOptionDialog(
+        this,
+        "Pilih format export:",
+        "Export Data",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        options,
+        options[0]
+    );
+    
+    if (choice == 0) {
+        exportToExcel();
+//    } else if (choice == 1) {
+//        exportToPDF();
+//    }
+    }
+
+    }//GEN-LAST:event_exportActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -314,11 +554,15 @@ FlatLightLaf.setup();
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton dashboard;
+    private javax.swing.JButton export;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton karyawan;
     private javax.swing.JButton pembelian;
+    private javax.swing.JButton reset;
     private javax.swing.JButton restok;
+    private com.toedter.calendar.JDateChooser tanggal_akhir;
+    private com.toedter.calendar.JDateChooser tanggal_awal;
     private javax.swing.JTable tbpenjualan;
     private javax.swing.JButton transaksi;
     // End of variables declaration//GEN-END:variables
