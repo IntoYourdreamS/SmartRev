@@ -5,7 +5,20 @@
 package popup;
 
 import javax.swing.JButton;
+import javax.swing.table.DefaultTableModel;
 import smart.*;
+import Config.koneksi;
+import java.sql.*;
+import javax.swing.JOptionPane;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import com.formdev.flatlaf.FlatLightLaf;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  *
@@ -16,10 +29,32 @@ public class dataexpired extends javax.swing.JFrame {
     /**
      * Creates new form login
      */
+    private Connection conn;
+    private Statement stmt;
+    private ResultSet rs;
+
     public dataexpired() {
         initComponents();
-           
-             makeButtonTransparent(kembali);
+        
+        // Custom header table
+        javax.swing.table.JTableHeader header = tb_expired.getTableHeader();
+        header.setDefaultRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                
+                setBackground(Color.BLACK); // Warna background header
+                setForeground(Color.WHITE); // Warna teks putih
+                setFont(new Font("Segoe UI", Font.BOLD, 12)); // Font lebih tebal
+                setHorizontalAlignment(JLabel.CENTER); // Posisi teks di tengah
+                
+                return this;
+            }
+        });
+        
+        makeButtonTransparent(kembali);
+        loadExpiredData();
     }
     
     private void makeButtonTransparent(JButton button) {
@@ -27,6 +62,102 @@ public class dataexpired extends javax.swing.JFrame {
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
     }
+    
+    private void loadExpiredData() {
+        try {
+            // Gunakan koneksi dari class koneksi
+            conn = koneksi.getConnection();
+            
+            if (conn == null) {
+                JOptionPane.showMessageDialog(this, 
+                    "Gagal terhubung ke database!", 
+                    "Error Database", 
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // Bersihkan tabel terlebih dahulu
+            DefaultTableModel model = (DefaultTableModel) tb_expired.getModel();
+            model.setRowCount(0);
+            
+            // Query untuk mengambil data produk yang expired atau akan expired dalam 7 hari
+            String query = "SELECT p.id_produk, p.nama_produk, b.kode_barcode, b.tgl_expired " +
+                          "FROM barcode b " +
+                          "INNER JOIN produk p ON b.id_produk = p.id_produk " +
+                          "WHERE b.tgl_expired <= DATE_ADD(CURDATE(), INTERVAL 7 DAY) " +
+                          "ORDER BY b.tgl_expired ASC";
+            
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(query);
+            
+            // Format tanggal
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            
+            // Tambahkan data ke tabel
+            while (rs.next()) {
+                String idProduk = rs.getString("id_produk");
+                String namaProduk = rs.getString("nama_produk");
+                String barcode = rs.getString("kode_barcode");
+                Date tanggalExpired = rs.getDate("tgl_expired");
+                
+                String tanggalExpiredStr = "";
+                if (tanggalExpired != null) {
+                    tanggalExpiredStr = dateFormat.format(tanggalExpired);
+                }
+                
+                // Tambahkan baris ke tabel
+                model.addRow(new Object[]{
+                    idProduk,
+                    namaProduk,
+                    barcode,
+                    tanggalExpiredStr
+                });
+            }
+            
+            // Jika tidak ada data expired
+            if (model.getRowCount() == 0) {
+                model.addRow(new Object[]{
+                    "Tidak ada data",
+                    "Tidak ada produk expired",
+                    "-",
+                    "-"
+                });
+            }
+            
+        } catch (SQLException e) {
+            System.err.println("Error loading expired data: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, 
+                "Gagal memuat data expired: " + e.getMessage(), 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Tutup resources
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+    }
+    
+    // Method untuk refresh data
+    public void refreshData() {
+        loadExpiredData();
+    }
+    
+    // Method untuk menutup koneksi database
+    private void closeConnection() {
+        try {
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+                System.out.println("Koneksi database ditutup.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error closing database connection: " + e.getMessage());
+        }
+    }
+
     
 
     /**

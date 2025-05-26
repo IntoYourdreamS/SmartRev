@@ -7,6 +7,7 @@ package smart;
 import Config.koneksi;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,9 +16,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import popup.notifberhasilkrw;
@@ -48,16 +52,34 @@ public class karyawan extends javax.swing.JFrame {
      */
     public karyawan() {
         initComponents();
-         loadDataToTable();
-         customizeTable();
-         makeButtonTransparent(tambah);
-          makeButtonTransparent(dashboard);
-           makeButtonTransparent(transaksi);
-            makeButtonTransparent(restock);
-             makeButtonTransparent(laporan);
-             makeButtonTransparent(ubah);
-              makeButtonTransparent(hapus);
-                makeButtonTransparent(presensi);
+        
+        // Custom header table
+        javax.swing.table.JTableHeader header = tbkaryawan.getTableHeader();
+        header.setDefaultRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                
+                setBackground(Color.BLACK); // Warna background header
+                setForeground(Color.WHITE); // Warna teks putih
+                setFont(new Font("Segoe UI", Font.BOLD, 12)); // Font lebih tebal
+                setHorizontalAlignment(JLabel.CENTER); // Posisi teks di tengah
+                
+                return this;
+            }
+        });
+        
+        loadDataToTable();
+        customizeTable();
+        makeButtonTransparent(tambah);
+        makeButtonTransparent(dashboard);
+        makeButtonTransparent(transaksi);
+        makeButtonTransparent(restock);
+        makeButtonTransparent(laporan);
+        makeButtonTransparent(ubah);
+        makeButtonTransparent(hapus);
+        makeButtonTransparent(presensi);
     }
     
     private void makeButtonTransparent(JButton button) {

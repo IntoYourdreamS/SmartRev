@@ -28,22 +28,29 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 public class dashboard extends javax.swing.JFrame {
+    
+    private Connection conn;
+    private Statement stmt;
+    private ResultSet rs;
 
     public dashboard() {
         initComponents();
         loadDataToTable();
         loadData();
+        loadExpiredData();
         tampilkanTotalHarga();
         tampilkanTotalHargaExpired();
         tampilkanPendapatanBersih();
         displayLoggedInEmployeeName();
- jTextField5.setOpaque(false);
-    jTextField5.setBackground(new Color(0, 0, 0, 0));
+        jTextField5.setOpaque(false);
+        jTextField5.setBackground(new Color(0, 0, 0, 0));
         customizeTable();
         makeButtonTransparent(jButton1);
         makeButtonTransparent(bttnlaporan);
@@ -52,14 +59,14 @@ public class dashboard extends javax.swing.JFrame {
         makeButtonTransparent(logout);
         makeButtonTransparent(txdepan);
         
-        setTableData();
+//        setTableData();
         initSalesChart();
     
     }
     
 
 
-    private void makeButtonTransparent(JButton button) {
+private void makeButtonTransparent(JButton button) {
         button.setOpaque(false);
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
@@ -71,7 +78,7 @@ private void loadDataToTable()  {
       new Object[][]{}, 
         new String[]{"Kode Barang", "Nama Barang", "Stok"}
     );
-    tbexpired.setModel(model); // Set model ke JTable (asumsi jTable1 adalah nama JTable)
+    tbhmpirhbis.setModel(model); // Set model ke JTable (asumsi jTable1 adalah nama JTable)
 
     try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart", "root", "");
          Statement stmt = conn.createStatement()) {
@@ -101,56 +108,138 @@ private void loadDataToTable()  {
 }
 
 
-    private void setTableData() {
-        DefaultTableModel model = new DefaultTableModel(
-                new Object[][]{
-                    {"BRG001", "Teh Hijau", 10},
-                    {"BRG002", "Teh Hitam", 5},
-                    {"BRG003", "Teh Oolong", 2},
-                    {"BRG004", "Teh Herbal", 12}
-                },
-                new String[]{"Kode Barang", "Nama Barang", "Stok"}
-        );
-
-        jTable1.setModel(model);
+    private void loadExpiredData() {
+        try {
+            // Gunakan koneksi dari class koneksi
+            conn = koneksi.getConnection();
+            
+            if (conn == null) {
+                JOptionPane.showMessageDialog(this, 
+                    "Gagal terhubung ke database!", 
+                    "Error Database", 
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // Bersihkan tabel terlebih dahulu
+            DefaultTableModel model = (DefaultTableModel) expiredtb.getModel();
+            model.setRowCount(0);
+            
+            // Query untuk mengambil data produk yang expired atau akan expired dalam 7 hari
+            String query = "SELECT p.id_produk, p.nama_produk, b.kode_barcode, b.tgl_expired " +
+                          "FROM barcode b " +
+                          "INNER JOIN produk p ON b.id_produk = p.id_produk " +
+                          "WHERE b.tgl_expired <= DATE_ADD(CURDATE(), INTERVAL 7 DAY) " +
+                          "ORDER BY b.tgl_expired ASC";
+            
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(query);
+            
+            // Format tanggal
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            
+            // Tambahkan data ke tabel
+            while (rs.next()) {
+                String idProduk = rs.getString("id_produk");
+                String namaProduk = rs.getString("nama_produk");
+                String barcode = rs.getString("kode_barcode");
+                Date tanggalExpired = rs.getDate("tgl_expired");
+                
+                String tanggalExpiredStr = "";
+                if (tanggalExpired != null) {
+                    tanggalExpiredStr = dateFormat.format(tanggalExpired);
+                }
+                
+                // Tambahkan baris ke tabel
+                model.addRow(new Object[]{
+                    idProduk,
+                    namaProduk,
+                    barcode,
+                    tanggalExpiredStr
+                });
+            }
+            
+            // Jika tidak ada data expired
+            if (model.getRowCount() == 0) {
+                model.addRow(new Object[]{
+                    "Tidak ada data",
+                    "Tidak ada produk expired",
+                    "-",
+                    "-"
+                });
+            }
+            
+        } catch (SQLException e) {
+            System.err.println("Error loading expired data: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, 
+                "Gagal memuat data expired: " + e.getMessage(), 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Tutup resources
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {
+                System.err.println("Error closing resources: " + e.getMessage());
+            }
+        }
+    }
+    
+    // Method untuk refresh data
+    public void refreshData() {
+        loadExpiredData();
+    }
+    
+    // Method untuk menutup koneksi database
+    private void closeConnection() {
+        try {
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+                System.out.println("Koneksi database ditutup.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error closing database connection: " + e.getMessage());
+        }
     }
     
   private void loadData() {
-    // Definisikan model tabel dengan header kolom
     DefaultTableModel model = new DefaultTableModel(
-            new Object[][]{},
-            new String[]{"Kode Produk", "Nama Produk", "Total Terjual", "Kategori"}
+        new Object[][]{},
+        new String[]{"Kode Produk", "Nama Produk", "Total Terjual", "Kategori"}
     ) {
         @Override
         public Class<?> getColumnClass(int columnIndex) {
-            // Set proper column classes for sorting
             switch (columnIndex) {
-                case 0: return String.class;  // Kode Produk
-                case 1: return String.class;  // Nama Produk
-                case 2: return Integer.class; // Total Terjual
-                case 3: return String.class; // Kategori
+                case 0: return String.class;
+                case 1: return String.class;
+                case 2: return Integer.class;
+                case 3: return String.class;
                 default: return Object.class;
             }
         }
     };
     
-    tbpenjualanterlaris.setModel(model); // Set model ke JTable
+    tbpenjualanterlaris.setModel(model);
 
-    // Query SQL untuk ambil data penjualan terlaris
+    // Query yang diperbaiki dengan COALESCE untuk menangani nilai NULL
     String query = """
-    SELECT detail_penjualan.id_produk, 
-           COALESCE(produk.nama_produk) AS nama_produk,
-           SUM(detail_penjualan.jumlah) AS total_terjual,
-           COALESCE(detail_penjualan.kategori, 'Tidak Diketahui') AS kategori
-    FROM detail_penjualan
-    LEFT JOIN produk ON detail_penjualan.id_produk = produk.id_produk
-    GROUP BY detail_penjualan.id_produk, produk.nama_produk, detail_penjualan.kategori
-    ORDER BY total_terjual DESC
-""";
-
+        SELECT 
+            dp.id_produk, 
+            COALESCE(p.nama_produk, 'Produk Tidak Dikenal') AS nama_produk,
+            SUM(dp.jumlah) AS total_terjual,
+            COALESCE(dp.kategori, 'Tidak Diketahui') AS kategori
+        FROM detail_penjualan dp
+        LEFT JOIN produk p ON dp.id_produk = p.id_produk
+        GROUP BY dp.id_produk, p.nama_produk, dp.kategori
+        ORDER BY total_terjual DESC
+    """;
 
     try (
-        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart?useUnicode=true&characterEncoding=UTF-8", "root", "");
+        Connection conn = DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/smart?useUnicode=true&characterEncoding=UTF-8", 
+            "root", 
+            "");
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(query)
     ) {
@@ -160,9 +249,8 @@ private void loadDataToTable()  {
             int totalTerjual = rs.getInt("total_terjual");
             String kategori = rs.getString("kategori");
 
-            // Tambahkan ke tabel
             model.addRow(new Object[]{
-                kodeProduk != null ? kodeProduk : "N/A",
+                kodeProduk,
                 namaProduk,
                 totalTerjual,
                 kategori
@@ -171,9 +259,9 @@ private void loadDataToTable()  {
 
     } catch (SQLException e) {
         JOptionPane.showMessageDialog(this,
-                "Gagal memuat data penjualan terlaris: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
+            "Gagal memuat data penjualan terlaris: " + e.getMessage(),
+            "Error",
+            JOptionPane.ERROR_MESSAGE);
         e.printStackTrace();
     }
 }
@@ -345,9 +433,9 @@ private void startGreetingCycle() {
   
 
     private void customizeTable() {
-        JTableHeader header = jTable1.getTableHeader();
+        JTableHeader header = expiredtb.getTableHeader();
         JTableHeader header2 = tbpenjualanterlaris.getTableHeader();
-        JTableHeader header3 = tbexpired.getTableHeader();
+        JTableHeader header3 = tbhmpirhbis.getTableHeader();
         
         header.setFont(new Font("Inter", Font.BOLD, 11));
         header2.setFont(new Font("Inter", Font.BOLD, 11));
@@ -361,25 +449,25 @@ private void startGreetingCycle() {
         header2.setOpaque(false);
         header3.setOpaque(false);
 
-        jTable1.setFont(new Font("Arial", Font.PLAIN, 10));
+        expiredtb.setFont(new Font("Arial", Font.PLAIN, 10));
         tbpenjualanterlaris.setFont(new Font("Arial", Font.PLAIN, 10));
-        tbexpired.setFont(new Font("Arial", Font.PLAIN, 10));
+        tbhmpirhbis.setFont(new Font("Arial", Font.PLAIN, 10));
         
-        jTable1.setRowHeight(30); 
+        expiredtb.setRowHeight(30); 
         tbpenjualanterlaris.setRowHeight(30);
-        tbexpired.setRowHeight(30);
+        tbhmpirhbis.setRowHeight(30);
         
-        jTable1.setShowGrid(true); 
+        expiredtb.setShowGrid(true); 
         tbpenjualanterlaris.setShowGrid(true); 
-        tbexpired.setShowGrid(true); 
+        tbhmpirhbis.setShowGrid(true); 
         
-        jTable1.setIntercellSpacing(new java.awt.Dimension(0, 0));
+        expiredtb.setIntercellSpacing(new java.awt.Dimension(0, 0));
         tbpenjualanterlaris.setIntercellSpacing(new java.awt.Dimension(0, 0));
-        tbexpired.setIntercellSpacing(new java.awt.Dimension(0, 0));
+        tbhmpirhbis.setIntercellSpacing(new java.awt.Dimension(0, 0));
         
-        jTable1.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        expiredtb.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         tbpenjualanterlaris.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        tbexpired.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        tbhmpirhbis.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         
         tbpenjualanterlaris.setSelectionBackground(new Color(25, 25, 25)); 
         tbpenjualanterlaris.setSelectionForeground(Color.WHITE); 
@@ -532,11 +620,11 @@ private void initSalesChart() {
     private void initComponents() {
 
         jScrollPane3 = new javax.swing.JScrollPane();
-        tbexpired = new javax.swing.JTable();
+        tbhmpirhbis = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         tbpenjualanterlaris = new javax.swing.JTable();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        expiredtb = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         bttnkaryawan = new javax.swing.JButton();
         bttntransaksi = new javax.swing.JButton();
@@ -555,7 +643,7 @@ private void initSalesChart() {
         setUndecorated(true);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        tbexpired.setModel(new javax.swing.table.DefaultTableModel(
+        tbhmpirhbis.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -572,10 +660,10 @@ private void initSalesChart() {
                 "Kode barang", "Nama barang", "Stok"
             }
         ));
-        tbexpired.setSelectionBackground(new java.awt.Color(25, 25, 25));
-        jScrollPane3.setViewportView(tbexpired);
+        tbhmpirhbis.setSelectionBackground(new java.awt.Color(25, 25, 25));
+        jScrollPane3.setViewportView(tbhmpirhbis);
 
-        getContentPane().add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 550, 250, 140));
+        getContentPane().add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 540, 250, 130));
 
         tbpenjualanterlaris.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -596,29 +684,29 @@ private void initSalesChart() {
         ));
         jScrollPane2.setViewportView(tbpenjualanterlaris);
 
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 550, 380, 140));
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 540, 380, 130));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        expiredtb.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Kode barang", "Nama barang", "Stok"
+                "Id Produk", "Nama Produk", "Barcode", "Tanggal Expired"
             }
         ));
-        jTable1.setSelectionBackground(new java.awt.Color(25, 25, 25));
-        jScrollPane1.setViewportView(jTable1);
+        expiredtb.setSelectionBackground(new java.awt.Color(25, 25, 25));
+        jScrollPane1.setViewportView(expiredtb);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 550, 310, 140));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 540, 320, 130));
 
         jButton1.setBackground(new java.awt.Color(85, 85, 85));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -677,6 +765,8 @@ private void initSalesChart() {
         jTextField3.setBackground(new java.awt.Color(255, 255, 255));
         jTextField3.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         jTextField3.setBorder(null);
+        jTextField3.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        jTextField3.setEnabled(false);
         jTextField3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField3ActionPerformed(evt);
@@ -876,6 +966,7 @@ this.dispose();
     private javax.swing.JButton bttnkaryawan;
     private javax.swing.JButton bttnlaporan;
     private javax.swing.JButton bttntransaksi;
+    private javax.swing.JTable expiredtb;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -883,13 +974,12 @@ this.dispose();
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JButton logout;
-    private javax.swing.JTable tbexpired;
+    private javax.swing.JTable tbhmpirhbis;
     private javax.swing.JTable tbpenjualanterlaris;
     private javax.swing.JButton txdepan;
     // End of variables declaration//GEN-END:variables

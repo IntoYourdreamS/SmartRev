@@ -9,6 +9,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import java.sql.Timestamp;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 //import java.security.Timestamp;
 import java.sql.Connection;
@@ -52,6 +53,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import popup.ubahkaryawan;
 import popup.tambahkaryawan;
 
@@ -78,15 +82,32 @@ public class karyawan2 extends javax.swing.JFrame {
      */
     public karyawan2() {
         initComponents();
-         loadDataToTable();
-         customizeTable();
-         makeButtonTransparent(karyawan);
-          makeButtonTransparent(dashboard);
-           makeButtonTransparent(transaksi);
-            makeButtonTransparent(restock);
-             makeButtonTransparent(laporan);
-          
-              makeButtonTransparent(cetak);
+        
+        // Custom header table
+        javax.swing.table.JTableHeader header = tbkaryawan2.getTableHeader();
+        header.setDefaultRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                
+                setBackground(Color.BLACK); // Warna background header
+                setForeground(Color.WHITE); // Warna teks putih
+                setFont(new Font("Segoe UI", Font.BOLD, 12)); // Font lebih tebal
+                setHorizontalAlignment(JLabel.CENTER); // Posisi teks di tengah
+                
+                return this;
+            }
+        });
+        
+        loadDataToTable();
+        customizeTable();
+        makeButtonTransparent(karyawan);
+        makeButtonTransparent(dashboard);
+        makeButtonTransparent(transaksi);
+        makeButtonTransparent(restock);
+        makeButtonTransparent(laporan);  
+        makeButtonTransparent(cetak);
     }
     
     
