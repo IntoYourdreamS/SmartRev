@@ -120,7 +120,7 @@ public class login extends JFrame {
                 FieldUsernameKeyTyped(evt);
             }
         });
-        getContentPane().add(FieldUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 310, 290, 40));
+        getContentPane().add(FieldUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 310, 290, 40));
 
         Password.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         Password.setBorder(null);
@@ -134,7 +134,7 @@ public class login extends JFrame {
                 PasswordActionPerformed(evt);
             }
         });
-        getContentPane().add(Password, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 410, 290, 40));
+        getContentPane().add(Password, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 410, 290, 40));
 
         login.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
