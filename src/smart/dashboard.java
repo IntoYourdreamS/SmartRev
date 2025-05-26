@@ -39,6 +39,7 @@ public class dashboard extends javax.swing.JFrame {
         loadDataToTable();
         loadData();
         tampilkanTotalHarga();
+        tampilkanTotalHargaExpired();
         tampilkanPendapatanBersih();
         displayLoggedInEmployeeName();
  jTextField5.setOpaque(false);
@@ -176,6 +177,44 @@ private void loadDataToTable()  {
         e.printStackTrace();
     }
 }
+  
+  private void tampilkanTotalHargaExpired() {
+    try {
+        Connection conn = koneksi.getConnection();
+        if (conn != null) {
+            // Query: jumlahkan harga produk yang barcode-nya sudah expired
+            String query = "SELECT SUM(p.harga) AS total_expired " +
+                           "FROM barcode b " +
+                           "JOIN produk p ON b.id_produk = p.id_produk " +
+                           "WHERE b.tgl_expired < CURDATE()";
+
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            if (rs.next()) {
+                double totalExpired = rs.getDouble("total_expired");
+
+                // Format ke dalam format Rupiah
+                DecimalFormat df = new DecimalFormat("Rp #,##0.00");
+
+                // Tampilkan di jTextField3
+                jTextField3.setText(rs.wasNull() ? "Rp 0" : df.format(totalExpired));
+            } else {
+                jTextField3.setText("Rp 0");
+            }
+
+            rs.close();
+            stmt.close();
+            conn.close();
+        } else {
+            JOptionPane.showMessageDialog(this, "Koneksi ke database gagal!");
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+    }
+}
+
   
   private void tampilkanTotalHarga() {
     try {
@@ -638,7 +677,12 @@ private void initSalesChart() {
         jTextField3.setBackground(new java.awt.Color(255, 255, 255));
         jTextField3.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         jTextField3.setBorder(null);
-        getContentPane().add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(990, 130, 320, 50));
+        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField3ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(990, 120, 320, 50));
 
         jTextField4.setEditable(false);
         jTextField4.setBackground(new java.awt.Color(255, 255, 255));
@@ -665,7 +709,7 @@ private void initSalesChart() {
         });
         getContentPane().add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 20, 160, 30));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Dashboard kasirrr.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Dashboard OWNER.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -30, 1372, 768));
 
         jButton2.setBackground(new java.awt.Color(85, 85, 85));
@@ -784,6 +828,10 @@ this.dispose();
             new stokopname().setVisible(true);
         this.setVisible(false);  
     }//GEN-LAST:event_txdepanActionPerformed
+
+    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField3ActionPerformed
 
     /**
      * @param args the command line arguments

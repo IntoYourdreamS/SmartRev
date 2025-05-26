@@ -222,7 +222,7 @@ private void initializeDatabase() {
         getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 350, 1080, 350));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/CEK STOK OPNAME2.png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 720));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, -1, 740));
 
         simpan.setBorder(null);
         simpan.addActionListener(new java.awt.event.ActionListener() {
