@@ -332,7 +332,7 @@ private double parseFormattedNumber(String formattedNumber) {
             jTable1.getColumnModel().getColumn(3).setResizable(false);
         }
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 90, 620, -1));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 147, 620, 370));
 
         txt_qty.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         txt_qty.setBorder(null);
@@ -371,7 +371,7 @@ private double parseFormattedNumber(String formattedNumber) {
         });
         getContentPane().add(karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 460, 170, 40));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Transaksiiiiiiiii.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Transaksi (5)6.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
