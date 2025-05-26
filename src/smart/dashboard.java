@@ -619,7 +619,12 @@ private void initSalesChart() {
         getContentPane().add(logout, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 640, 140, 50));
 
         txdepan.setBorder(null);
-        getContentPane().add(txdepan, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 450, 190, 30));
+        txdepan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txdepanActionPerformed(evt);
+            }
+        });
+        getContentPane().add(txdepan, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 430, 190, 50));
 
         jTextField2.setEditable(false);
         jTextField2.setBackground(new java.awt.Color(255, 255, 255));
@@ -648,7 +653,6 @@ private void initSalesChart() {
         });
         getContentPane().add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 120, 310, 50));
 
-        jTextField5.setBackground(new java.awt.Color(255, 255, 255));
         jTextField5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jTextField5.setForeground(new java.awt.Color(255, 255, 255));
         jTextField5.setBorder(null);
@@ -774,6 +778,12 @@ this.dispose();
     private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField5ActionPerformed
+
+    private void txdepanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txdepanActionPerformed
+        // TODO add your handling code here:
+            new stokopname().setVisible(true);
+        this.setVisible(false);  
+    }//GEN-LAST:event_txdepanActionPerformed
 
     /**
      * @param args the command line arguments
