@@ -375,7 +375,7 @@ private void loadDataPenjualan() {
             }
         });
         getContentPane().add(reset, new org.netbeans.lib.awtextra.AbsoluteConstraints(1220, 80, 40, 50));
-        getContentPane().add(tanggal_awal, new org.netbeans.lib.awtextra.AbsoluteConstraints(758, 90, 210, 30));
+        getContentPane().add(tanggal_awal, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 90, 210, 30));
         getContentPane().add(tanggal_akhir, new org.netbeans.lib.awtextra.AbsoluteConstraints(998, 90, 210, 30));
 
         dashboard.setBorder(null);

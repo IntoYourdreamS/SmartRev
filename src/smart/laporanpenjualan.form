@@ -49,7 +49,7 @@
     <Component class="com.toedter.calendar.JDateChooser" name="tanggal_awal">
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="758" y="90" width="210" height="30"/>
+          <AbsoluteConstraints x="760" y="90" width="210" height="30"/>
         </Constraint>
       </Constraints>
     </Component>
