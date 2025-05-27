@@ -111,9 +111,95 @@ public class karyawan2 extends javax.swing.JFrame {
         makeButtonTransparent(restock);
         makeButtonTransparent(laporan);  
         makeButtonTransparent(export);
+        makeButtonTransparent(reset);
+        
     }
     
-    
+    private void filterDataByName(String nama) {
+    // Model tabel dengan kolom yang diinginkan
+    DefaultTableModel model = new DefaultTableModel(
+        new Object[]{"No Karyawan", "Nama Karyawan", "No HP", "Role", "Jam Masuk", "Jam Keluar", "Keterangan"}, 
+        0
+    ) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false; // Membuat tabel tidak bisa di-edit
+        }
+    };
+
+    tbkaryawan2.setModel(model);
+
+    try (Connection conn = koneksi.getConnection()) {
+        // Query untuk mencari karyawan berdasarkan nama
+        String query = "SELECT k.id_karyawan, k.nama_karyawan, k.no_telp, k.role, " +
+                     "dk.tanggal_masuk, dk.tanggal_keluar " +
+                     "FROM karyawan k " +
+                     "LEFT JOIN detail_karyawan dk ON k.id_karyawan = dk.id_karyawan " +
+                     "WHERE k.nama_karyawan LIKE ? " +
+                     "ORDER BY k.id_karyawan, dk.tanggal_masuk DESC";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, "%" + nama + "%"); // Gunakan wildcard untuk pencarian partial
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    // Ambil timestamp jam masuk dan keluar
+                    java.sql.Timestamp jamMasuk = rs.getTimestamp("tanggal_masuk");
+                    java.sql.Timestamp jamKeluar = rs.getTimestamp("tanggal_keluar");
+
+                    // Lewati baris jika tidak ada data jam masuk dan keluar
+                    if (jamMasuk == null && jamKeluar == null) {
+                        continue;
+                    }
+
+                    // Format tanggal masuk
+                    String jamMasukFormatted = (jamMasuk != null) ? 
+                        new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(jamMasuk) : "Belum ada data";
+                    // Format tanggal keluar
+                    String jamKeluarFormatted = (jamKeluar != null) ? 
+                        new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(jamKeluar) : "Belum keluar";
+
+                    // Tentukan keterangan berdasarkan timestamp
+                    String keterangan = "Tepat Waktu"; // Default
+
+                    if (jamMasuk != null && jamKeluar != null) {
+                        // Buat batas jam masuk dan keluar (09:00 dan 17:00)
+                        String tanggalMasukStr = new SimpleDateFormat("yyyy-MM-dd").format(jamMasuk) + " 09:00:00";
+                        String tanggalKeluarStr = new SimpleDateFormat("yyyy-MM-dd").format(jamKeluar) + " 17:00:00";
+
+                        Timestamp batasJamMasuk = Timestamp.valueOf(tanggalMasukStr);
+                        Timestamp batasJamKeluar = Timestamp.valueOf(tanggalKeluarStr);
+
+                        // Logika untuk menentukan keterangan
+                        if (jamMasuk.after(batasJamMasuk)) {
+                            keterangan = "Telat";
+                        }
+                        if (jamKeluar.before(batasJamKeluar)) {
+                            keterangan = "Pulang Dulu";
+                        }
+                    }
+
+                    // Tambahkan baris ke model
+                    model.addRow(new Object[]{
+                        rs.getString("id_karyawan"),
+                        rs.getString("nama_karyawan"),
+                        rs.getString("no_telp"),
+                        rs.getString("role"),
+                        jamMasukFormatted,
+                        jamKeluarFormatted,
+                        keterangan
+                    });
+                }
+            }
+        }
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this,
+            "Gagal memuat data: " + e.getMessage(),
+            "Error",
+            JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    }
+}
     
     private void makeButtonTransparent(JButton button) {
         button.setOpaque(false);
@@ -388,6 +474,7 @@ private void loadDataToTable() {
         dashboard = new javax.swing.JButton();
         export = new javax.swing.JButton();
         reset = new javax.swing.JButton();
+        search = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         tbkaryawan2 = new javax.swing.JTable();
         karyawan = new javax.swing.JButton();
@@ -396,8 +483,8 @@ private void loadDataToTable() {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        getContentPane().add(tahun, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 90, -1, 30));
-        getContentPane().add(bulan, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 90, -1, 30));
+        getContentPane().add(tahun, new org.netbeans.lib.awtextra.AbsoluteConstraints(990, 90, -1, 40));
+        getContentPane().add(bulan, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 90, -1, 40));
 
         laporan.setBorder(null);
         laporan.addActionListener(new java.awt.event.ActionListener() {
@@ -439,12 +526,21 @@ private void loadDataToTable() {
         });
         getContentPane().add(export, new org.netbeans.lib.awtextra.AbsoluteConstraints(1250, 80, 70, 50));
 
+        reset.setBorder(null);
         reset.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 resetActionPerformed(evt);
             }
         });
-        getContentPane().add(reset, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 90, 40, 30));
+        getContentPane().add(reset, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 90, 40, 40));
+
+        search.setBorder(null);
+        search.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchActionPerformed(evt);
+            }
+        });
+        getContentPane().add(search, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 90, 170, 40));
 
         tbkaryawan2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -465,7 +561,7 @@ private void loadDataToTable() {
         ));
         jScrollPane2.setViewportView(tbkaryawan2);
 
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 150, 1040, 440));
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 150, 1040, 520));
 
         karyawan.setBorder(null);
         karyawan.addActionListener(new java.awt.event.ActionListener() {
@@ -475,7 +571,7 @@ private void loadDataToTable() {
         });
         getContentPane().add(karyawan, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 90, 180, 40));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/presensi1.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/karyawan (1)_1.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 720));
 
         pack();
@@ -506,14 +602,25 @@ private void loadDataToTable() {
     }//GEN-LAST:event_laporanActionPerformed
 
     private void exportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportActionPerformed
-        
-    // Create a file chooser
+ // Create a file chooser
     JFileChooser fileChooser = new JFileChooser();
     fileChooser.setDialogTitle("Simpan sebagai Excel");
     
-    // Set default file name with current date
-    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-    String defaultFileName = "Laporan_Karyawan_" + dateFormat.format(new java.util.Date()) + ".xlsx";
+    // Set default file name based on filters
+    String defaultFileName;
+    int selectedYear = tahun.getYear();
+    int selectedMonth = bulan.getMonth() + 1; // JMonthChooser uses 0-based index
+    
+    if (selectedYear > 0 && selectedMonth > 0) {
+        defaultFileName = String.format("Laporan_Karyawan_%02d-%04d.xlsx", selectedMonth, selectedYear);
+    } else if (selectedYear > 0) {
+        defaultFileName = String.format("Laporan_Karyawan_Tahun_%04d.xlsx", selectedYear);
+    } else if (selectedMonth > 0) {
+        defaultFileName = String.format("Laporan_Karyawan_Bulan_%02d.xlsx", selectedMonth);
+    } else {
+        defaultFileName = "Laporan_Karyawan_Semua.xlsx";
+    }
+    
     fileChooser.setSelectedFile(new File(defaultFileName));
     
     // Filter for Excel files
@@ -595,7 +702,36 @@ private void loadDataToTable() {
 
     private void resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetActionPerformed
         // TODO add your handling code here:
+        // Reset search field
+    search.setText("");
+    
+    // Reset year and month filters to current date
+    Calendar cal = Calendar.getInstance();
+    tahun.setYear(cal.get(Calendar.YEAR));
+    bulan.setMonth(cal.get(Calendar.MONTH));
+    
+    // Reload all data without filters
+    loadDataToTable();
+    
+    // Optional: Show confirmation message
+//    JOptionPane.showMessageDialog(this,
+//        "Semua filter telah direset",
+//        "Reset Berhasil",
+//        JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_resetActionPerformed
+
+    private void searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchActionPerformed
+        // TODO add your handling code here:
+        String searchText = search.getText().trim(); // Ambil teks dari search field
+    
+    if (searchText.isEmpty()) {
+        // Jika search kosong, load semua data
+        loadDataToTable();
+    } else {
+        // Jika ada teks pencarian, filter data
+        filterDataByName(searchText);
+    }
+    }//GEN-LAST:event_searchActionPerformed
 
     
      
@@ -647,6 +783,7 @@ FlatLightLaf.setup();
     private javax.swing.JButton laporan;
     private javax.swing.JButton reset;
     private javax.swing.JButton restock;
+    private javax.swing.JTextField search;
     private com.toedter.calendar.JYearChooser tahun;
     private javax.swing.JTable tbkaryawan2;
     private javax.swing.JButton transaksi;
