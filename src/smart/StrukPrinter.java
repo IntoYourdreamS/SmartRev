@@ -5,7 +5,6 @@
 package smart;
 
 import Config.Session;
-import static Config.Session.getKode;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.print.*;
@@ -17,20 +16,23 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class StrukPrinter implements Printable {
+
     private static final int PAPER_WIDTH = (int) (70 * 72 / 25.4); // 70mm width
     private static final int PAPER_HEIGHT = (int) (200 * 72 / 25.4);
     private static final int MARGIN = 5;
     private static final int LINE_HEIGHT = 12;
     private final DecimalFormat currencyFormat = new DecimalFormat("Rp#,##0");
     private final DecimalFormat quantityFormat = new DecimalFormat("#");
-    
+
     private String namaToko, alamatToko, teleponToko, noTransaksi, tanggal, namaKasir;
     private List<String[]> items;
     private double total, bayar, kembalian;
 
     @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-        if (pageIndex > 0) return NO_SUCH_PAGE;
+        if (pageIndex > 0) {
+            return NO_SUCH_PAGE;
+        }
 
         Graphics2D g = (Graphics2D) graphics;
         g.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
@@ -46,7 +48,7 @@ public class StrukPrinter implements Printable {
         g.setFont(fontBold);
         centerText(g, namaToko, y, PAPER_WIDTH);
         y += LINE_HEIGHT;
-        
+
         g.setFont(fontSmall);
         centerText(g, alamatToko, y, PAPER_WIDTH);
         y += LINE_HEIGHT;
@@ -81,7 +83,7 @@ public class StrukPrinter implements Printable {
             String qty = quantityFormat.format(Integer.parseInt(item[1]));
             String harga = formatCurrency(Double.parseDouble(item[2]));
             String subtotal = formatCurrency(Double.parseDouble(item[3]));
-            
+
             String itemLine = String.format("%-12s %2s %9s %8s", nama, qty, harga, subtotal);
             g.drawString(itemLine, MARGIN, y);
             y += LINE_HEIGHT;
@@ -115,8 +117,12 @@ public class StrukPrinter implements Printable {
     }
 
     private String truncate(String text, int maxLength) {
-        if (text == null) return "";
-        if (text.length() <= maxLength) return text;
+        if (text == null) {
+            return "";
+        }
+        if (text.length() <= maxLength) {
+            return text;
+        }
         return text.substring(0, maxLength - 2) + "..";
     }
 
@@ -183,10 +189,10 @@ public class StrukPrinter implements Printable {
             double total, double bayar, double kembalian, String idKasir) {
         try {
             StrukPrinter printer = new StrukPrinter();
-            
+
             // Get employee name from database
             String namaKasir = getEmployeeName(idKasir);
-            
+
             // Set store info
             printer.setNamaToko("TOKO SEMBAKO BU SITI");
             printer.setAlamatToko("Desa Bangunsari-Kec. Songgon");
@@ -228,25 +234,24 @@ public class StrukPrinter implements Printable {
 
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, 
-                "Error saat mencetak struk: " + e.getMessage(), 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,
+                    "Error saat mencetak struk: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
             return false;
         }
     }
 
     private static String getEmployeeName(String employeeId) {
         String employeeName = Session.getKode(); // Default to ID if query fails
-        
+
         try (Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/smart", "root", "");
-             PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT nama_karyawan FROM karyawan WHERE id_karyawan = ?")) {
-            
+                "jdbc:mysql://localhost:3306/smart", "root", ""); PreparedStatement stmt = conn.prepareStatement(
+                        "SELECT nama_karyawan FROM karyawan WHERE id_karyawan = ?")) {
+
             stmt.setString(1, employeeId);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 employeeName = rs.getString("nama_karyawan");
             } else {
@@ -256,7 +261,7 @@ public class StrukPrinter implements Printable {
             System.err.println("Error getting employee name:");
             e.printStackTrace();
         }
-        
+
         return employeeName;
     }
 }

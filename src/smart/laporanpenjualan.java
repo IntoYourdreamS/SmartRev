@@ -16,13 +16,10 @@ import java.io.IOException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.UIManager;
@@ -33,13 +30,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.text.SimpleDateFormat;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -309,9 +301,6 @@ public class laporanpenjualan extends javax.swing.JFrame {
         }
     }
 
-//    private void loadDataPenjualan() {
-//    loadDataPenjualanByDate(null, null);
-//}
     private void loadDataPenjualanByDate(Date startDate, Date endDate) {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("No Nota");

@@ -1,4 +1,4 @@
- /*
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
@@ -8,25 +8,15 @@ import java.awt.Color;
 import Config.koneksi;
 import Config.Session;
 import com.formdev.flatlaf.FlatLightLaf;
-import java.awt.BorderLayout;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.security.Timestamp;
 import java.sql.Connection;
 import javax.swing.JOptionPane;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import java.sql.SQLException;
-import java.util.Arrays;
 import popup.rfid;
 
 /**
@@ -34,7 +24,6 @@ import popup.rfid;
  * @author acer
  */
 public class login extends JFrame {
-  
 
     /**
      * Creates new form login
@@ -46,7 +35,7 @@ public class login extends JFrame {
         FieldUsername.setOpaque(false);
         FieldUsername.setBackground(new Color(0, 0, 0, 0));
         makeButtonTransparent(login);
-          makeButtonTransparent(rfid);
+        makeButtonTransparent(rfid);
         FieldUsername.requestFocus();
 
         hide_pasword1.setVisible(false);
@@ -64,8 +53,6 @@ public class login extends JFrame {
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
     }
-    
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -194,24 +181,24 @@ public class login extends JFrame {
 
         // Cek apakah inputnya terlalu cepat (mungkin RFID)
         if (lastTime != 0 && (currentTime - lastTime) > RFID_THRESHOLD) {
-            buffer = ""; // Reset buffer jika jedanya lama
+            buffer = "";
         }
 
         buffer += c;
         lastTime = currentTime;
 
         if (c == '\n' || c
-                == '\r') { // RFID biasanya mengakhiri input dengan Enter
-            if (buffer.length() >= 9) { // Anggap RFID minimal 8 karakter
-                RFIDInput.setText(buffer); // Pindahkan ke textField tersembunyi
-                FieldUsername.setText(""); // Kosongkan kembali username
+                == '\r') {
+            if (buffer.length() >= 9) {
+                RFIDInput.setText(buffer);
+                FieldUsername.setText("");
                 ambilData(RFIDInput.getText().trim());
                 System.out.println("Scan RFID Terdeteksi: " + buffer);
 
             } else {
                 System.out.println("Input Manual: " + buffer);
             }
-            buffer = ""; // Reset buffer setelah Enter ditekan
+            buffer = "";
         }
     }//GEN-LAST:event_FieldUsernameKeyTyped
 
@@ -231,155 +218,164 @@ public class login extends JFrame {
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
         // TODO add your handling code here:
-  String userInput = FieldUsername.getText();
-char[] passwordInputChar = Password.getPassword();
-String passwordInput = new String(passwordInputChar);
+        String userInput = FieldUsername.getText();
+        char[] passwordInputChar = Password.getPassword();
+        String passwordInput = new String(passwordInputChar);
 
-Connection conn = null;
-PreparedStatement pstmt = null;
-PreparedStatement pstmtInsert = null;
-ResultSet rs = null;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        PreparedStatement pstmtInsert = null;
+        ResultSet rs = null;
 
-try {
-    conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart", "root", "");
-    
-    // Cek login di tabel karyawan
-    String sql = "SELECT * FROM karyawan WHERE nama_karyawan = ? AND password = ?";
-    pstmt = conn.prepareStatement(sql);
-    pstmt.setString(1, userInput);
-    pstmt.setString(2, passwordInput);
+        try {
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart", "root", "");
 
-    rs = pstmt.executeQuery();
+            // Cek login di tabel karyawan
+            String sql = "SELECT * FROM karyawan WHERE nama_karyawan = ? AND password = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, userInput);
+            pstmt.setString(2, passwordInput);
 
-    if (rs.next()) {
-        // Ambil data
-        String idKaryawan = rs.getString("id_karyawan");
-        String role = rs.getString("role");
-        String rfid = rs.getString("RFID");
+            rs = pstmt.executeQuery();
 
-        // Simpan session
-        Session.setKode(idKaryawan);
-        Session.setRole(role);
+            if (rs.next()) {
+                // Ambil data
+                String idKaryawan = rs.getString("id_karyawan");
+                String role = rs.getString("role");
+                String rfid = rs.getString("RFID");
 
-        // Insert ke detail_karyawan
-        String insertSql = "INSERT INTO detail_karyawan (id_karyawan, RFID, tanggal_masuk) VALUES (?, ?, NOW())";
-        pstmtInsert = conn.prepareStatement(insertSql);
-        pstmtInsert.setString(1, idKaryawan);
-        pstmtInsert.setString(2, rfid);
-        pstmtInsert.executeUpdate();
+                // Simpan session
+                Session.setKode(idKaryawan);
+                Session.setRole(role);
 
-        // Tampilkan sukses dan arahkan berdasarkan role
-        JOptionPane.showMessageDialog(this, "Login berhasil sebagai " + role + "!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                // Insert ke detail_karyawan
+                String insertSql = "INSERT INTO detail_karyawan (id_karyawan, RFID, tanggal_masuk) VALUES (?, ?, NOW())";
+                pstmtInsert = conn.prepareStatement(insertSql);
+                pstmtInsert.setString(1, idKaryawan);
+                pstmtInsert.setString(2, rfid);
+                pstmtInsert.executeUpdate();
 
-        if ("Owner".equalsIgnoreCase(role)) {
-            new dashboard().setVisible(true);
-        } else if ("Karyawan".equalsIgnoreCase(role)) {
-            new dbkasir().setVisible(true);
-        } else {
-            JOptionPane.showMessageDialog(this, "Peran tidak dikenal: " + role, "Error", JOptionPane.ERROR_MESSAGE);
+                // Tampilkan sukses dan arahkan berdasarkan role
+                JOptionPane.showMessageDialog(this, "Login berhasil sebagai " + role + "!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+
+                if ("Owner".equalsIgnoreCase(role)) {
+                    new dashboard().setVisible(true);
+                } else if ("Karyawan".equalsIgnoreCase(role)) {
+                    new dbkasir().setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Peran tidak dikenal: " + role, "Error", JOptionPane.ERROR_MESSAGE);
+                }
+
+                this.setVisible(false);
+            } else {
+                JOptionPane.showMessageDialog(this, "Login gagal. Username atau password salah.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+                if (pstmtInsert != null) {
+                    pstmtInsert.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
-
-        this.setVisible(false);
-    } else {
-        JOptionPane.showMessageDialog(this, "Login gagal. Username atau password salah.", "Error", JOptionPane.ERROR_MESSAGE);
-    }
-
-} catch (Exception e) {
-    e.printStackTrace();
-    JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-} finally {
-    try {
-        if (rs != null) rs.close();
-        if (pstmt != null) pstmt.close();
-        if (pstmtInsert != null) pstmtInsert.close();
-        if (conn != null) conn.close();
-    } catch (Exception ex) {
-        ex.printStackTrace();
-    }
-}
 
 
     }//GEN-LAST:event_loginActionPerformed
 
     private void rfidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rfidActionPerformed
         // TODO add your handling code here:
-        
-                rfid popup = new rfid();
-                popup.setVisible(true);
+
+        rfid popup = new rfid();
+        popup.setVisible(true);
     }//GEN-LAST:event_rfidActionPerformed
 
-private void ambilData(String rfid) {
-    // Validasi format RFID terlebih dahulu
-    if (rfid == null || rfid.trim().isEmpty()) {
-        JOptionPane.showMessageDialog(this, "RFID tidak valid", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    String query = "SELECT * FROM karyawan WHERE RFID = ? LIMIT 1";
-    try (PreparedStatement ps = conn.prepareStatement(query)) {
-        ps.setString(1, rfid);
-        ResultSet hasil = ps.executeQuery();
-
-        if (hasil.next()) {
-            String idKaryawan = hasil.getString("id_karyawan");
-            String role = hasil.getString("role");
-            
-            // Verifikasi kesesuaian RFID dengan karyawan
-            if (!rfid.equals(hasil.getString("RFID"))) {
-                JOptionPane.showMessageDialog(this, "RFID tidak sesuai dengan karyawan", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            
-            // Set session data
-            Session.setKode(idKaryawan);
-            Session.setRole(role);
-            
-            // Insert data login dengan transaction handling
-            try {
-                conn.setAutoCommit(false); // Mulai transaction
-                
-                // 1. Update RFID di tabel karyawan jika belum sesuai (optional)
-                String updateQuery = "UPDATE karyawan SET RFID = ? WHERE id_karyawan = ? AND (RFID IS NULL OR RFID != ?)";
-                try (PreparedStatement updatePs = conn.prepareStatement(updateQuery)) {
-                    updatePs.setString(1, rfid);
-                    updatePs.setString(2, idKaryawan);
-                    updatePs.setString(3, rfid);
-                    updatePs.executeUpdate();
-                }
-                
-                // 2. Insert data login ke detail_karyawan
-                String insertQuery = "INSERT INTO detail_karyawan (id_karyawan, RFID, tanggal_masuk) VALUES (?, ?, NOW())";
-                try (PreparedStatement insertPs = conn.prepareStatement(insertQuery)) {
-                    insertPs.setString(1, idKaryawan);
-                    insertPs.setString(2, rfid);
-                    int affectedRows = insertPs.executeUpdate();
-                    
-                    if (affectedRows == 0) {
-                        throw new SQLException("Gagal menyimpan data login");
-                    }
-                }
-                
-                conn.commit(); // Commit transaction jika semua sukses
-                
-                JOptionPane.showMessageDialog(this, "Login berhasil sebagai " + role, "Sukses", JOptionPane.INFORMATION_MESSAGE);
-                new dashboard().setVisible(true);
-                this.dispose();
-                
-            } catch (SQLException e) {
-                conn.rollback(); // Rollback jika ada error
-                throw e;
-            } finally {
-                conn.setAutoCommit(true); // Kembalikan auto-commit
-            }
-            
-        } else {
-            JOptionPane.showMessageDialog(this, "RFID Tidak Terdaftar", "Error", JOptionPane.ERROR_MESSAGE);
+    private void ambilData(String rfid) {
+        // Validasi format RFID terlebih dahulu
+        if (rfid == null || rfid.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "RFID tidak valid", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
+        String query = "SELECT * FROM karyawan WHERE RFID = ? LIMIT 1";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, rfid);
+            ResultSet hasil = ps.executeQuery();
+
+            if (hasil.next()) {
+                String idKaryawan = hasil.getString("id_karyawan");
+                String role = hasil.getString("role");
+
+                // Verifikasi kesesuaian RFID dengan karyawan
+                if (!rfid.equals(hasil.getString("RFID"))) {
+                    JOptionPane.showMessageDialog(this, "RFID tidak sesuai dengan karyawan", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Set session data
+                Session.setKode(idKaryawan);
+                Session.setRole(role);
+
+                // Insert data login dengan transaction handling
+                try {
+                    conn.setAutoCommit(false); // Mulai transaction
+
+                    // 1. Update RFID di tabel karyawan jika belum sesuai (optional)
+                    String updateQuery = "UPDATE karyawan SET RFID = ? WHERE id_karyawan = ? AND (RFID IS NULL OR RFID != ?)";
+                    try (PreparedStatement updatePs = conn.prepareStatement(updateQuery)) {
+                        updatePs.setString(1, rfid);
+                        updatePs.setString(2, idKaryawan);
+                        updatePs.setString(3, rfid);
+                        updatePs.executeUpdate();
+                    }
+
+                    // 2. Insert data login ke detail_karyawan
+                    String insertQuery = "INSERT INTO detail_karyawan (id_karyawan, RFID, tanggal_masuk) VALUES (?, ?, NOW())";
+                    try (PreparedStatement insertPs = conn.prepareStatement(insertQuery)) {
+                        insertPs.setString(1, idKaryawan);
+                        insertPs.setString(2, rfid);
+                        int affectedRows = insertPs.executeUpdate();
+
+                        if (affectedRows == 0) {
+                            throw new SQLException("Gagal menyimpan data login");
+                        }
+                    }
+
+                    conn.commit(); // Commit transaction jika semua sukses
+
+                    JOptionPane.showMessageDialog(this, "Login berhasil sebagai " + role, "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                    new dashboard().setVisible(true);
+                    this.dispose();
+
+                } catch (SQLException e) {
+                    conn.rollback(); // Rollback jika ada error
+                    throw e;
+                } finally {
+                    conn.setAutoCommit(true); // Kembalikan auto-commit
+                }
+
+            } else {
+                JOptionPane.showMessageDialog(this, "RFID Tidak Terdaftar", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
-}
+
     /**
      * @param args the command line arguments
      */
@@ -406,7 +402,7 @@ private void ambilData(String rfid) {
             java.util.logging.Logger.getLogger(login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-FlatLightLaf.setup();
+        FlatLightLaf.setup();
         UIManager.put("TableHeader.background", Color.BLACK);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {

@@ -9,14 +9,11 @@ import Config.koneksi;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
 import javax.swing.table.DefaultTableModel;
-import java.awt.Component;
 import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JTable;
 import javax.swing.UIManager;
 import java.sql.PreparedStatement;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.JPanel;
 import java.awt.Graphics;
@@ -29,7 +26,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
@@ -59,7 +55,6 @@ public class dashboard extends javax.swing.JFrame {
         makeButtonTransparent(logout);
         makeButtonTransparent(txdepan);
         
-//        setTableData();
         initSalesChart();
     
     }
@@ -78,7 +73,7 @@ private void loadDataToTable()  {
       new Object[][]{}, 
         new String[]{"Kode Barang", "Nama Barang", "Stok"}
     );
-    tbhmpirhbis.setModel(model); // Set model ke JTable (asumsi jTable1 adalah nama JTable)
+    tbhmpirhbis.setModel(model);
 
     try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart", "root", "");
          Statement stmt = conn.createStatement()) {
@@ -543,9 +538,6 @@ private class SalesChartPanel extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
-        // Draw chart border
-     //   g2d.setColor(Color.BLACK);
-      //  g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
         
         // Draw title with Segoe UI Semibold
         g2d.setFont(titleFont);
@@ -887,10 +879,6 @@ try {
         } else {
             System.out.println("No record found to update");
         }
-        
-        // Reset session
-       // Session.clear();
-    //    pstmt.close();
     }
     conn.close();
 } catch (SQLException e) {

@@ -379,11 +379,7 @@ public class laporanpembelian extends javax.swing.JFrame {
         );
 
         if (choice == 0) {
-            //            exportToCSV();
             exportToExcel();
-            //    } else if (choice == 1) {
-            //        exportToPDF();
-            //    }
         }
     }//GEN-LAST:event_exportActionPerformed
 

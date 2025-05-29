@@ -11,15 +11,7 @@ import java.sql.Timestamp;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-//import java.security.Timestamp;
 import java.sql.Connection;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,24 +20,12 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.text.SimpleDateFormat;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import popup.notifberhasilkrw;
-import popup.tambahkaryawan;
-import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JFileChooser;
@@ -56,8 +36,6 @@ import java.io.IOException;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
-import popup.ubahkaryawan;
-import popup.tambahkaryawan;
 import java.util.Calendar;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -85,7 +63,7 @@ public class karyawan2 extends javax.swing.JFrame {
      */
     public karyawan2() {
         initComponents();
-        
+
         // Custom header table
         javax.swing.table.JTableHeader header = tbkaryawan2.getTableHeader();
         header.setDefaultRenderer(new DefaultTableCellRenderer() {
@@ -93,55 +71,165 @@ public class karyawan2 extends javax.swing.JFrame {
             public Component getTableCellRendererComponent(JTable table, Object value,
                     boolean isSelected, boolean hasFocus, int row, int column) {
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                
+
                 setBackground(Color.BLACK); // Warna background header
                 setForeground(Color.WHITE); // Warna teks putih
                 setFont(new Font("Segoe UI", Font.BOLD, 12)); // Font lebih tebal
                 setHorizontalAlignment(JLabel.CENTER); // Posisi teks di tengah
-                
+
                 return this;
             }
         });
-        
+
         loadDataToTable();
         customizeTable();
         makeButtonTransparent(karyawan);
         makeButtonTransparent(dashboard);
         makeButtonTransparent(transaksi);
         makeButtonTransparent(restock);
-        makeButtonTransparent(laporan);  
+        makeButtonTransparent(laporan);
         makeButtonTransparent(export);
         makeButtonTransparent(reset);
-        
+
     }
-    
+
     private void filterDataByName(String nama) {
-    // Model tabel dengan kolom yang diinginkan
-    DefaultTableModel model = new DefaultTableModel(
-        new Object[]{"No Karyawan", "Nama Karyawan", "No HP", "Role", "Jam Masuk", "Jam Keluar", "Keterangan"}, 
-        0
-    ) {
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return false; // Membuat tabel tidak bisa di-edit
+        // Model tabel dengan kolom yang diinginkan
+        DefaultTableModel model = new DefaultTableModel(
+                new Object[]{"No Karyawan", "Nama Karyawan", "No HP", "Role", "Jam Masuk", "Jam Keluar", "Keterangan"},
+                0
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Membuat tabel tidak bisa di-edit
+            }
+        };
+
+        tbkaryawan2.setModel(model);
+
+        try (Connection conn = koneksi.getConnection()) {
+            // Query untuk mencari karyawan berdasarkan nama
+            String query = "SELECT k.id_karyawan, k.nama_karyawan, k.no_telp, k.role, "
+                    + "dk.tanggal_masuk, dk.tanggal_keluar "
+                    + "FROM karyawan k "
+                    + "LEFT JOIN detail_karyawan dk ON k.id_karyawan = dk.id_karyawan "
+                    + "WHERE k.nama_karyawan LIKE ? "
+                    + "ORDER BY k.id_karyawan, dk.tanggal_masuk DESC";
+
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setString(1, "%" + nama + "%"); // Gunakan wildcard untuk pencarian partial
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        // Ambil timestamp jam masuk dan keluar
+                        java.sql.Timestamp jamMasuk = rs.getTimestamp("tanggal_masuk");
+                        java.sql.Timestamp jamKeluar = rs.getTimestamp("tanggal_keluar");
+
+                        // Lewati baris jika tidak ada data jam masuk dan keluar
+                        if (jamMasuk == null && jamKeluar == null) {
+                            continue;
+                        }
+
+                        // Format tanggal masuk
+                        String jamMasukFormatted = (jamMasuk != null)
+                                ? new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(jamMasuk) : "Belum ada data";
+                        // Format tanggal keluar
+                        String jamKeluarFormatted = (jamKeluar != null)
+                                ? new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(jamKeluar) : "Belum keluar";
+
+                        // Tentukan keterangan berdasarkan timestamp
+                        String keterangan = "Tepat Waktu"; // Default
+
+                        if (jamMasuk != null && jamKeluar != null) {
+                            // Buat batas jam masuk dan keluar (09:00 dan 17:00)
+                            String tanggalMasukStr = new SimpleDateFormat("yyyy-MM-dd").format(jamMasuk) + " 09:00:00";
+                            String tanggalKeluarStr = new SimpleDateFormat("yyyy-MM-dd").format(jamKeluar) + " 17:00:00";
+
+                            Timestamp batasJamMasuk = Timestamp.valueOf(tanggalMasukStr);
+                            Timestamp batasJamKeluar = Timestamp.valueOf(tanggalKeluarStr);
+
+                            // Logika untuk menentukan keterangan
+                            if (jamMasuk.after(batasJamMasuk)) {
+                                keterangan = "Telat";
+                            }
+                            if (jamKeluar.before(batasJamKeluar)) {
+                                keterangan = "Pulang Dulu";
+                            }
+                        }
+
+                        // Tambahkan baris ke model
+                        model.addRow(new Object[]{
+                            rs.getString("id_karyawan"),
+                            rs.getString("nama_karyawan"),
+                            rs.getString("no_telp"),
+                            rs.getString("role"),
+                            jamMasukFormatted,
+                            jamKeluarFormatted,
+                            keterangan
+                        });
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Gagal memuat data: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
-    };
+    }
 
-    tbkaryawan2.setModel(model);
+    private void makeButtonTransparent(JButton button) {
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+    }
 
-    try (Connection conn = koneksi.getConnection()) {
-        // Query untuk mencari karyawan berdasarkan nama
-        String query = "SELECT k.id_karyawan, k.nama_karyawan, k.no_telp, k.role, " +
-                     "dk.tanggal_masuk, dk.tanggal_keluar " +
-                     "FROM karyawan k " +
-                     "LEFT JOIN detail_karyawan dk ON k.id_karyawan = dk.id_karyawan " +
-                     "WHERE k.nama_karyawan LIKE ? " +
-                     "ORDER BY k.id_karyawan, dk.tanggal_masuk DESC";
+    private void customizeTable() {
+        JTableHeader header = tbkaryawan2.getTableHeader();
+        header.setFont(new Font("Inter", Font.BOLD, 11));
+        header.setForeground(Color.WHITE);
+        header.setOpaque(false);
+        tbkaryawan2.setFont(new Font("Arial", Font.PLAIN, 10));
+        tbkaryawan2.setRowHeight(30);
+        tbkaryawan2.setShowGrid(true);
+        tbkaryawan2.setIntercellSpacing(new java.awt.Dimension(0, 0));
+        tbkaryawan2.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, "%" + nama + "%"); // Gunakan wildcard untuk pencarian partial
-            
-            try (ResultSet rs = stmt.executeQuery()) {
+        // Set default values untuk tahun dan bulan saat ini
+        Calendar cal = Calendar.getInstance();
+        tahun.setYear(cal.get(Calendar.YEAR));
+        bulan.setMonth(cal.get(Calendar.MONTH));
+
+        // Add listeners untuk filter otomatis
+        setupDateFilters();
+
+    }
+
+    private void loadDataToTable() {
+        // Model tabel dengan kolom yang diinginkan
+        DefaultTableModel model = new DefaultTableModel(
+                new Object[]{"No Karyawan", "Nama Karyawan", "No HP", "Role", "Jam Masuk", "Jam Keluar", "Keterangan"},
+                0
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Membuat tabel tidak bisa di-edit
+            }
+        };
+
+        tbkaryawan2.setModel(model);
+
+        try (Connection conn = koneksi.getConnection()) {
+            // Query untuk mendapatkan semua data karyawan beserta jam masuk dan keluar
+            String query = "SELECT k.id_karyawan, k.nama_karyawan, k.no_telp, k.role, "
+                    + "dk.tanggal_masuk, dk.tanggal_keluar "
+                    + "FROM karyawan k "
+                    + "LEFT JOIN detail_karyawan dk ON k.id_karyawan = dk.id_karyawan "
+                    + "ORDER BY k.id_karyawan, dk.tanggal_masuk DESC";
+
+            try (PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+
                 while (rs.next()) {
                     // Ambil timestamp jam masuk dan keluar
                     java.sql.Timestamp jamMasuk = rs.getTimestamp("tanggal_masuk");
@@ -149,258 +237,6 @@ public class karyawan2 extends javax.swing.JFrame {
 
                     // Lewati baris jika tidak ada data jam masuk dan keluar
                     if (jamMasuk == null && jamKeluar == null) {
-                        continue;
-                    }
-
-                    // Format tanggal masuk
-                    String jamMasukFormatted = (jamMasuk != null) ? 
-                        new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(jamMasuk) : "Belum ada data";
-                    // Format tanggal keluar
-                    String jamKeluarFormatted = (jamKeluar != null) ? 
-                        new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(jamKeluar) : "Belum keluar";
-
-                    // Tentukan keterangan berdasarkan timestamp
-                    String keterangan = "Tepat Waktu"; // Default
-
-                    if (jamMasuk != null && jamKeluar != null) {
-                        // Buat batas jam masuk dan keluar (09:00 dan 17:00)
-                        String tanggalMasukStr = new SimpleDateFormat("yyyy-MM-dd").format(jamMasuk) + " 09:00:00";
-                        String tanggalKeluarStr = new SimpleDateFormat("yyyy-MM-dd").format(jamKeluar) + " 17:00:00";
-
-                        Timestamp batasJamMasuk = Timestamp.valueOf(tanggalMasukStr);
-                        Timestamp batasJamKeluar = Timestamp.valueOf(tanggalKeluarStr);
-
-                        // Logika untuk menentukan keterangan
-                        if (jamMasuk.after(batasJamMasuk)) {
-                            keterangan = "Telat";
-                        }
-                        if (jamKeluar.before(batasJamKeluar)) {
-                            keterangan = "Pulang Dulu";
-                        }
-                    }
-
-                    // Tambahkan baris ke model
-                    model.addRow(new Object[]{
-                        rs.getString("id_karyawan"),
-                        rs.getString("nama_karyawan"),
-                        rs.getString("no_telp"),
-                        rs.getString("role"),
-                        jamMasukFormatted,
-                        jamKeluarFormatted,
-                        keterangan
-                    });
-                }
-            }
-        }
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this,
-            "Gagal memuat data: " + e.getMessage(),
-            "Error",
-            JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
-    }
-}
-    
-    private void makeButtonTransparent(JButton button) {
-        button.setOpaque(false);
-        button.setContentAreaFilled(false);
-        button.setBorderPainted(false);
-    }
-    
-     private void customizeTable() {
-          JTableHeader header = tbkaryawan2.getTableHeader();
-           header.setFont(new Font("Inter", Font.BOLD, 11));
-           header.setForeground(Color.WHITE);
-            header.setOpaque(false);
-            tbkaryawan2.setFont(new Font("Arial", Font.PLAIN, 10));
-            tbkaryawan2.setRowHeight(30); 
-            tbkaryawan2.setShowGrid(true); 
-            tbkaryawan2.setIntercellSpacing(new java.awt.Dimension(0, 0));
-            tbkaryawan2.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            
-            // Set default values untuk tahun dan bulan saat ini
-        Calendar cal = Calendar.getInstance();
-        tahun.setYear(cal.get(Calendar.YEAR));
-        bulan.setMonth(cal.get(Calendar.MONTH));
-        
-        // Add listeners untuk filter otomatis
-        setupDateFilters();
-
-     }
-    
-   
-
-private void loadDataToTable() {
-    // Model tabel dengan kolom yang diinginkan
-    DefaultTableModel model = new DefaultTableModel(
-        new Object[]{"No Karyawan", "Nama Karyawan", "No HP", "Role", "Jam Masuk", "Jam Keluar", "Keterangan"}, 
-        0
-    ) {
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return false; // Membuat tabel tidak bisa di-edit
-        }
-    };
-
-    tbkaryawan2.setModel(model);
-
-    try (Connection conn = koneksi.getConnection()) {
-        // Query untuk mendapatkan semua data karyawan beserta jam masuk dan keluar
-        String query = "SELECT k.id_karyawan, k.nama_karyawan, k.no_telp, k.role, " +
-                     "dk.tanggal_masuk, dk.tanggal_keluar " +
-                     "FROM karyawan k " +
-                     "LEFT JOIN detail_karyawan dk ON k.id_karyawan = dk.id_karyawan " +
-                     "ORDER BY k.id_karyawan, dk.tanggal_masuk DESC";
-
-        try (PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-            
-            while (rs.next()) {
-                // Ambil timestamp jam masuk dan keluar
-                java.sql.Timestamp jamMasuk = rs.getTimestamp("tanggal_masuk");
-                java.sql.Timestamp jamKeluar = rs.getTimestamp("tanggal_keluar");
-
-                // Lewati baris jika tidak ada data jam masuk dan keluar
-                if (jamMasuk == null && jamKeluar == null) {
-                    continue;
-                }
-
-                // Format tanggal masuk
-                String jamMasukFormatted = (jamMasuk != null) ? new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(jamMasuk) : "Belum ada data";
-                // Format tanggal keluar
-                String jamKeluarFormatted = (jamKeluar != null) ? new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(jamKeluar) : "Belum keluar";
-
-                // Tentukan keterangan berdasarkan timestamp
-                String keterangan = "Tepat Waktu"; // Default
-
-                if (jamMasuk != null && jamKeluar != null) {
-                    // Buat batas jam masuk dan keluar (09:00 dan 17:00)
-                    String tanggalMasukStr = new SimpleDateFormat("yyyy-MM-dd").format(jamMasuk) + " 09:00:00";
-                    String tanggalKeluarStr = new SimpleDateFormat("yyyy-MM-dd").format(jamKeluar) + " 17:00:00";
-
-                    Timestamp batasJamMasuk = Timestamp.valueOf(tanggalMasukStr);
-                    Timestamp batasJamKeluar = Timestamp.valueOf(tanggalKeluarStr);
-
-                    // Logika untuk menentukan keterangan
-                    if (jamMasuk.after(batasJamMasuk)) {
-                        keterangan = "Telat";
-                    }
-                    if (jamKeluar.before(batasJamKeluar)) {
-                        keterangan = "Pulang Dulu";
-                    }
-                }
-
-                // Tambahkan baris ke model
-                model.addRow(new Object[]{
-                    rs.getString("id_karyawan"),
-                    rs.getString("nama_karyawan"),
-                    rs.getString("no_telp"),
-                    rs.getString("role"),
-                    jamMasukFormatted,
-                    jamKeluarFormatted,
-                    keterangan
-                });
-            }
-        }
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this,
-            "Gagal memuat data: " + e.getMessage(),
-            "Error",
-            JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this,
-            "Terjadi kesalahan: " + e.getMessage(),
-            "Error",
-            JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
-    }
-}
-
-
-    private void setupDateFilters() {
-        // Listener untuk JYearChooser
-        tahun.addPropertyChangeListener("year", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                filterDataByDate();
-            }
-        });
-        
-        // Listener untuk JMonthChooser
-        bulan.addPropertyChangeListener("month", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                filterDataByDate();
-            }
-        });
-    }
-    
-    
-    
-    private void filterDataByDate() {
-        int selectedYear = tahun.getYear();
-        int selectedMonth = bulan.getMonth() + 1; // JMonthChooser menggunakan 0-based indexing
-        
-        loadDataToTable(selectedYear, selectedMonth);
-    }
-    
-    // Method untuk load data dengan filter tahun dan bulan
-    private void loadDataToTable(int filterYear, int filterMonth) {
-    // Model tabel dengan kolom yang diinginkan
-    DefaultTableModel model = new DefaultTableModel(
-        new Object[]{"No Karyawan", "Nama Karyawan", "No HP", "Role", "Jam Masuk", "Jam Keluar", "Keterangan"}, 
-        0
-    ) {
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return false; // Membuat tabel tidak bisa di-edit
-        }
-    };
-
-    tbkaryawan2.setModel(model);
-
-    try (Connection conn = koneksi.getConnection()) {
-        // Query dasar
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("SELECT k.id_karyawan, k.nama_karyawan, k.no_telp, k.role, ")
-                   .append("dk.tanggal_masuk, dk.tanggal_keluar ")
-                   .append("FROM karyawan k ")
-                   .append("LEFT JOIN detail_karyawan dk ON k.id_karyawan = dk.id_karyawan ");
-        
-        // Tambahkan filter jika diperlukan
-        if (filterYear > 0 && filterMonth > 0) {
-            queryBuilder.append("WHERE YEAR(dk.tanggal_masuk) = ? AND MONTH(dk.tanggal_masuk) = ? ");
-        } else if (filterYear > 0) {
-            queryBuilder.append("WHERE YEAR(dk.tanggal_masuk) = ? ");
-        } else if (filterMonth > 0) {
-            queryBuilder.append("WHERE MONTH(dk.tanggal_masuk) = ? ");
-        }
-        
-        queryBuilder.append("ORDER BY k.id_karyawan, dk.tanggal_masuk DESC");
-        
-        String query = queryBuilder.toString();
-
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            // Set parameter untuk prepared statement
-            int paramIndex = 1;
-            if (filterYear > 0 && filterMonth > 0) {
-                stmt.setInt(paramIndex++, filterYear);
-                stmt.setInt(paramIndex++, filterMonth);
-            } else if (filterYear > 0) {
-                stmt.setInt(paramIndex++, filterYear);
-            } else if (filterMonth > 0) {
-                stmt.setInt(paramIndex++, filterMonth);
-            }
-            
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    // Ambil timestamp jam masuk dan keluar
-                    java.sql.Timestamp jamMasuk = rs.getTimestamp("tanggal_masuk");
-                    java.sql.Timestamp jamKeluar = rs.getTimestamp("tanggal_keluar");
-
-                    // Lewati baris jika tidak ada data jam masuk dan keluar (untuk filter)
-                    if (jamMasuk == null && jamKeluar == null && (filterYear > 0 || filterMonth > 0)) {
                         continue;
                     }
 
@@ -441,21 +277,157 @@ private void loadDataToTable() {
                     });
                 }
             }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Gagal memuat data: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Terjadi kesalahan: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this,
-            "Gagal memuat data: " + e.getMessage(),
-            "Error",
-            JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this,
-            "Terjadi kesalahan: " + e.getMessage(),
-            "Error",
-            JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
     }
-}
+
+    private void setupDateFilters() {
+        // Listener untuk JYearChooser
+        tahun.addPropertyChangeListener("year", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                filterDataByDate();
+            }
+        });
+
+        // Listener untuk JMonthChooser
+        bulan.addPropertyChangeListener("month", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                filterDataByDate();
+            }
+        });
+    }
+
+    private void filterDataByDate() {
+        int selectedYear = tahun.getYear();
+        int selectedMonth = bulan.getMonth() + 1; // JMonthChooser menggunakan 0-based indexing
+
+        loadDataToTable(selectedYear, selectedMonth);
+    }
+
+    // Method untuk load data dengan filter tahun dan bulan
+    private void loadDataToTable(int filterYear, int filterMonth) {
+        // Model tabel dengan kolom yang diinginkan
+        DefaultTableModel model = new DefaultTableModel(
+                new Object[]{"No Karyawan", "Nama Karyawan", "No HP", "Role", "Jam Masuk", "Jam Keluar", "Keterangan"},
+                0
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Membuat tabel tidak bisa di-edit
+            }
+        };
+
+        tbkaryawan2.setModel(model);
+
+        try (Connection conn = koneksi.getConnection()) {
+            // Query dasar
+            StringBuilder queryBuilder = new StringBuilder();
+            queryBuilder.append("SELECT k.id_karyawan, k.nama_karyawan, k.no_telp, k.role, ")
+                    .append("dk.tanggal_masuk, dk.tanggal_keluar ")
+                    .append("FROM karyawan k ")
+                    .append("LEFT JOIN detail_karyawan dk ON k.id_karyawan = dk.id_karyawan ");
+
+            // Tambahkan filter jika diperlukan
+            if (filterYear > 0 && filterMonth > 0) {
+                queryBuilder.append("WHERE YEAR(dk.tanggal_masuk) = ? AND MONTH(dk.tanggal_masuk) = ? ");
+            } else if (filterYear > 0) {
+                queryBuilder.append("WHERE YEAR(dk.tanggal_masuk) = ? ");
+            } else if (filterMonth > 0) {
+                queryBuilder.append("WHERE MONTH(dk.tanggal_masuk) = ? ");
+            }
+
+            queryBuilder.append("ORDER BY k.id_karyawan, dk.tanggal_masuk DESC");
+
+            String query = queryBuilder.toString();
+
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                // Set parameter untuk prepared statement
+                int paramIndex = 1;
+                if (filterYear > 0 && filterMonth > 0) {
+                    stmt.setInt(paramIndex++, filterYear);
+                    stmt.setInt(paramIndex++, filterMonth);
+                } else if (filterYear > 0) {
+                    stmt.setInt(paramIndex++, filterYear);
+                } else if (filterMonth > 0) {
+                    stmt.setInt(paramIndex++, filterMonth);
+                }
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        // Ambil timestamp jam masuk dan keluar
+                        java.sql.Timestamp jamMasuk = rs.getTimestamp("tanggal_masuk");
+                        java.sql.Timestamp jamKeluar = rs.getTimestamp("tanggal_keluar");
+
+                        // Lewati baris jika tidak ada data jam masuk dan keluar (untuk filter)
+                        if (jamMasuk == null && jamKeluar == null && (filterYear > 0 || filterMonth > 0)) {
+                            continue;
+                        }
+
+                        // Format tanggal masuk
+                        String jamMasukFormatted = (jamMasuk != null) ? new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(jamMasuk) : "Belum ada data";
+                        // Format tanggal keluar
+                        String jamKeluarFormatted = (jamKeluar != null) ? new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(jamKeluar) : "Belum keluar";
+
+                        // Tentukan keterangan berdasarkan timestamp
+                        String keterangan = "Tepat Waktu"; // Default
+
+                        if (jamMasuk != null && jamKeluar != null) {
+                            // Buat batas jam masuk dan keluar (09:00 dan 17:00)
+                            String tanggalMasukStr = new SimpleDateFormat("yyyy-MM-dd").format(jamMasuk) + " 09:00:00";
+                            String tanggalKeluarStr = new SimpleDateFormat("yyyy-MM-dd").format(jamKeluar) + " 17:00:00";
+
+                            Timestamp batasJamMasuk = Timestamp.valueOf(tanggalMasukStr);
+                            Timestamp batasJamKeluar = Timestamp.valueOf(tanggalKeluarStr);
+
+                            // Logika untuk menentukan keterangan
+                            if (jamMasuk.after(batasJamMasuk)) {
+                                keterangan = "Telat";
+                            }
+                            if (jamKeluar.before(batasJamKeluar)) {
+                                keterangan = "Pulang Dulu";
+                            }
+                        }
+
+                        // Tambahkan baris ke model
+                        model.addRow(new Object[]{
+                            rs.getString("id_karyawan"),
+                            rs.getString("nama_karyawan"),
+                            rs.getString("no_telp"),
+                            rs.getString("role"),
+                            jamMasukFormatted,
+                            jamKeluarFormatted,
+                            keterangan
+                        });
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Gagal memuat data: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Terjadi kesalahan: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -579,141 +551,141 @@ private void loadDataToTable() {
 
     private void dashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardActionPerformed
         // TODO add your handling code here:
-          new dashboard().setVisible(true);
-        this.setVisible(false);   
+        new dashboard().setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_dashboardActionPerformed
 
     private void transaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transaksiActionPerformed
         // TODO add your handling code here:
-          new transaksi().setVisible(true);
-        this.setVisible(false);   
+        new transaksi().setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_transaksiActionPerformed
 
     private void restockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restockActionPerformed
         // TODO add your handling code here:
-          new restok().setVisible(true);
-        this.setVisible(false);   
+        new restok().setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_restockActionPerformed
 
     private void laporanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_laporanActionPerformed
         // TODO add your handling code here:
-          new laporanpenjualan().setVisible(true);
-        this.setVisible(false);   
+        new laporanpenjualan().setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_laporanActionPerformed
 
     private void exportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportActionPerformed
- // Create a file chooser
-    JFileChooser fileChooser = new JFileChooser();
-    fileChooser.setDialogTitle("Simpan sebagai Excel");
-    
-    // Set default file name based on filters
-    String defaultFileName;
-    int selectedYear = tahun.getYear();
-    int selectedMonth = bulan.getMonth() + 1; // JMonthChooser uses 0-based index
-    
-    if (selectedYear > 0 && selectedMonth > 0) {
-        defaultFileName = String.format("Laporan_Karyawan_%02d-%04d.xlsx", selectedMonth, selectedYear);
-    } else if (selectedYear > 0) {
-        defaultFileName = String.format("Laporan_Karyawan_Tahun_%04d.xlsx", selectedYear);
-    } else if (selectedMonth > 0) {
-        defaultFileName = String.format("Laporan_Karyawan_Bulan_%02d.xlsx", selectedMonth);
-    } else {
-        defaultFileName = "Laporan_Karyawan_Semua.xlsx";
-    }
-    
-    fileChooser.setSelectedFile(new File(defaultFileName));
-    
-    // Filter for Excel files
-    FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel Files", "xlsx");
-    fileChooser.setFileFilter(filter);
-    
-    // Show save dialog
-    int userSelection = fileChooser.showSaveDialog(this);
-    
-    if (userSelection == JFileChooser.APPROVE_OPTION) {
-        File fileToSave = fileChooser.getSelectedFile();
-        // Ensure the file has .xlsx extension
-        if (!fileToSave.getName().endsWith(".xlsx")) {
-            fileToSave = new File(fileToSave.getAbsolutePath() + ".xlsx");
+        // Create a file chooser
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Simpan sebagai Excel");
+
+        // Set default file name based on filters
+        String defaultFileName;
+        int selectedYear = tahun.getYear();
+        int selectedMonth = bulan.getMonth() + 1; // JMonthChooser uses 0-based index
+
+        if (selectedYear > 0 && selectedMonth > 0) {
+            defaultFileName = String.format("Laporan_Karyawan_%02d-%04d.xlsx", selectedMonth, selectedYear);
+        } else if (selectedYear > 0) {
+            defaultFileName = String.format("Laporan_Karyawan_Tahun_%04d.xlsx", selectedYear);
+        } else if (selectedMonth > 0) {
+            defaultFileName = String.format("Laporan_Karyawan_Bulan_%02d.xlsx", selectedMonth);
+        } else {
+            defaultFileName = "Laporan_Karyawan_Semua.xlsx";
         }
-        
-        try {
-            // Create Excel workbook
-            Workbook workbook = new XSSFWorkbook();
-            Sheet sheet = workbook.createSheet("Data Karyawan");
-            
-            // Get table model
-            DefaultTableModel model = (DefaultTableModel) tbkaryawan2.getModel();
-            
-            // Create header row
-            Row headerRow = sheet.createRow(0);
-            for (int col = 0; col < model.getColumnCount(); col++) {
-                Cell cell = headerRow.createCell(col);
-                cell.setCellValue(model.getColumnName(col));
+
+        fileChooser.setSelectedFile(new File(defaultFileName));
+
+        // Filter for Excel files
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel Files", "xlsx");
+        fileChooser.setFileFilter(filter);
+
+        // Show save dialog
+        int userSelection = fileChooser.showSaveDialog(this);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            // Ensure the file has .xlsx extension
+            if (!fileToSave.getName().endsWith(".xlsx")) {
+                fileToSave = new File(fileToSave.getAbsolutePath() + ".xlsx");
             }
-            
-            // Create data rows
-            for (int row = 0; row < model.getRowCount(); row++) {
-                Row dataRow = sheet.createRow(row + 1);
+
+            try {
+                // Create Excel workbook
+                Workbook workbook = new XSSFWorkbook();
+                Sheet sheet = workbook.createSheet("Data Karyawan");
+
+                // Get table model
+                DefaultTableModel model = (DefaultTableModel) tbkaryawan2.getModel();
+
+                // Create header row
+                Row headerRow = sheet.createRow(0);
                 for (int col = 0; col < model.getColumnCount(); col++) {
-                    Cell cell = dataRow.createCell(col);
-                    Object value = model.getValueAt(row, col);
-                    if (value != null) {
-                        cell.setCellValue(value.toString());
-                    } else {
-                        cell.setCellValue("");
+                    Cell cell = headerRow.createCell(col);
+                    cell.setCellValue(model.getColumnName(col));
+                }
+
+                // Create data rows
+                for (int row = 0; row < model.getRowCount(); row++) {
+                    Row dataRow = sheet.createRow(row + 1);
+                    for (int col = 0; col < model.getColumnCount(); col++) {
+                        Cell cell = dataRow.createCell(col);
+                        Object value = model.getValueAt(row, col);
+                        if (value != null) {
+                            cell.setCellValue(value.toString());
+                        } else {
+                            cell.setCellValue("");
+                        }
                     }
                 }
-            }
-            
-            // Auto-size columns
-            for (int col = 0; col < model.getColumnCount(); col++) {
-                sheet.autoSizeColumn(col);
-            }
-            
-            // Write to file
-            try (FileOutputStream outputStream = new FileOutputStream(fileToSave)) {
-                workbook.write(outputStream);
-                workbook.close();
-                
-                // Show success message
+
+                // Auto-size columns
+                for (int col = 0; col < model.getColumnCount(); col++) {
+                    sheet.autoSizeColumn(col);
+                }
+
+                // Write to file
+                try (FileOutputStream outputStream = new FileOutputStream(fileToSave)) {
+                    workbook.write(outputStream);
+                    workbook.close();
+
+                    // Show success message
+                    JOptionPane.showMessageDialog(this,
+                            "Data berhasil diekspor ke Excel!",
+                            "Sukses",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            } catch (IOException e) {
                 JOptionPane.showMessageDialog(this,
-                    "Data berhasil diekspor ke Excel!",
-                    "Sukses",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        "Gagal mengekspor data: " + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this,
-                "Gagal mengekspor data: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
+
         }
-    
-}                                    
     }//GEN-LAST:event_exportActionPerformed
 
     private void karyawanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_karyawanActionPerformed
         // TODO add your handling code here:
         // Menambahkan aksi ke tombol "Tambah"
-  new karyawan().setVisible(true);
+        new karyawan().setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_karyawanActionPerformed
 
     private void resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetActionPerformed
         // TODO add your handling code here:
         // Reset search field
-    search.setText("");
-    
-    // Reset year and month filters to current date
-    Calendar cal = Calendar.getInstance();
-    tahun.setYear(cal.get(Calendar.YEAR));
-    bulan.setMonth(cal.get(Calendar.MONTH));
-    
-    // Reload all data without filters
-    loadDataToTable();
-    
-    // Optional: Show confirmation message
+        search.setText("");
+
+        // Reset year and month filters to current date
+        Calendar cal = Calendar.getInstance();
+        tahun.setYear(cal.get(Calendar.YEAR));
+        bulan.setMonth(cal.get(Calendar.MONTH));
+
+        // Reload all data without filters
+        loadDataToTable();
+
+        // Optional: Show confirmation message
 //    JOptionPane.showMessageDialog(this,
 //        "Semua filter telah direset",
 //        "Reset Berhasil",
@@ -723,18 +695,15 @@ private void loadDataToTable() {
     private void searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchActionPerformed
         // TODO add your handling code here:
         String searchText = search.getText().trim(); // Ambil teks dari search field
-    
-    if (searchText.isEmpty()) {
-        // Jika search kosong, load semua data
-        loadDataToTable();
-    } else {
-        // Jika ada teks pencarian, filter data
-        filterDataByName(searchText);
-    }
-    }//GEN-LAST:event_searchActionPerformed
 
-    
-     
+        if (searchText.isEmpty()) {
+            // Jika search kosong, load semua data
+            loadDataToTable();
+        } else {
+            // Jika ada teks pencarian, filter data
+            filterDataByName(searchText);
+        }
+    }//GEN-LAST:event_searchActionPerformed
 
     /**
      * @param args the command line arguments
@@ -763,7 +732,7 @@ private void loadDataToTable() {
         }
         //</editor-fold>
         //</editor-fold>
-FlatLightLaf.setup();
+        FlatLightLaf.setup();
         UIManager.put("TableHeader.background", Color.BLACK);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -794,4 +763,3 @@ FlatLightLaf.setup();
     }
 
 }
-

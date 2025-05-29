@@ -18,8 +18,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -40,16 +38,16 @@ public class transaksikasir extends javax.swing.JFrame {
         SwingUtilities.invokeLater(() -> txt_noBarang.requestFocusInWindow());
         refreshTable();
         makeButtonTransparent(bttndashboard);
-       
+
         makeButtonTransparent(btn_simpan);
         makeButtonTransparent(btn_hapus);
         makeButtonTransparent(btn_bayar);
-        
+
         txt_bayar.addKeyListener(new java.awt.event.KeyAdapter() {
-    public void keyReleased(java.awt.event.KeyEvent evt) {
-        formatBayarField();
-    }
-});
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                formatBayarField();
+            }
+        });
         customizeTable();
         txt_qty.setOpaque(false);
         txt_qty.setBackground(new Color(0, 0, 0, 0));
@@ -68,7 +66,6 @@ public class transaksikasir extends javax.swing.JFrame {
         txt_bayar.setOpaque(false);
         txt_bayar.setBackground(new Color(0, 0, 0, 0));
 
-//        No_nota.setText(generateNota());
     }
 
     private void makeButtonTransparent(JButton button) {
@@ -107,21 +104,21 @@ public class transaksikasir extends javax.swing.JFrame {
         return kodeTransaksi;
     }
 
-  private String formatNumber(double number) {
-    DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-    symbols.setGroupingSeparator('.');
-    DecimalFormat formatter = new DecimalFormat("#,###", symbols);
-    formatter.setGroupingUsed(true);
-    return formatter.format(number);
-}
-
-private double parseFormattedNumber(String formattedNumber) {
-    try {
-        return Double.parseDouble(formattedNumber.replace(".", ""));
-    } catch (NumberFormatException e) {
-        return 0.0;
+    private String formatNumber(double number) {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator('.');
+        DecimalFormat formatter = new DecimalFormat("#,###", symbols);
+        formatter.setGroupingUsed(true);
+        return formatter.format(number);
     }
-}
+
+    private double parseFormattedNumber(String formattedNumber) {
+        try {
+            return Double.parseDouble(formattedNumber.replace(".", ""));
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
+    }
 
     public void refreshTable() {
         model = new DefaultTableModel();
@@ -355,53 +352,6 @@ private double parseFormattedNumber(String formattedNumber) {
 
     }//GEN-LAST:event_txt_qtyActionPerformed
 
-    private void prosesTransaksi(String kodeTransaksi, String idKaryawan, String[] idProduk, int[] jumlahProduk, String[] Kategori, int[] hargaS, int[] SubTotal, Double bayar, int total) throws SQLException {
-        try (Connection conn = koneksi.getConnection()) {
-            conn.setAutoCommit(false); // Start transaction
-
-            try {
-                // Insert into penjualan
-                String insertTransaksi = "INSERT INTO penjualan VALUES (?, ?, NOW(), ?, ?)";
-                try (PreparedStatement ps = conn.prepareStatement(insertTransaksi)) {
-                    ps.setString(1, kodeTransaksi);
-                    ps.setString(2, idKaryawan);
-                    ps.setInt(3, total);
-                    ps.setDouble(4, bayar);
-                    ps.executeUpdate();
-                }
-
-                // Insert into detail_penjualan and update stok
-                for (int j = 0; j < idProduk.length; j++) {
-                    String insertDetailTransaksi = "INSERT INTO detail_penjualan VALUES (?, ?, ?, ?, ?, ?)";
-                    try (PreparedStatement DTps = conn.prepareStatement(insertDetailTransaksi)) {
-                        DTps.setString(1, kodeTransaksi);
-                        DTps.setString(2, idProduk[j]);
-                        DTps.setString(3, Kategori[j]);
-                        DTps.setInt(4, jumlahProduk[j]);
-                        DTps.setInt(5, hargaS[j]);
-                        DTps.setInt(6, SubTotal[j]);
-                        DTps.executeUpdate();
-                    }
-
-                    // Update stok
-                    String updateStokMenu = "UPDATE produk SET stok = stok - ? WHERE id_produk = ?";
-                    try (PreparedStatement updateSM = conn.prepareStatement(updateStokMenu)) {
-                        updateSM.setInt(1, jumlahProduk[j]);
-                        updateSM.setString(2, idProduk[j]);
-                        updateSM.executeUpdate();
-                    }
-                }
-
-                conn.commit(); // Commit transaction
-            } catch (SQLException e) {
-                conn.rollback(); // Rollback on error
-                throw e;
-            }
-        }
-    }
-
-    
-
     private void hitungTotalHarga() {
         int totalHarga = 0;
 
@@ -413,106 +363,105 @@ private double parseFormattedNumber(String formattedNumber) {
         txt_totalharga.setText(formatNumber(totalHarga));
     }
 
-   private void formatBayarField() {
-    String text = txt_bayar.getText().replaceAll("[^0-9]", "");
-    if (!text.isEmpty()) {
-        try {
-            long amount = Long.parseLong(text);
-            txt_bayar.setText(formatNumber(amount));
-            
-            // Hitung kembalian jika total harga sudah ada
-            if (!txt_totalharga.getText().isEmpty()) {
-                double total = parseFormattedNumber(txt_totalharga.getText());
-                double bayar = parseFormattedNumber(txt_bayar.getText());
-                double kembalian = bayar - total;
-                txt_kembalian.setText(formatNumber(kembalian < 0 ? 0 : kembalian));
+    private void formatBayarField() {
+        String text = txt_bayar.getText().replaceAll("[^0-9]", "");
+        if (!text.isEmpty()) {
+            try {
+                long amount = Long.parseLong(text);
+                txt_bayar.setText(formatNumber(amount));
+
+                // Hitung kembalian jika total harga sudah ada
+                if (!txt_totalharga.getText().isEmpty()) {
+                    double total = parseFormattedNumber(txt_totalharga.getText());
+                    double bayar = parseFormattedNumber(txt_bayar.getText());
+                    double kembalian = bayar - total;
+                    txt_kembalian.setText(formatNumber(kembalian < 0 ? 0 : kembalian));
+                }
+            } catch (NumberFormatException e) {
+                txt_bayar.setText("");
             }
-        } catch (NumberFormatException e) {
-            txt_bayar.setText("");
         }
-    }
     }
 
     private void txt_noBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_noBarangActionPerformed
-     String kode_bahan = txt_noBarang.getText().trim();
-        
-try (Connection conn = koneksi.getConnection()) {
-    // First try to find by barcode
-    String sql = "SELECT p.id_produk, p.nama_produk, p.harga, p.kategori, p.stok, b.kode_barcode " +
-                 "FROM barcode b JOIN produk p ON b.id_produk = p.id_produk " +
-                 "WHERE b.kode_barcode = ?";
-    
-    try (PreparedStatement pst = conn.prepareStatement(sql)) {
-        pst.setString(1, kode_bahan);
-        ResultSet rs = pst.executeQuery();
+        String kode_bahan = txt_noBarang.getText().trim();
 
-        if (rs.next()) {
-            String idProduk = rs.getString("id_produk");
-            String namaProduk = rs.getString("nama_produk");
-            int harga = rs.getInt("harga");
-            String kategori = rs.getString("kategori");
-            int stok = rs.getInt("stok");
-            String kodeBarcode = rs.getString("kode_barcode"); // Ambil kode barcode
+        try (Connection conn = koneksi.getConnection()) {
+            // First try to find by barcode
+            String sql = "SELECT p.id_produk, p.nama_produk, p.harga, p.kategori, p.stok, b.kode_barcode "
+                    + "FROM barcode b JOIN produk p ON b.id_produk = p.id_produk "
+                    + "WHERE b.kode_barcode = ?";
 
-            txt_noBarang.setText(idProduk);
-            txt_namabrg.setText(namaProduk);
-            txt_harga.setText(String.valueOf(harga));
-            txt_barcode.setText(kodeBarcode); // Isi dengan kode barcode
-            txt_qty.setText("1");
-            txt_qty.requestFocus();
-            btn_simpan.doClick();
-        } else {
-            // If not found in barcode table, try direct product ID lookup
-            sql = "SELECT p.id_produk, p.nama_produk, p.harga, p.kategori, p.stok, " +
-                  "(SELECT b.kode_barcode FROM barcode b WHERE b.id_produk = p.id_produk LIMIT 1) as kode_barcode " +
-                  "FROM produk p WHERE p.id_produk = ?";
-            
-            try (PreparedStatement pst2 = conn.prepareStatement(sql)) {
-                pst2.setString(1, kode_bahan);
-                ResultSet rs2 = pst2.executeQuery();
-                
-                if (rs2.next()) {
-                    String idProduk = rs2.getString("id_produk");
-                    String namaProduk = rs2.getString("nama_produk");
-                    int harga = rs2.getInt("harga");
-                    String kategori = rs2.getString("kategori");
-                    int stok = rs2.getInt("stok");
-                    String kodeBarcode = rs2.getString("kode_barcode"); // Ambil kode barcode
+            try (PreparedStatement pst = conn.prepareStatement(sql)) {
+                pst.setString(1, kode_bahan);
+                ResultSet rs = pst.executeQuery();
+
+                if (rs.next()) {
+                    String idProduk = rs.getString("id_produk");
+                    String namaProduk = rs.getString("nama_produk");
+                    int harga = rs.getInt("harga");
+                    String kategori = rs.getString("kategori");
+                    int stok = rs.getInt("stok");
+                    String kodeBarcode = rs.getString("kode_barcode"); // Ambil kode barcode
 
                     txt_noBarang.setText(idProduk);
                     txt_namabrg.setText(namaProduk);
                     txt_harga.setText(String.valueOf(harga));
-                    txt_barcode.setText(kodeBarcode != null ? kodeBarcode : "Tidak ada barcode"); // Isi dengan kode barcode atau default
+                    txt_barcode.setText(kodeBarcode); // Isi dengan kode barcode
                     txt_qty.setText("1");
                     txt_qty.requestFocus();
+                    btn_simpan.doClick();
                 } else {
-                    JOptionPane.showMessageDialog(this, 
-                        "Produk tidak ditemukan", 
-                        "Error", 
-                        JOptionPane.ERROR_MESSAGE);
-                    clearProductFields();
+                    // If not found in barcode table, try direct product ID lookup
+                    sql = "SELECT p.id_produk, p.nama_produk, p.harga, p.kategori, p.stok, "
+                            + "(SELECT b.kode_barcode FROM barcode b WHERE b.id_produk = p.id_produk LIMIT 1) as kode_barcode "
+                            + "FROM produk p WHERE p.id_produk = ?";
+
+                    try (PreparedStatement pst2 = conn.prepareStatement(sql)) {
+                        pst2.setString(1, kode_bahan);
+                        ResultSet rs2 = pst2.executeQuery();
+
+                        if (rs2.next()) {
+                            String idProduk = rs2.getString("id_produk");
+                            String namaProduk = rs2.getString("nama_produk");
+                            int harga = rs2.getInt("harga");
+                            String kategori = rs2.getString("kategori");
+                            int stok = rs2.getInt("stok");
+                            String kodeBarcode = rs2.getString("kode_barcode"); // Ambil kode barcode
+
+                            txt_noBarang.setText(idProduk);
+                            txt_namabrg.setText(namaProduk);
+                            txt_harga.setText(String.valueOf(harga));
+                            txt_barcode.setText(kodeBarcode != null ? kodeBarcode : "Tidak ada barcode"); // Isi dengan kode barcode atau default
+                            txt_qty.setText("1");
+                            txt_qty.requestFocus();
+                        } else {
+                            JOptionPane.showMessageDialog(this,
+                                    "Produk tidak ditemukan",
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE);
+                            clearProductFields();
+                        }
+                    }
                 }
             }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error: " + e.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
-    }
-} catch (SQLException e) {
-    JOptionPane.showMessageDialog(this, 
-        "Error: " + e.getMessage(), 
-        "Database Error", 
-        JOptionPane.ERROR_MESSAGE);
-    e.printStackTrace();
-}
     }
 
     // NEW METHOD: Clear product input fields
     private void clearProductFields() {
-    txt_noBarang.setText("");
-    txt_namabrg.setText("");
-    txt_qty.setText("");
-    txt_harga.setText("");
-    txt_barcode.setText("");
-    txt_noBarang.requestFocus(); // Fokus kembali ke input pertama
-
+        txt_noBarang.setText("");
+        txt_namabrg.setText("");
+        txt_qty.setText("");
+        txt_harga.setText("");
+        txt_barcode.setText("");
+        txt_noBarang.requestFocus(); // Fokus kembali ke input pertama
 
 
     }//GEN-LAST:event_txt_noBarangActionPerformed
@@ -548,120 +497,118 @@ try (Connection conn = koneksi.getConnection()) {
     }//GEN-LAST:event_txt_kembalianActionPerformed
 
     private void btn_simpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_simpanActionPerformed
-     try {
-    // Input validation
-    if (txt_noBarang.getText().trim().isEmpty() ||
-        txt_namabrg.getText().trim().isEmpty() ||
-        txt_qty.getText().trim().isEmpty() ||
-        txt_harga.getText().trim().isEmpty()) {
-        
-        JOptionPane.showMessageDialog(this, 
-            "Harap isi semua kolom sebelum menyimpan.", 
-            "Error", 
-            JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+        try {
+            // Input validation
+            if (txt_noBarang.getText().trim().isEmpty()
+                    || txt_namabrg.getText().trim().isEmpty()
+                    || txt_qty.getText().trim().isEmpty()
+                    || txt_harga.getText().trim().isEmpty()) {
 
-    String idProduk = txt_noBarang.getText().trim();
-    int qty = Integer.parseInt(txt_qty.getText().trim());
-    int harga = Integer.parseInt(txt_harga.getText().trim());
-
-    if (qty <= 0 || harga <= 0) {
-        JOptionPane.showMessageDialog(this, 
-            "Jumlah dan harga harus lebih dari 0.", 
-            "Error", 
-            JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    // Check stock availability
-    try (Connection conn = koneksi.getConnection();
-         PreparedStatement ps = conn.prepareStatement(
-             "SELECT stok FROM produk WHERE id_produk = ?")) {
-        
-        ps.setString(1, idProduk);
-        ResultSet rs = ps.executeQuery();
-
-        if (rs.next()) {
-            int stokTersedia = rs.getInt("stok");
-            
-            if (stokTersedia < qty) {
-                JOptionPane.showMessageDialog(this, 
-                    "Stok tidak cukup! Stok tersedia: " + stokTersedia, 
-                    "Error", 
-                    JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, 
-                "Produk tidak ditemukan dalam database.", 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-    }
-
-    // ✅ Cek tanggal expired dari barcode
-    try (Connection conn = koneksi.getConnection();
-         PreparedStatement ps = conn.prepareStatement(
-             "SELECT tgl_expired FROM barcode WHERE kode_barcode = ?")) {
-
-        ps.setString(1, txt_barcode.getText().trim());
-        ResultSet rs = ps.executeQuery();
-
-        if (rs.next()) {
-            java.sql.Date tglExp = rs.getDate("tgl_expired");
-            java.util.Date today = new java.util.Date();
-
-            if (tglExp.before(today)) {
                 JOptionPane.showMessageDialog(this,
-                    "Barang Anda sudah expired dan tidak bisa masuk ke transaksi.",
-                    "Barang Expired",
-                    JOptionPane.WARNING_MESSAGE);
-                clearProductFields(); // ← tambahkan juga reset form jika expired
+                        "Harap isi semua kolom sebelum menyimpan.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
-        } else {
+
+            String idProduk = txt_noBarang.getText().trim();
+            int qty = Integer.parseInt(txt_qty.getText().trim());
+            int harga = Integer.parseInt(txt_harga.getText().trim());
+
+            if (qty <= 0 || harga <= 0) {
+                JOptionPane.showMessageDialog(this,
+                        "Jumlah dan harga harus lebih dari 0.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Check stock availability
+            try (Connection conn = koneksi.getConnection(); PreparedStatement ps = conn.prepareStatement(
+                    "SELECT stok FROM produk WHERE id_produk = ?")) {
+
+                ps.setString(1, idProduk);
+                ResultSet rs = ps.executeQuery();
+
+                if (rs.next()) {
+                    int stokTersedia = rs.getInt("stok");
+
+                    if (stokTersedia < qty) {
+                        JOptionPane.showMessageDialog(this,
+                                "Stok tidak cukup! Stok tersedia: " + stokTersedia,
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Produk tidak ditemukan dalam database.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+
+            // ✅ Cek tanggal expired dari barcode
+            try (Connection conn = koneksi.getConnection(); PreparedStatement ps = conn.prepareStatement(
+                    "SELECT tgl_expired FROM barcode WHERE kode_barcode = ?")) {
+
+                ps.setString(1, txt_barcode.getText().trim());
+                ResultSet rs = ps.executeQuery();
+
+                if (rs.next()) {
+                    java.sql.Date tglExp = rs.getDate("tgl_expired");
+                    java.util.Date today = new java.util.Date();
+
+                    if (tglExp.before(today)) {
+                        JOptionPane.showMessageDialog(this,
+                                "Barang Anda sudah expired dan tidak bisa masuk ke transaksi.",
+                                "Barang Expired",
+                                JOptionPane.WARNING_MESSAGE);
+                        clearProductFields(); // ← tambahkan juga reset form jika expired
+                        return;
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Kode barcode tidak ditemukan di database.",
+                            "Data Tidak Ada",
+                            JOptionPane.ERROR_MESSAGE);
+                    clearProductFields(); // ← reset jika barcode tidak ditemukan
+                    return;
+                }
+            }
+
+            // Add to cart/table
+            int total = qty * harga;
+
+            if (model == null) {
+                refreshTable();
+            }
+
+            model.addRow(new Object[]{
+                idProduk,
+                txt_namabrg.getText().trim(),
+                qty,
+                harga,
+                total,
+                txt_barcode.getText().trim()
+            });
+
+            hitungTotalHarga();
+            clearProductFields(); // ✅ reset semua input setelah tambah
+
+        } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this,
-                "Kode barcode tidak ditemukan di database.",
-                "Data Tidak Ada",
-                JOptionPane.ERROR_MESSAGE);
-            clearProductFields(); // ← reset jika barcode tidak ditemukan
-            return;
+                    "Harap masukkan angka yang valid untuk jumlah dan harga.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error: " + e.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
-    }
-
-    // Add to cart/table
-    int total = qty * harga;
-
-    if (model == null) {
-        refreshTable();
-    }
-
-    model.addRow(new Object[]{
-        idProduk,
-        txt_namabrg.getText().trim(),
-        qty,
-        harga,
-        total,
-        txt_barcode.getText().trim()
-    });
-
-    hitungTotalHarga();
-    clearProductFields(); // ✅ reset semua input setelah tambah
-
-} catch (NumberFormatException e) {
-    JOptionPane.showMessageDialog(this, 
-        "Harap masukkan angka yang valid untuk jumlah dan harga.", 
-        "Error", 
-        JOptionPane.ERROR_MESSAGE);
-} catch (SQLException e) {
-    JOptionPane.showMessageDialog(this, 
-        "Error: " + e.getMessage(), 
-        "Database Error", 
-        JOptionPane.ERROR_MESSAGE);
-    e.printStackTrace();
-}
 
     }//GEN-LAST:event_btn_simpanActionPerformed
 
@@ -691,209 +638,208 @@ try (Connection conn = koneksi.getConnection()) {
     }//GEN-LAST:event_btn_hapusActionPerformed
 
     private void btn_bayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_bayarActionPerformed
-      if (jTable1.getRowCount() == 0) {
-        JOptionPane.showMessageDialog(this,
-                "Belum ada item yang ditambahkan!",
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    if (txt_bayar.getText().isEmpty()) {
-        JOptionPane.showMessageDialog(this,
-                "Nominal pembayaran harus diisi!",
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    try {
-        double total = parseFormattedNumber(txt_totalharga.getText());
-        double bayar = parseFormattedNumber(txt_bayar.getText());
-        double kembalian = bayar - total;
-
-        if (bayar < total) {
+        if (jTable1.getRowCount() == 0) {
             JOptionPane.showMessageDialog(this,
-                    "Nominal pembayaran kurang! Kurang: " + formatNumber(total - bayar),
+                    "Belum ada item yang ditambahkan!",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Konfirmasi pembayaran
-        int confirm = JOptionPane.showConfirmDialog(
-            this,
-            "Total: " + formatNumber(total) + 
-            "\nBayar: " + formatNumber(bayar) + 
-            "\nKembali: " + formatNumber(kembalian) + 
-            "\n\nKonfirmasi pembayaran?",
-            "Konfirmasi Pembayaran",
-            JOptionPane.YES_NO_OPTION
-        );
-
-        if (confirm != JOptionPane.YES_OPTION) {
+        if (txt_bayar.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Nominal pembayaran harus diisi!",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Process transaction
-        String kodeTransaksi = generateKodeTransaksi();
-        String idKaryawan = Session.getKode();
+        try {
+            double total = parseFormattedNumber(txt_totalharga.getText());
+            double bayar = parseFormattedNumber(txt_bayar.getText());
+            double kembalian = bayar - total;
 
-        if (prosesTransaksiKeDatabase(kodeTransaksi, idKaryawan, total, bayar)) {
-            // Update UI
-            txt_kembalian.setText(formatNumber(kembalian));
-
-            // Prepare receipt data
-           DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-String[][] itemsForStruk = new String[model.getRowCount()][4];
-
-for (int i = 0; i < model.getRowCount(); i++) {
-    itemsForStruk[i][0] = model.getValueAt(i, 1).toString(); // Nama Produk
-    itemsForStruk[i][1] = model.getValueAt(i, 2).toString(); // Qty
-    itemsForStruk[i][2] = model.getValueAt(i, 3).toString(); // Harga
-    itemsForStruk[i][3] = model.getValueAt(i, 4).toString(); // Subtotal
-}
-
-
-            // Print receipt (if applicable)
-            boolean cetakBerhasil = true;
-            try {
-                cetakBerhasil = StrukPrinter.printStrukDenganKonfirmasi(
-                        kodeTransaksi,
-                        itemsForStruk,
-                        total,
-                        bayar,
-                        kembalian,
-                        idKaryawan
-                );
-            } catch (Exception e) {
-                cetakBerhasil = false;
+            if (bayar < total) {
                 JOptionPane.showMessageDialog(this,
-                        "Error saat mencetak struk: " + e.getMessage(),
-                        "Warning",
-                        JOptionPane.WARNING_MESSAGE);
+                        "Nominal pembayaran kurang! Kurang: " + formatNumber(total - bayar),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
             }
 
-            // Reset form after transaction
-            model.setRowCount(0);
-            txt_totalharga.setText("");
-            txt_bayar.setText("");
-            txt_kembalian.setText("");
+            // Konfirmasi pembayaran
+            int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "Total: " + formatNumber(total)
+                    + "\nBayar: " + formatNumber(bayar)
+                    + "\nKembali: " + formatNumber(kembalian)
+                    + "\n\nKonfirmasi pembayaran?",
+                    "Konfirmasi Pembayaran",
+                    JOptionPane.YES_NO_OPTION
+            );
 
-            JOptionPane.showMessageDialog(this,
-                    "Transaksi berhasil!\nNo. Nota: " + kodeTransaksi,
-                    "Sukses",
-                    JOptionPane.INFORMATION_MESSAGE);
-        }
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this,
-                "Format nominal tidak valid!",
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this,
-                "Error: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
-    }
-    }
-
-private boolean prosesTransaksiKeDatabase(String kodeTransaksi, String idKaryawan, 
-                                   double total, double bayar) {
-    Connection conn = null;
-    try {
-        conn = koneksi.getConnection();
-        conn.setAutoCommit(false); // Start transaction
-
-        // 1. Insert into penjualan table
-        String sqlPenjualan = "INSERT INTO penjualan (id_penjualan, id_karyawan, tanggal, total_harga, bayar) VALUES (?, ?, NOW(), ?, ?)";
-        
-        try (PreparedStatement psPenjualan = conn.prepareStatement(sqlPenjualan)) {
-            psPenjualan.setString(1, kodeTransaksi);
-            psPenjualan.setString(2, idKaryawan);
-            psPenjualan.setDouble(3, total);
-            psPenjualan.setDouble(4, bayar);
-            psPenjualan.executeUpdate();
-        }
-
-        // 2. Insert each item into detail_penjualan and update stock
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        for (int i = 0; i < model.getRowCount(); i++) {
-            String idProduk = model.getValueAt(i, 0).toString();
-            int jumlah = Integer.parseInt(model.getValueAt(i, 2).toString());
-            int hargaSatuan = Integer.parseInt(model.getValueAt(i, 3).toString().replace(".", ""));
-            int subtotal = Integer.parseInt(model.getValueAt(i, 4).toString().replace(".", ""));
-            String kategori = model.getValueAt(i, 5).toString();
-
-            // Insert into detail_penjualan
-            String sqlDetail = "INSERT INTO detail_penjualan " +
-                              "(id_penjualan, id_produk, kategori, jumlah, harga_satuan, subtotal) " +
-                              "VALUES (?, ?, ?, ?, ?, ?)";
-            
-            try (PreparedStatement psDetail = conn.prepareStatement(sqlDetail)) {
-                psDetail.setString(1, kodeTransaksi);
-                psDetail.setString(2, idProduk);
-                psDetail.setString(3, kategori);
-                psDetail.setInt(4, jumlah);
-                psDetail.setInt(5, hargaSatuan);
-                psDetail.setInt(6, subtotal);
-                psDetail.executeUpdate();
+            if (confirm != JOptionPane.YES_OPTION) {
+                return;
             }
 
-            // Update product stock
-            String sqlUpdateStock = "UPDATE produk SET stok = stok - ? WHERE id_produk = ?";
-            try (PreparedStatement psUpdate = conn.prepareStatement(sqlUpdateStock)) {
-                psUpdate.setInt(1, jumlah);
-                psUpdate.setString(2, idProduk);
-                psUpdate.executeUpdate();
-            }
+            // Process transaction
+            String kodeTransaksi = generateKodeTransaksi();
+            String idKaryawan = Session.getKode();
 
-            // Hapus barcode yang sudah digunakan
-            String sqlDeleteBarcode = "DELETE FROM barcode WHERE kode_barcode = ?";
-            try (PreparedStatement psDelete = conn.prepareStatement(sqlDeleteBarcode)) {
-                psDelete.setString(1, kategori); // kolom kategori diisi dengan kode_barcode
-                int affected = psDelete.executeUpdate();
-                if (affected == 0) {
-                    System.out.println("Gagal menghapus barcode: " + kategori);
-                } else {
-                    System.out.println("Barcode terhapus: " + kategori);
+            if (prosesTransaksiKeDatabase(kodeTransaksi, idKaryawan, total, bayar)) {
+                // Update UI
+                txt_kembalian.setText(formatNumber(kembalian));
+
+                // Prepare receipt data
+                DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+                String[][] itemsForStruk = new String[model.getRowCount()][4];
+
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    itemsForStruk[i][0] = model.getValueAt(i, 1).toString(); // Nama Produk
+                    itemsForStruk[i][1] = model.getValueAt(i, 2).toString(); // Qty
+                    itemsForStruk[i][2] = model.getValueAt(i, 3).toString(); // Harga
+                    itemsForStruk[i][3] = model.getValueAt(i, 4).toString(); // Subtotal
                 }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(null,
-                        "Gagal menghapus barcode: " + ex.getMessage(),
-                        "Database Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
 
-        conn.commit();
-        return true;
-        
-    } catch (SQLException e) {
-        if (conn != null) {
-            try {
-                conn.rollback();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+                // Print receipt (if applicable)
+                boolean cetakBerhasil = true;
+                try {
+                    cetakBerhasil = StrukPrinter.printStrukDenganKonfirmasi(
+                            kodeTransaksi,
+                            itemsForStruk,
+                            total,
+                            bayar,
+                            kembalian,
+                            idKaryawan
+                    );
+                } catch (Exception e) {
+                    cetakBerhasil = false;
+                    JOptionPane.showMessageDialog(this,
+                            "Error saat mencetak struk: " + e.getMessage(),
+                            "Warning",
+                            JOptionPane.WARNING_MESSAGE);
+                }
+
+                // Reset form after transaction
+                model.setRowCount(0);
+                txt_totalharga.setText("");
+                txt_bayar.setText("");
+                txt_kembalian.setText("");
+
+                JOptionPane.showMessageDialog(this,
+                        "Transaksi berhasil!\nNo. Nota: " + kodeTransaksi,
+                        "Sukses",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
-        }
-        JOptionPane.showMessageDialog(this, 
-            "Error saat menyimpan transaksi: " + e.getMessage(), 
-            "Database Error", 
-            JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
-        return false;
-    } finally {
-        if (conn != null) {
-            try {
-                conn.setAutoCommit(true);
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Format nominal tidak valid!",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
     }
+
+    private boolean prosesTransaksiKeDatabase(String kodeTransaksi, String idKaryawan,
+            double total, double bayar) {
+        Connection conn = null;
+        try {
+            conn = koneksi.getConnection();
+            conn.setAutoCommit(false); // Start transaction
+
+            // 1. Insert into penjualan table
+            String sqlPenjualan = "INSERT INTO penjualan (id_penjualan, id_karyawan, tanggal, total_harga, bayar) VALUES (?, ?, NOW(), ?, ?)";
+
+            try (PreparedStatement psPenjualan = conn.prepareStatement(sqlPenjualan)) {
+                psPenjualan.setString(1, kodeTransaksi);
+                psPenjualan.setString(2, idKaryawan);
+                psPenjualan.setDouble(3, total);
+                psPenjualan.setDouble(4, bayar);
+                psPenjualan.executeUpdate();
+            }
+
+            // 2. Insert each item into detail_penjualan and update stock
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            for (int i = 0; i < model.getRowCount(); i++) {
+                String idProduk = model.getValueAt(i, 0).toString();
+                int jumlah = Integer.parseInt(model.getValueAt(i, 2).toString());
+                int hargaSatuan = Integer.parseInt(model.getValueAt(i, 3).toString().replace(".", ""));
+                int subtotal = Integer.parseInt(model.getValueAt(i, 4).toString().replace(".", ""));
+                String kategori = model.getValueAt(i, 5).toString();
+
+                // Insert into detail_penjualan
+                String sqlDetail = "INSERT INTO detail_penjualan "
+                        + "(id_penjualan, id_produk, kategori, jumlah, harga_satuan, subtotal) "
+                        + "VALUES (?, ?, ?, ?, ?, ?)";
+
+                try (PreparedStatement psDetail = conn.prepareStatement(sqlDetail)) {
+                    psDetail.setString(1, kodeTransaksi);
+                    psDetail.setString(2, idProduk);
+                    psDetail.setString(3, kategori);
+                    psDetail.setInt(4, jumlah);
+                    psDetail.setInt(5, hargaSatuan);
+                    psDetail.setInt(6, subtotal);
+                    psDetail.executeUpdate();
+                }
+
+                // Update product stock
+                String sqlUpdateStock = "UPDATE produk SET stok = stok - ? WHERE id_produk = ?";
+                try (PreparedStatement psUpdate = conn.prepareStatement(sqlUpdateStock)) {
+                    psUpdate.setInt(1, jumlah);
+                    psUpdate.setString(2, idProduk);
+                    psUpdate.executeUpdate();
+                }
+
+                // Hapus barcode yang sudah digunakan
+                String sqlDeleteBarcode = "DELETE FROM barcode WHERE kode_barcode = ?";
+                try (PreparedStatement psDelete = conn.prepareStatement(sqlDeleteBarcode)) {
+                    psDelete.setString(1, kategori); // kolom kategori diisi dengan kode_barcode
+                    int affected = psDelete.executeUpdate();
+                    if (affected == 0) {
+                        System.out.println("Gagal menghapus barcode: " + kategori);
+                    } else {
+                        System.out.println("Barcode terhapus: " + kategori);
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null,
+                            "Gagal menghapus barcode: " + ex.getMessage(),
+                            "Database Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
+            conn.commit();
+            return true;
+
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            JOptionPane.showMessageDialog(this,
+                    "Error saat menyimpan transaksi: " + e.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
 
     }//GEN-LAST:event_btn_bayarActionPerformed

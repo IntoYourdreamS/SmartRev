@@ -4,7 +4,6 @@
  */
 package smart;
 
-import Config.koneksi;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
 import java.awt.Font;
@@ -13,33 +12,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.DriverManager;
-import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import popup.notifberhasilkrw;
-import popup.tambahkaryawan;
-import popup.ubahkaryawan;
-import popup.tambahkaryawan;
 import popup.dataopname;
 
 /**
  *
  * @author acer
  */
-
- //private static final int counter = 1;
-//    private PreparedStatement stat;
-  //  private ResultSet rs;
-   // private DefaultTableModel model = null;
-
 public class stokopname extends javax.swing.JFrame {
 
     public static int getSelectedRow() {
@@ -57,30 +42,30 @@ public class stokopname extends javax.swing.JFrame {
     /**
      * Creates new form login
      */
-    
     private Connection conn;
+
     public stokopname() {
         initComponents();
-          SwingUtilities.invokeLater(() -> barcode.requestFocusInWindow());
-         customizeTable();
-         makeButtonTransparent(simpan);
-       //initializeUI();
-       initializeDatabase();
-              makeButtonTransparent(cek);
-               makeButtonTransparent(keluar);
-                 makeButtonTransparent(laporan);
-               barcode.setOpaque(false);
+        SwingUtilities.invokeLater(() -> barcode.requestFocusInWindow());
+        customizeTable();
+        makeButtonTransparent(simpan);
+        initializeDatabase();
+        makeButtonTransparent(cek);
+        makeButtonTransparent(keluar);
+        makeButtonTransparent(laporan);
+        barcode.setOpaque(false);
         barcode.setBackground(new Color(0, 0, 0, 0));
-         nama_barang.setOpaque(false);
+        nama_barang.setOpaque(false);
         nama_barang.setBackground(new Color(0, 0, 0, 0));
-         id_barang.setOpaque(false);
+        id_barang.setOpaque(false);
         id_barang.setBackground(new Color(0, 0, 0, 0));
-         harga_beli.setOpaque(false);
+        harga_beli.setOpaque(false);
         harga_beli.setBackground(new Color(0, 0, 0, 0));
-         harga_jual.setOpaque(false);
+        harga_jual.setOpaque(false);
         harga_jual.setBackground(new Color(0, 0, 0, 0));
-              
+
     }
+
     private void makeButtonTransparent(JButton button) {
         button.setOpaque(false);
         button.setContentAreaFilled(false);
@@ -88,43 +73,33 @@ public class stokopname extends javax.swing.JFrame {
     }
     // Pastikan ini sebagai instance variable
 
-
 // Method untuk inisialisasi koneksi database
-private void initializeDatabase() {
-    try {
-        conn = DriverManager.getConnection(
-            "jdbc:mysql://localhost:3306/smart", 
-            "root", 
-            "");
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, 
-            "Gagal terhubung ke database: " + e.getMessage(), 
-            "Error", 
-            JOptionPane.ERROR_MESSAGE);
+    private void initializeDatabase() {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/smart",
+                    "root",
+                    "");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Gagal terhubung ke database: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
-}
 
-    
-     private void customizeTable() {
-          JTableHeader header = tbstokopname.getTableHeader();
-           header.setFont(new Font("Inter", Font.BOLD, 11));
-           header.setForeground(Color.WHITE);
-            header.setOpaque(false);
-            tbstokopname.setFont(new Font("Arial", Font.PLAIN, 10));
-            tbstokopname.setRowHeight(30); 
-            tbstokopname.setShowGrid(true); 
-            tbstokopname.setIntercellSpacing(new java.awt.Dimension(0, 0));
-            tbstokopname.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    private void customizeTable() {
+        JTableHeader header = tbstokopname.getTableHeader();
+        header.setFont(new Font("Inter", Font.BOLD, 11));
+        header.setForeground(Color.WHITE);
+        header.setOpaque(false);
+        tbstokopname.setFont(new Font("Arial", Font.PLAIN, 10));
+        tbstokopname.setRowHeight(30);
+        tbstokopname.setShowGrid(true);
+        tbstokopname.setIntercellSpacing(new java.awt.Dimension(0, 0));
+        tbstokopname.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-     }
-     
-
-   
-  
-    
-   
-
-    
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -237,274 +212,269 @@ private void initializeDatabase() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void simpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simpanActionPerformed
-     try {
-        // Validasi field tidak boleh kosong
-        if (id_barang.getText().trim().isEmpty() ||
-            nama_barang.getText().trim().isEmpty() ||
-            harga_beli.getText().trim().isEmpty() ||
-            harga_jual.getText().trim().isEmpty()) {
-            
+        try {
+            // Validasi field tidak boleh kosong
+            if (id_barang.getText().trim().isEmpty()
+                    || nama_barang.getText().trim().isEmpty()
+                    || harga_beli.getText().trim().isEmpty()
+                    || harga_jual.getText().trim().isEmpty()) {
+
+                JOptionPane.showMessageDialog(this,
+                        "Data belum lengkap!",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Validasi input numerik
+            int hBeli = Integer.parseInt(harga_beli.getText().trim());
+            int hJual = Integer.parseInt(harga_jual.getText().trim());
+
+            if (hBeli <= 0 || hJual <= 0) {
+                JOptionPane.showMessageDialog(this,
+                        "Harga harus lebih dari 0!",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Tambahkan ke tabel (row pertama)
+            DefaultTableModel model = (DefaultTableModel) tbstokopname.getModel();
+            model.insertRow(0, new Object[]{
+                id_barang.getText().trim(),
+                nama_barang.getText().trim(),
+                harga_beli.getText().trim(),
+                harga_jual.getText().trim(),
+                barcode.getText().trim()
+            });
+
+            // Auto-scroll ke row baru
+            tbstokopname.setRowSelectionInterval(0, 0);
+            tbstokopname.scrollRectToVisible(tbstokopname.getCellRect(0, 0, true));
+
+            // Reset form
+            clearFields();
+
+        } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this,
-                "Data belum lengkap!",
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-            return;
+                    "Format harga tidak valid!",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
-
-        // Validasi input numerik
-        int hBeli = Integer.parseInt(harga_beli.getText().trim());
-        int hJual = Integer.parseInt(harga_jual.getText().trim());
-        
-        if (hBeli <= 0 || hJual <= 0) {
-            JOptionPane.showMessageDialog(this,
-                "Harga harus lebih dari 0!",
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Tambahkan ke tabel (row pertama)
-        DefaultTableModel model = (DefaultTableModel) tbstokopname.getModel();
-        model.insertRow(0, new Object[]{
-            id_barang.getText().trim(),
-            nama_barang.getText().trim(),
-            harga_beli.getText().trim(),
-            harga_jual.getText().trim(),
-            barcode.getText().trim()
-        });
-
-        // Auto-scroll ke row baru
-        tbstokopname.setRowSelectionInterval(0, 0);
-        tbstokopname.scrollRectToVisible(tbstokopname.getCellRect(0, 0, true));
-
-        // Reset form
-        clearFields();
-        
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this,
-            "Format harga tidak valid!",
-            "Error",
-            JOptionPane.ERROR_MESSAGE);
     }
-}
 
 // Method untuk mengosongkan field
-private void clearFields() {
-    id_barang.setText("");
-    nama_barang.setText("");
-    harga_beli.setText("");
-    harga_jual.setText("");
-    barcode.setText("");
-    barcode.requestFocus();
-}
+    private void clearFields() {
+        id_barang.setText("");
+        nama_barang.setText("");
+        harga_beli.setText("");
+        harga_jual.setText("");
+        barcode.setText("");
+        barcode.requestFocus();
+    }
 
-
-private void clearForm() {
-    id_barang.setText("");
-    nama_barang.setText("");
-    harga_beli.setText("");
-    harga_jual.setText("");
-    barcode.setText("");
-    barcode.requestFocus();
+    private void clearForm() {
+        id_barang.setText("");
+        nama_barang.setText("");
+        harga_beli.setText("");
+        harga_jual.setText("");
+        barcode.setText("");
+        barcode.requestFocus();
 
     }//GEN-LAST:event_simpanActionPerformed
 
     private void cekActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cekActionPerformed
-     try {
-    // 1. Hitung total stok fisik berdasarkan ID produk
-    int stokFisik = 0;
-    String idProduk = "";
-    String barcodeValue = "";
-    String namaProduk = "";
+        try {
+            // 1. Hitung total stok fisik berdasarkan ID produk
+            int stokFisik = 0;
+            String idProduk = "";
+            String barcodeValue = "";
+            String namaProduk = "";
 
-    DefaultTableModel model = (DefaultTableModel) tbstokopname.getModel();
+            DefaultTableModel model = (DefaultTableModel) tbstokopname.getModel();
 
-    if (model.getRowCount() == 0) {
-        JOptionPane.showMessageDialog(this, 
-            "Tidak ada data stok fisik!", 
-            "Error", 
-            JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    // Ambil data dari baris pertama dan cek null
-    Object objIdProduk = model.getValueAt(0, 0);
-    Object objNamaProduk = model.getValueAt(0, 1);
-    Object objBarcode = model.getValueAt(0, 4);
-
-    if (objIdProduk == null || objNamaProduk == null || objBarcode == null) {
-        JOptionPane.showMessageDialog(this, 
-            "Data pada baris pertama tidak lengkap (ada nilai kosong/null).", 
-            "Error", 
-            JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    idProduk = objIdProduk.toString();
-    namaProduk = objNamaProduk.toString();
-    barcodeValue = objBarcode.toString();
-
-    // Perbaikan: Hitung semua baris yang memiliki ID produk yang sama
-    for (int i = 0; i < model.getRowCount(); i++) {
-        Object idProdukObj = model.getValueAt(i, 0);
-        if (idProdukObj != null && idProdukObj.toString().equals(idProduk)) {
-            stokFisik++;
-        }
-    }
-
-    // 2. Ambil stok sistem dari database
-    int stokSistem = 0;
-    String queryStok = "SELECT stok FROM produk WHERE id_produk = ?";
-    try (PreparedStatement pst = conn.prepareStatement(queryStok)) {
-        pst.setString(1, idProduk);
-        ResultSet rs = pst.executeQuery();
-
-        if (rs.next()) {
-            stokSistem = rs.getInt("stok");
-        } else {
-            JOptionPane.showMessageDialog(this, 
-                "Produk tidak ditemukan di database!", 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-    }
-
-    // 3. Hitung selisih
-    int selisih = stokFisik - stokSistem;
-
-    // 4. Tampilkan notifikasi
-    String message;
-    if (selisih == 0) {
-        message = "Stok Anda PAS\n" +
-                 "Sistem: " + stokSistem + " unit\n" +
-                 "Fisik: " + stokFisik + " unit";
-    } else if (selisih > 0) {
-        message = "Stok Anda LEBIH " + selisih + " unit\n" +
-                 "Sistem: " + stokSistem + " unit\n" +
-                 "Fisik: " + stokFisik + " unit";
-    } else {
-        message = "Stok Anda KURANG " + (-selisih) + " unit\n" +
-                 "Sistem: " + stokSistem + " unit\n" +
-                 "Fisik: " + stokFisik + " unit";
-    }
-
-    // 5. Buat dialog konfirmasi
-    Object[] options = {"OK", "Simpan Hasil"};
-    int choice = JOptionPane.showOptionDialog(this, 
-        message, 
-        "Hasil Cek Stok - " + namaProduk,
-        JOptionPane.DEFAULT_OPTION, 
-        JOptionPane.INFORMATION_MESSAGE,
-        null, 
-        options, 
-        options[0]);
-
-    // 6. Jika pilih Simpan Hasil
-    if (choice == 1) {
-        String insertQuery = "INSERT INTO stok_opname " +
-                     "(kd_barang, namaBarang, stokSistem, stokFisik, selisih, catatan, create_at) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-try (PreparedStatement pst = conn.prepareStatement(insertQuery)) {
-    pst.setString(1, idProduk); // kd_barang
-    pst.setString(2, namaProduk); // namaBarang
-    pst.setInt(3, stokSistem); // stokSistem
-    pst.setInt(4, stokFisik); // stokFisik
-    pst.setString(5, String.valueOf(selisih)); // selisih
-    pst.setString(6, selisih == 0 ? "Stok sesuai" : 
-                  (selisih > 0 ? "Stok lebih" : "Stok kurang")); // catatan
-    pst.setDate(7, new java.sql.Date(System.currentTimeMillis())); // create_at
-
-
-            int affectedRows = pst.executeUpdate();
-
-            if (affectedRows > 0) {
-                JOptionPane.showMessageDialog(this, 
-                    "Data stok berhasil disimpan", 
-                    "Sukses", 
-                    JOptionPane.INFORMATION_MESSAGE);
-
-                // Clear tabel setelah disimpan (opsional)
-                model.setRowCount(0);
+            if (model.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this,
+                        "Tidak ada data stok fisik!",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
             }
-        }
-    }
 
-} catch (SQLException ex) {
-    JOptionPane.showMessageDialog(this, 
-        "Error database: " + ex.getMessage(), 
-        "Error", 
-        JOptionPane.ERROR_MESSAGE);
-    ex.printStackTrace();
-} catch (Exception e) {
-    JOptionPane.showMessageDialog(this, 
-        "Error: " + e.getMessage(), 
-        "Error", 
-        JOptionPane.ERROR_MESSAGE);
-    e.printStackTrace();
-}
+            // Ambil data dari baris pertama dan cek null
+            Object objIdProduk = model.getValueAt(0, 0);
+            Object objNamaProduk = model.getValueAt(0, 1);
+            Object objBarcode = model.getValueAt(0, 4);
+
+            if (objIdProduk == null || objNamaProduk == null || objBarcode == null) {
+                JOptionPane.showMessageDialog(this,
+                        "Data pada baris pertama tidak lengkap (ada nilai kosong/null).",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            idProduk = objIdProduk.toString();
+            namaProduk = objNamaProduk.toString();
+            barcodeValue = objBarcode.toString();
+
+            // Perbaikan: Hitung semua baris yang memiliki ID produk yang sama
+            for (int i = 0; i < model.getRowCount(); i++) {
+                Object idProdukObj = model.getValueAt(i, 0);
+                if (idProdukObj != null && idProdukObj.toString().equals(idProduk)) {
+                    stokFisik++;
+                }
+            }
+
+            // 2. Ambil stok sistem dari database
+            int stokSistem = 0;
+            String queryStok = "SELECT stok FROM produk WHERE id_produk = ?";
+            try (PreparedStatement pst = conn.prepareStatement(queryStok)) {
+                pst.setString(1, idProduk);
+                ResultSet rs = pst.executeQuery();
+
+                if (rs.next()) {
+                    stokSistem = rs.getInt("stok");
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Produk tidak ditemukan di database!",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+
+            // 3. Hitung selisih
+            int selisih = stokFisik - stokSistem;
+
+            // 4. Tampilkan notifikasi
+            String message;
+            if (selisih == 0) {
+                message = "Stok Anda PAS\n"
+                        + "Sistem: " + stokSistem + " unit\n"
+                        + "Fisik: " + stokFisik + " unit";
+            } else if (selisih > 0) {
+                message = "Stok Anda LEBIH " + selisih + " unit\n"
+                        + "Sistem: " + stokSistem + " unit\n"
+                        + "Fisik: " + stokFisik + " unit";
+            } else {
+                message = "Stok Anda KURANG " + (-selisih) + " unit\n"
+                        + "Sistem: " + stokSistem + " unit\n"
+                        + "Fisik: " + stokFisik + " unit";
+            }
+
+            // 5. Buat dialog konfirmasi
+            Object[] options = {"OK", "Simpan Hasil"};
+            int choice = JOptionPane.showOptionDialog(this,
+                    message,
+                    "Hasil Cek Stok - " + namaProduk,
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.INFORMATION_MESSAGE,
+                    null,
+                    options,
+                    options[0]);
+
+            // 6. Jika pilih Simpan Hasil
+            if (choice == 1) {
+                String insertQuery = "INSERT INTO stok_opname "
+                        + "(kd_barang, namaBarang, stokSistem, stokFisik, selisih, catatan, create_at) "
+                        + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+                try (PreparedStatement pst = conn.prepareStatement(insertQuery)) {
+                    pst.setString(1, idProduk); // kd_barang
+                    pst.setString(2, namaProduk); // namaBarang
+                    pst.setInt(3, stokSistem); // stokSistem
+                    pst.setInt(4, stokFisik); // stokFisik
+                    pst.setString(5, String.valueOf(selisih)); // selisih
+                    pst.setString(6, selisih == 0 ? "Stok sesuai"
+                            : (selisih > 0 ? "Stok lebih" : "Stok kurang")); // catatan
+                    pst.setDate(7, new java.sql.Date(System.currentTimeMillis())); // create_at
+
+                    int affectedRows = pst.executeUpdate();
+
+                    if (affectedRows > 0) {
+                        JOptionPane.showMessageDialog(this,
+                                "Data stok berhasil disimpan",
+                                "Sukses",
+                                JOptionPane.INFORMATION_MESSAGE);
+
+                        // Clear tabel setelah disimpan (opsional)
+                        model.setRowCount(0);
+                    }
+                }
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error database: " + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_cekActionPerformed
 
     private void barcodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_barcodeActionPerformed
-      String barcodeValue = barcode.getText().trim();
-    
-    if (barcodeValue.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Barcode tidak boleh kosong");
-        return;
-    }
+        String barcodeValue = barcode.getText().trim();
 
-    try {
-        // Query untuk mendapatkan data produk
-        String query = "SELECT p.id_produk, p.nama_produk, p.harga, " +
-                      "(SELECT dp.harga_beli FROM detail_pembelian dp " +
-                      "WHERE dp.id_produk = p.id_produk ORDER BY dp.id_pembelian DESC LIMIT 1) AS harga_beli " +
-                      "FROM produk p " +
-                      "JOIN barcode b ON p.id_produk = b.id_produk " +
-                      "WHERE b.kode_barcode = ?";
-        
-        try (PreparedStatement pst = conn.prepareStatement(query)) {
-            pst.setString(1, barcodeValue);
-            ResultSet rs = pst.executeQuery();
-            
-            if (rs.next()) {
-                // Isi field dengan data dari database
-                id_barang.setText(rs.getString("id_produk"));
-                nama_barang.setText(rs.getString("nama_produk"));
-                harga_beli.setText(rs.getInt("harga_beli") > 0 ? String.valueOf(rs.getInt("harga_beli")) : "0");
-                harga_jual.setText(String.valueOf(rs.getInt("harga")));
-                
-                // Otomatis klik tombol simpan setelah data terisi
-                simpan.doClick();
-            } else {
-                JOptionPane.showMessageDialog(this, "Barcode tidak ditemukan");
-               // clearFields();
-            }
+        if (barcodeValue.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Barcode tidak boleh kosong");
+            return;
         }
-    } catch (SQLException ex) {
-        JOptionPane.showMessageDialog(this, 
-            "Error database: " + ex.getMessage(), 
-            "Error", 
-            JOptionPane.ERROR_MESSAGE);
-        ex.printStackTrace();
-    }
+
+        try {
+            // Query untuk mendapatkan data produk
+            String query = "SELECT p.id_produk, p.nama_produk, p.harga, "
+                    + "(SELECT dp.harga_beli FROM detail_pembelian dp "
+                    + "WHERE dp.id_produk = p.id_produk ORDER BY dp.id_pembelian DESC LIMIT 1) AS harga_beli "
+                    + "FROM produk p "
+                    + "JOIN barcode b ON p.id_produk = b.id_produk "
+                    + "WHERE b.kode_barcode = ?";
+
+            try (PreparedStatement pst = conn.prepareStatement(query)) {
+                pst.setString(1, barcodeValue);
+                ResultSet rs = pst.executeQuery();
+
+                if (rs.next()) {
+                    // Isi field dengan data dari database
+                    id_barang.setText(rs.getString("id_produk"));
+                    nama_barang.setText(rs.getString("nama_produk"));
+                    harga_beli.setText(rs.getInt("harga_beli") > 0 ? String.valueOf(rs.getInt("harga_beli")) : "0");
+                    harga_jual.setText(String.valueOf(rs.getInt("harga")));
+
+                    // Otomatis klik tombol simpan setelah data terisi
+                    simpan.doClick();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Barcode tidak ditemukan");
+                    // clearFields();
+                }
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error database: " + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
     }//GEN-LAST:event_barcodeActionPerformed
 
     private void keluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keluarActionPerformed
         // TODO add your handling code here:
-            new dashboard().setVisible(true);
-        this.setVisible(false);  
+        new dashboard().setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_keluarActionPerformed
 
     private void laporanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_laporanActionPerformed
         // TODO add your handling code here:
-        
-                dataopname popup = new dataopname();
-                popup.setVisible(true);
-    }//GEN-LAST:event_laporanActionPerformed
 
-    
-     
+        dataopname popup = new dataopname();
+        popup.setVisible(true);
+    }//GEN-LAST:event_laporanActionPerformed
 
     /**
      * @param args the command line arguments
@@ -533,7 +503,7 @@ try (PreparedStatement pst = conn.prepareStatement(insertQuery)) {
         }
         //</editor-fold>
         //</editor-fold>
-FlatLightLaf.setup();
+        FlatLightLaf.setup();
         UIManager.put("TableHeader.background", Color.BLACK);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -563,4 +533,3 @@ FlatLightLaf.setup();
     }
 
 }
-

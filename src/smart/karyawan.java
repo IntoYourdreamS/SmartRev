@@ -20,12 +20,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import popup.notifberhasilkrw;
-import popup.tambahkaryawan;
 import popup.ubahkaryawan;
 import popup.tambahkaryawan;
 
@@ -52,7 +49,7 @@ public class karyawan extends javax.swing.JFrame {
      */
     public karyawan() {
         initComponents();
-        
+
         // Custom header table
         javax.swing.table.JTableHeader header = tbkaryawan.getTableHeader();
         header.setDefaultRenderer(new DefaultTableCellRenderer() {
@@ -60,17 +57,17 @@ public class karyawan extends javax.swing.JFrame {
             public Component getTableCellRendererComponent(JTable table, Object value,
                     boolean isSelected, boolean hasFocus, int row, int column) {
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                
+
                 setBackground(Color.BLACK); // Warna background header
                 setForeground(Color.WHITE); // Warna teks putih
                 setFont(new Font("Segoe UI", Font.BOLD, 12)); // Font lebih tebal
                 setHorizontalAlignment(JLabel.CENTER); // Posisi teks di tengah
-                
+
                 return this;
             }
         });
         tbkaryawan.setDefaultEditor(Object.class, null);
-    
+
         loadDataToTable();
         customizeTable();
         makeButtonTransparent(tambah);
@@ -82,27 +79,25 @@ public class karyawan extends javax.swing.JFrame {
         makeButtonTransparent(hapus);
         makeButtonTransparent(presensi);
     }
-    
+
     private void makeButtonTransparent(JButton button) {
         button.setOpaque(false);
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
     }
-    
-     private void customizeTable() {
-          JTableHeader header = tbkaryawan.getTableHeader();
-           header.setFont(new Font("Inter", Font.BOLD, 11));
-           header.setForeground(Color.WHITE);
-            header.setOpaque(false);
-            tbkaryawan.setFont(new Font("Arial", Font.PLAIN, 10));
-            tbkaryawan.setRowHeight(30); 
-            tbkaryawan.setShowGrid(true); 
-            tbkaryawan.setIntercellSpacing(new java.awt.Dimension(0, 0));
-            tbkaryawan.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-     }
-    
-   
+    private void customizeTable() {
+        JTableHeader header = tbkaryawan.getTableHeader();
+        header.setFont(new Font("Inter", Font.BOLD, 11));
+        header.setForeground(Color.WHITE);
+        header.setOpaque(false);
+        tbkaryawan.setFont(new Font("Arial", Font.PLAIN, 10));
+        tbkaryawan.setRowHeight(30);
+        tbkaryawan.setShowGrid(true);
+        tbkaryawan.setIntercellSpacing(new java.awt.Dimension(0, 0));
+        tbkaryawan.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+    }
 
     private void loadDataToTable() {
         // Definisikan model tabel dengan header kolom sesuai dengan data karyawan
@@ -256,102 +251,98 @@ public class karyawan extends javax.swing.JFrame {
 
     private void tambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahActionPerformed
         // TODO add your handling code here:
-          // Menambahkan aksi ke tombol "Tambah"
-       
-                tambahkaryawan popup = new tambahkaryawan();
-                popup.setVisible(true);
-      
+        // Menambahkan aksi ke tombol "Tambah"
+
+        tambahkaryawan popup = new tambahkaryawan();
+        popup.setVisible(true);
+
     }//GEN-LAST:event_tambahActionPerformed
 
     private void dashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardActionPerformed
-      dashboard dash = new dashboard();
-dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
-dash.setVisible(true);
-this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
- 
+        dashboard dash = new dashboard();
+        dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
+        dash.setVisible(true);
+        this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
+
     }//GEN-LAST:event_dashboardActionPerformed
 
     private void transaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transaksiActionPerformed
-     transaksi dash = new transaksi();
-dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
-dash.setVisible(true);
-this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
+        transaksi dash = new transaksi();
+        dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
+        dash.setVisible(true);
+        this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
 
     }//GEN-LAST:event_transaksiActionPerformed
 
     private void restockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restockActionPerformed
-       restok dash = new restok();
-dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
-dash.setVisible(true);
-this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
+        restok dash = new restok();
+        dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
+        dash.setVisible(true);
+        this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
 
     }//GEN-LAST:event_restockActionPerformed
 
     private void laporanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_laporanActionPerformed
         // TODO add your handling code here:
         laporanpenjualan dash = new laporanpenjualan();
-dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
-dash.setVisible(true);
-this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
+        dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
+        dash.setVisible(true);
+        this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
 
     }//GEN-LAST:event_laporanActionPerformed
 
     private void ubahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ubahActionPerformed
-       ubahkaryawan popup = new ubahkaryawan();
-                popup.setVisible(true);
-      
+        ubahkaryawan popup = new ubahkaryawan();
+        popup.setVisible(true);
+
     }//GEN-LAST:event_ubahActionPerformed
 
     private void hapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hapusActionPerformed
-     // TODO add your handling code here:
-int selectedRow = tbkaryawan.getSelectedRow();
-if (selectedRow == -1) {
-    JOptionPane.showMessageDialog(this, "Pilih data yang akan dihapus!", "Peringatan", JOptionPane.WARNING_MESSAGE);
-    return;
-}
-
-String idKaryawan = tbkaryawan.getValueAt(selectedRow, 0).toString(); 
-
-int confirm = JOptionPane.showConfirmDialog(this,
-        "Apakah Anda yakin ingin menghapus data ini?",
-        "Konfirmasi Hapus",
-        JOptionPane.YES_NO_OPTION);
-
-if (confirm == JOptionPane.YES_OPTION) {
-    String query = "DELETE FROM karyawan WHERE id_karyawan=?";
-
-    try (Connection conn = koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement(query)) {
-        pst.setString(1, idKaryawan);
-
-        int rowsAffected = pst.executeUpdate();
-
-        if (rowsAffected > 0) {
-            JOptionPane.showMessageDialog(this, "Data berhasil dihapus!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-            
-            DefaultTableModel model = (DefaultTableModel) tbkaryawan.getModel();
-            model.removeRow(selectedRow);
-
-            
-        } else {
-            JOptionPane.showMessageDialog(this, "Gagal menghapus data.", "Error", JOptionPane.ERROR_MESSAGE);
+        // TODO add your handling code here:
+        int selectedRow = tbkaryawan.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Pilih data yang akan dihapus!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return;
         }
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
-    }
-}
+
+        String idKaryawan = tbkaryawan.getValueAt(selectedRow, 0).toString();
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Apakah Anda yakin ingin menghapus data ini?",
+                "Konfirmasi Hapus",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            String query = "DELETE FROM karyawan WHERE id_karyawan=?";
+
+            try (Connection conn = koneksi.getConnection(); PreparedStatement pst = conn.prepareStatement(query)) {
+                pst.setString(1, idKaryawan);
+
+                int rowsAffected = pst.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    JOptionPane.showMessageDialog(this, "Data berhasil dihapus!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+
+                    DefaultTableModel model = (DefaultTableModel) tbkaryawan.getModel();
+                    model.removeRow(selectedRow);
+
+                } else {
+                    JOptionPane.showMessageDialog(this, "Gagal menghapus data.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+        }
 
 
     }//GEN-LAST:event_hapusActionPerformed
 
     private void presensiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_presensiActionPerformed
         // TODO add your handling code here:
-          new karyawan2().setVisible(true);
+        new karyawan2().setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_presensiActionPerformed
-
-    
-     
 
     /**
      * @param args the command line arguments
@@ -380,7 +371,7 @@ if (confirm == JOptionPane.YES_OPTION) {
         }
         //</editor-fold>
         //</editor-fold>
-FlatLightLaf.setup();
+        FlatLightLaf.setup();
         UIManager.put("TableHeader.background", Color.BLACK);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -409,4 +400,3 @@ FlatLightLaf.setup();
     }
 
 }
-

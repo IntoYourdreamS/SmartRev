@@ -9,26 +9,17 @@ import Config.koneksi;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
 import javax.swing.table.DefaultTableModel;
-import java.awt.Component;
 import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JTable;
 import javax.swing.UIManager;
 import java.sql.PreparedStatement;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
-import javax.swing.JPanel;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DecimalFormat;
-import java.util.Calendar;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
@@ -38,65 +29,56 @@ public class dbkasir extends javax.swing.JFrame {
         initComponents();
         loadDataToTable();
         loadData();
-       
         displayLoggedInEmployeeName();
- jTextField5.setOpaque(false);
-    jTextField5.setBackground(new Color(0, 0, 0, 0));
+        jTextField5.setOpaque(false);
+        jTextField5.setBackground(new Color(0, 0, 0, 0));
         customizeTable();
-        
         makeButtonTransparent(bttntransaksi);
-      
         makeButtonTransparent(logout);
         makeButtonTransparent(txdepan);
-        
         setTableData();
-        
-    
-    }
-    
 
+    }
 
     private void makeButtonTransparent(JButton button) {
         button.setOpaque(false);
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
     }
-    
-private void loadDataToTable()  {
-    // Definisikan model tabel dengan header kolom
-    DefaultTableModel model = new DefaultTableModel(
-      new Object[][]{}, 
-        new String[]{"Kode Barang", "Nama Barang", "Stok"}
-    );
-    tbexpired.setModel(model); // Set model ke JTable (asumsi jTable1 adalah nama JTable)
 
-    try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart", "root", "");
-         Statement stmt = conn.createStatement()) {
+    private void loadDataToTable() {
+        // Definisikan model tabel dengan header kolom
+        DefaultTableModel model = new DefaultTableModel(
+                new Object[][]{},
+                new String[]{"Kode Barang", "Nama Barang", "Stok"}
+        );
+        tbexpired.setModel(model); // Set model ke JTable (asumsi jTable1 adalah nama JTable)
 
-        // Query untuk mengambil data produk dengan stok < 10
-        String query = "SELECT id_produk, nama_produk, stok FROM produk WHERE stok < 10 ORDER BY stok ASC";
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart", "root", ""); Statement stmt = conn.createStatement()) {
 
-        try (ResultSet rs = stmt.executeQuery(query)) {
-            while (rs.next()) {
-                // Ambil data dari ResultSet
-                String kodeBarang = rs.getString("id_produk");
-                String namaBarang = rs.getString("nama_produk");
-                int stok = rs.getInt("stok");
+            // Query untuk mengambil data produk dengan stok < 10
+            String query = "SELECT id_produk, nama_produk, stok FROM produk WHERE stok < 10 ORDER BY stok ASC";
 
-                // Tambahkan data ke model tabel
-                model.addRow(new Object[]{kodeBarang, namaBarang, stok});
+            try (ResultSet rs = stmt.executeQuery(query)) {
+                while (rs.next()) {
+                    // Ambil data dari ResultSet
+                    String kodeBarang = rs.getString("id_produk");
+                    String namaBarang = rs.getString("nama_produk");
+                    int stok = rs.getInt("stok");
+
+                    // Tambahkan data ke model tabel
+                    model.addRow(new Object[]{kodeBarang, namaBarang, stok});
+                }
             }
+
+        } catch (SQLException e) {
+            // Tampilkan pesan kesalahan
+            JOptionPane.showMessageDialog(this,
+                    "Gagal memuat data produk: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
-
-    } catch (SQLException e) {
-        // Tampilkan pesan kesalahan
-        JOptionPane.showMessageDialog(this,
-            "Gagal memuat data produk: " + e.getMessage(),
-            "Error",
-            JOptionPane.ERROR_MESSAGE);
     }
-}
-
 
     private void setTableData() {
         DefaultTableModel model = new DefaultTableModel(
@@ -111,30 +93,35 @@ private void loadDataToTable()  {
 
         jTable1.setModel(model);
     }
-    
-  private void loadData() {
-    // Definisikan model tabel dengan header kolom
-    DefaultTableModel model = new DefaultTableModel(
-            new Object[][]{},
-            new String[]{"Kode Produk", "Nama Produk", "Total Terjual", "Kategori"}
-    ) {
-        @Override
-        public Class<?> getColumnClass(int columnIndex) {
-            // Set proper column classes for sorting
-            switch (columnIndex) {
-                case 0: return String.class;  // Kode Produk
-                case 1: return String.class;  // Nama Produk
-                case 2: return Integer.class; // Total Terjual
-                case 3: return String.class; // Kategori
-                default: return Object.class;
-            }
-        }
-    };
-    
-    tbpenjualanterlaris.setModel(model); // Set model ke JTable
 
-    // Query SQL untuk ambil data penjualan terlaris
-    String query = """
+    private void loadData() {
+        // Definisikan model tabel dengan header kolom
+        DefaultTableModel model = new DefaultTableModel(
+                new Object[][]{},
+                new String[]{"Kode Produk", "Nama Produk", "Total Terjual", "Kategori"}
+        ) {
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                // Set proper column classes for sorting
+                switch (columnIndex) {
+                    case 0:
+                        return String.class;  // Kode Produk
+                    case 1:
+                        return String.class;  // Nama Produk
+                    case 2:
+                        return Integer.class; // Total Terjual
+                    case 3:
+                        return String.class; // Kategori
+                    default:
+                        return Object.class;
+                }
+            }
+        };
+
+        tbpenjualanterlaris.setModel(model); // Set model ke JTable
+
+        // Query SQL untuk ambil data penjualan terlaris
+        String query = """
     SELECT detail_penjualan.id_produk, 
            COALESCE(produk.nama_produk) AS nama_produk,
            SUM(detail_penjualan.jumlah) AS total_terjual,
@@ -145,116 +132,107 @@ private void loadDataToTable()  {
     ORDER BY total_terjual DESC
 """;
 
+        try (
+                Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart?useUnicode=true&characterEncoding=UTF-8", "root", ""); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                String kodeProduk = rs.getString("id_produk");
+                String namaProduk = rs.getString("nama_produk");
+                int totalTerjual = rs.getInt("total_terjual");
+                String kategori = rs.getString("kategori");
 
-    try (
-        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart?useUnicode=true&characterEncoding=UTF-8", "root", "");
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(query)
-    ) {
-        while (rs.next()) {
-            String kodeProduk = rs.getString("id_produk");
-            String namaProduk = rs.getString("nama_produk");
-            int totalTerjual = rs.getInt("total_terjual");
-            String kategori = rs.getString("kategori");
-
-            // Tambahkan ke tabel
-            model.addRow(new Object[]{
-                kodeProduk != null ? kodeProduk : "N/A",
-                namaProduk,
-                totalTerjual,
-                kategori
-            });
-        }
-
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this,
-                "Gagal memuat data penjualan terlaris: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
-    }
-}
- 
-  
- 
-  
-  private Timer greetingTimer;
-private String namaKaryawan;
-
-private void displayLoggedInEmployeeName() {
-    try {
-        String idKaryawan = Session.getKode();
-        
-        if (idKaryawan != null && !idKaryawan.isEmpty()) {
-            Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/smart", 
-                "root", 
-                "");
-            
-            String sql = "SELECT nama_karyawan FROM karyawan WHERE id_karyawan = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, idKaryawan);
-            
-            ResultSet rs = pstmt.executeQuery();
-            
-            if (rs.next()) {
-                namaKaryawan = rs.getString("nama_karyawan");
-                startGreetingCycle();
-            } else {
-                jTextField5.setText("Halo Karyawan!");
+                // Tambahkan ke tabel
+                model.addRow(new Object[]{
+                    kodeProduk != null ? kodeProduk : "N/A",
+                    namaProduk,
+                    totalTerjual,
+                    kategori
+                });
             }
-            
-            rs.close();
-            pstmt.close();
-            conn.close();
-        } else {
-            jTextField5.setText("Halo Pengguna!");
-        }
-    } catch (Exception e) {
-        jTextField5.setText("Halo!");
-        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
-    }
-}
 
-private void startGreetingCycle() {
-    // Hentikan timer sebelumnya jika ada
-    if (greetingTimer != null && greetingTimer.isRunning()) {
-        greetingTimer.stop();
-    }
-    
-    // Buat timer baru
-    greetingTimer = new Timer(3000, e -> {
-        String currentText = jTextField5.getText();
-        
-        if (currentText.startsWith("Halo")) {
-            // Ganti ke "Selamat bertransaksi!" selama 5 detik
-            jTextField5.setText("Selamat bekerja!");
-            greetingTimer.setDelay(5000);
-        } else {
-            // Ganti kembali ke "Halo [Nama]" selama 3 detik
-            jTextField5.setText("Halo " + namaKaryawan + "!");
-            greetingTimer.setDelay(3000);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Gagal memuat data penjualan terlaris: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
-    });
-    
-    // Mulai dengan menampilkan sapaan
-    jTextField5.setText("Halo " + namaKaryawan + "!");
-    greetingTimer.setRepeats(true);
-    greetingTimer.start();
-}
+    }
 
-  
+    private Timer greetingTimer;
+    private String namaKaryawan;
+
+    private void displayLoggedInEmployeeName() {
+        try {
+            String idKaryawan = Session.getKode();
+
+            if (idKaryawan != null && !idKaryawan.isEmpty()) {
+                Connection conn = DriverManager.getConnection(
+                        "jdbc:mysql://localhost:3306/smart",
+                        "root",
+                        "");
+
+                String sql = "SELECT nama_karyawan FROM karyawan WHERE id_karyawan = ?";
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, idKaryawan);
+
+                ResultSet rs = pstmt.executeQuery();
+
+                if (rs.next()) {
+                    namaKaryawan = rs.getString("nama_karyawan");
+                    startGreetingCycle();
+                } else {
+                    jTextField5.setText("Halo Karyawan!");
+                }
+
+                rs.close();
+                pstmt.close();
+                conn.close();
+            } else {
+                jTextField5.setText("Halo Pengguna!");
+            }
+        } catch (Exception e) {
+            jTextField5.setText("Halo!");
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
+    }
+
+    private void startGreetingCycle() {
+        // Hentikan timer sebelumnya jika ada
+        if (greetingTimer != null && greetingTimer.isRunning()) {
+            greetingTimer.stop();
+        }
+
+        // Buat timer baru
+        greetingTimer = new Timer(3000, e -> {
+            String currentText = jTextField5.getText();
+
+            if (currentText.startsWith("Halo")) {
+                // Ganti ke "Selamat bertransaksi!" selama 5 detik
+                jTextField5.setText("Selamat bekerja!");
+                greetingTimer.setDelay(5000);
+            } else {
+                // Ganti kembali ke "Halo [Nama]" selama 3 detik
+                jTextField5.setText("Halo " + namaKaryawan + "!");
+                greetingTimer.setDelay(3000);
+            }
+        });
+
+        // Mulai dengan menampilkan sapaan
+        jTextField5.setText("Halo " + namaKaryawan + "!");
+        greetingTimer.setRepeats(true);
+        greetingTimer.start();
+    }
 
     private void customizeTable() {
         JTableHeader header = jTable1.getTableHeader();
         JTableHeader header2 = tbpenjualanterlaris.getTableHeader();
         JTableHeader header3 = tbexpired.getTableHeader();
-        
+
         header.setFont(new Font("Inter", Font.BOLD, 11));
         header2.setFont(new Font("Inter", Font.BOLD, 11));
         header3.setFont(new Font("Inter", Font.BOLD, 11));
 
-        header.setForeground(Color.WHITE); 
+        header.setForeground(Color.WHITE);
         header2.setForeground(Color.WHITE);
         header3.setForeground(Color.WHITE);
 
@@ -265,27 +243,27 @@ private void startGreetingCycle() {
         jTable1.setFont(new Font("Arial", Font.PLAIN, 10));
         tbpenjualanterlaris.setFont(new Font("Arial", Font.PLAIN, 10));
         tbexpired.setFont(new Font("Arial", Font.PLAIN, 10));
-        
-        jTable1.setRowHeight(30); 
+
+        jTable1.setRowHeight(30);
         tbpenjualanterlaris.setRowHeight(30);
         tbexpired.setRowHeight(30);
-        
-        jTable1.setShowGrid(true); 
-        tbpenjualanterlaris.setShowGrid(true); 
-        tbexpired.setShowGrid(true); 
-        
+
+        jTable1.setShowGrid(true);
+        tbpenjualanterlaris.setShowGrid(true);
+        tbexpired.setShowGrid(true);
+
         jTable1.setIntercellSpacing(new java.awt.Dimension(0, 0));
         tbpenjualanterlaris.setIntercellSpacing(new java.awt.Dimension(0, 0));
         tbexpired.setIntercellSpacing(new java.awt.Dimension(0, 0));
-        
+
         jTable1.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         tbpenjualanterlaris.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         tbexpired.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        
-        tbpenjualanterlaris.setSelectionBackground(new Color(25, 25, 25)); 
-        tbpenjualanterlaris.setSelectionForeground(Color.WHITE); 
+
+        tbpenjualanterlaris.setSelectionBackground(new Color(25, 25, 25));
+        tbpenjualanterlaris.setSelectionForeground(Color.WHITE);
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -434,55 +412,51 @@ private void startGreetingCycle() {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void bttntransaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttntransaksiActionPerformed
-      transaksikasir dash = new transaksikasir();
-dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
-dash.setVisible(true);
-this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
+        transaksikasir dash = new transaksikasir();
+        dash.setLocationRelativeTo(null); // Optional: pusatkan jendela baru
+        dash.setVisible(true);
+        this.dispose(); // Menutup form login sepenuhnya tanpa efek flicker
 
     }//GEN-LAST:event_bttntransaksiActionPerformed
 
     private void logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutActionPerformed
-try {
-    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart", "root", "");
-    String idKaryawan = Session.getKode();
-    
-    if(!idKaryawan.isEmpty()) {
-        // Query untuk update record terakhir yang belum memiliki tanggal_keluar
-        String query = "UPDATE detail_karyawan SET tanggal_keluar = CURRENT_TIMESTAMP() " +
-                      "WHERE id_karyawan = ? AND tanggal_masuk = (" +
-                      "   SELECT max_masuk FROM (" +
-                      "       SELECT MAX(tanggal_masuk) AS max_masuk " +
-                      "       FROM detail_karyawan " +
-                      "       WHERE id_karyawan = ? AND tanggal_keluar IS NULL" +
-                      "   ) AS temp" +
-                      ")";
-        
-        PreparedStatement pstmt = conn.prepareStatement(query);
-        pstmt.setString(1, idKaryawan);
-        pstmt.setString(2, idKaryawan);
-        int rowsAffected = pstmt.executeUpdate();
-        
-        if(rowsAffected > 0) {
-            System.out.println("Logout time updated successfully");
-        } else {
-            System.out.println("No record found to update");
-        }
-        
-        // Reset session
-       // Session.clear();
-    //    pstmt.close();
-    }
-    conn.close();
-} catch (SQLException e) {
-    JOptionPane.showMessageDialog(null, "Error updating logout time: " + e.getMessage());
-}
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smart", "root", "");
+            String idKaryawan = Session.getKode();
 
+            if (!idKaryawan.isEmpty()) {
+                // Query untuk update record terakhir yang belum memiliki tanggal_keluar
+                String query = "UPDATE detail_karyawan SET tanggal_keluar = CURRENT_TIMESTAMP() "
+                        + "WHERE id_karyawan = ? AND tanggal_masuk = ("
+                        + "   SELECT max_masuk FROM ("
+                        + "       SELECT MAX(tanggal_masuk) AS max_masuk "
+                        + "       FROM detail_karyawan "
+                        + "       WHERE id_karyawan = ? AND tanggal_keluar IS NULL"
+                        + "   ) AS temp"
+                        + ")";
+
+                PreparedStatement pstmt = conn.prepareStatement(query);
+                pstmt.setString(1, idKaryawan);
+                pstmt.setString(2, idKaryawan);
+                int rowsAffected = pstmt.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    System.out.println("Logout time updated successfully");
+                } else {
+                    System.out.println("No record found to update");
+                }
+
+            }
+            conn.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error updating logout time: " + e.getMessage());
+        }
 
 // Tampilkan form login
-login dash = new login();
-dash.setLocationRelativeTo(null);
-dash.setVisible(true);
-this.dispose();
+        login dash = new login();
+        dash.setLocationRelativeTo(null);
+        dash.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_logoutActionPerformed
 
     private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
